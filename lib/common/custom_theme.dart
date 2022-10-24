@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 
 class CustomTheme {
-  static final scale = _Scale();
-  static final gray = _Gray();
-  static final tint = _Tint();
-  static final background = _Background();
-  static final label = _Label();
-  static final separator = _Separator();
-  static final groupedBackground = _GroupedBackground();
-  static final fill = _Fill();
-  static final disabled = _State();
+  static const scale = _Scale();
+  static const gray = _Gray();
+  static const tint = _Tint();
+  static const background = _Background();
+  static const label = _Label();
+  static const separator = _Separator();
+  static const groupedBackground = _GroupedBackground();
+  static const fill = _Fill();
+  static const disabled = _State();
 }
 
 class _Scale {
+  const _Scale();
+
   final Color scale1 = const Color(0xfff2f2f7);
   final Color scale2 = const Color(0xffe5e5ea);
   final Color scale3 = const Color(0xffd1d1d6);
@@ -29,6 +31,8 @@ class _Scale {
 }
 
 class _Gray {
+  const _Gray();
+
   final gray1 = const Color(0xff8e8e93);
   final gray2 = const Color(0xffaeaeb2);
   final gray3 = const Color(0xffc7c7cc);
@@ -38,6 +42,8 @@ class _Gray {
 }
 
 class _Tint {
+  const _Tint();
+
   final blue = const Color(0xff007aff);
   final green = const Color(0xff34c759);
   final indigo = const Color(0xff5856d6);
@@ -50,12 +56,16 @@ class _Tint {
 }
 
 class _Background {
+  const _Background();
+
   final primary = const Color(0xffffffff);
   final secondary = const Color(0xfff2f2f7);
   final tertiary = const Color(0xffc7c7c7);
 }
 
 class _Label {
+  const _Label();
+
   final primary = const Color(0xff000000);
   final secondary = const Color(0xff757579);
   final tertiary = const Color(0xff9c9c9e);
@@ -63,17 +73,23 @@ class _Label {
 }
 
 class _Separator {
+  const _Separator();
+
   final opaque = const Color(0xffc6c6c8);
   final nonOpaque = const Color(0xff9c9c9e);
 }
 
 class _GroupedBackground {
+  const _GroupedBackground();
+
   final primary = const Color(0xfff2f2f7);
   final secondary = const Color(0xffffffff);
   final tertiary = const Color(0xfff2f2f7);
 }
 
 class _Fill {
+  const _Fill();
+
   final primary = const Color(0xffbababc);
   final secondary = const Color(0xffbdbdbe);
   final tertiary = const Color(0xffc0c0c1);
@@ -81,5 +97,7 @@ class _Fill {
 }
 
 class _State {
+  const _State();
+
   final disabled = const Color(0xff979592);
 }

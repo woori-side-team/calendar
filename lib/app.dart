@@ -1,11 +1,27 @@
 import 'package:calendar/common/custom_theme.dart';
 import 'package:calendar/layout/custom_navigation_bar.dart';
+import 'package:calendar/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'layout/custom_app_bar.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final _sheetController = DraggableScrollableController();
+
+  App({super.key});
+
+  void _handlePressSchedule() {
+    const duration = Duration(milliseconds: 500);
+    const curve = Curves.ease;
+
+    if (_sheetController.size >= ScheduleSheet.maxSize) {
+      _sheetController.animateTo(ScheduleSheet.minSize,
+          duration: duration, curve: curve);
+    } else {
+      _sheetController.animateTo(ScheduleSheet.maxSize,
+          duration: duration, curve: curve);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +35,16 @@ class App extends StatelessWidget {
     return MaterialApp(
         title: 'Calendar',
         theme: ThemeData(navigationBarTheme: customNavigationBarTheme),
-        home: const Scaffold(
-            appBar: CustomAppBar(),
-            bottomNavigationBar: CustomNavigationBar()));
+        home: Scaffold(
+            appBar: const CustomAppBar(),
+            body: SafeArea(
+                child: Stack(
+                    children: [ScheduleSheet(controller: _sheetController)])),
+            bottomNavigationBar: CustomNavigationBar(
+              onPressSchedule: _handlePressSchedule,
+              onPressChecklist: () {},
+              onPressMemo: () {},
+              onPressSettings: () {},
+            )));
   }
 }
