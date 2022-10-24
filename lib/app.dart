@@ -32,9 +32,12 @@ class App extends StatelessWidget {
         labelTextStyle: MaterialStatePropertyAll(
             TextStyle(color: CustomTheme.scale.scale9)));
 
+    final customThemeData = ThemeData(
+        fontFamily: 'Pretendard', navigationBarTheme: customNavigationBarTheme);
+
     return MaterialApp(
         title: 'Calendar',
-        theme: ThemeData(navigationBarTheme: customNavigationBarTheme),
+        theme: customThemeData,
         home: Scaffold(
             appBar: const CustomAppBar(),
             body: SafeArea(
