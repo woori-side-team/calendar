@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   void _handlePressProfile() {}
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  final Size preferredSize = const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
