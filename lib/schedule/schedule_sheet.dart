@@ -19,55 +19,52 @@ class ScheduleSheet extends StatelessWidget {
         initialChildSize: minSize,
         snapSizes: snapSizes,
         snap: true,
-        builder: (sheetContext, scrollController) {
-          return Container(
-              decoration: BoxDecoration(
-                  color: CustomTheme.background.primary,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12)),
-                  boxShadow: const [
-                    BoxShadow(
-                        offset: Offset(0, -6),
-                        blurRadius: 16,
-                        color: Color.fromARGB(128, 174, 174, 178))
-                  ]),
-              child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6, bottom: 6),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: CustomTheme.gray.gray4,
-                              ),
+        builder: (sheetContext, scrollController) => Container(
+            decoration: BoxDecoration(
+                color: CustomTheme.background.primary,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12)),
+                boxShadow: const [
+                  BoxShadow(
+                      offset: Offset(0, -6),
+                      blurRadius: 16,
+                      color: Color.fromARGB(128, 174, 174, 178))
+                ]),
+            child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6, bottom: 6),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: CustomTheme.gray.gray4,
                             ),
-                          ]),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 6, left: 20, right: 20),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('다가오는 일정',
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w600)),
-                            TextButton(
-                                onPressed: () {},
-                                child: Text('편집',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: CustomTheme.tint.blue)))
-                          ]),
-                    )
-                  ])));
-        });
+                          ),
+                        ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6, left: 20, right: 20),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('다가오는 일정',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w600)),
+                          TextButton(
+                              onPressed: () {},
+                              child: Text('편집',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: CustomTheme.tint.blue)))
+                        ]),
+                  )
+                ]))));
   }
 }

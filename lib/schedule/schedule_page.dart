@@ -1,6 +1,7 @@
 import 'package:calendar/layout/custom_app_bar.dart';
 import 'package:calendar/layout/custom_navigation_bar.dart';
 import 'package:calendar/schedule/month_selector.dart';
+import 'package:calendar/schedule/month_view.dart';
 import 'package:calendar/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,8 @@ class _SchedulePageState extends State<SchedulePage> {
           Column(children: [
             MonthSelector(
                 selectedMonthDate: _selectedMonthDate,
-                onSelectMonthDate: _handleSelectMonth)
+                onSelectMonthDate: _handleSelectMonth),
+            MonthView(selectedMonthDate: _selectedMonthDate)
           ]),
           ScheduleSheet(controller: _sheetController)
         ])),

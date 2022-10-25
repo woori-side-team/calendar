@@ -31,12 +31,8 @@ class MonthSelector extends StatelessWidget {
         ),
         initialItems: initialItems,
         initialSelectedIndex: selectedMonthDate.month - 1,
-        createPrevItem: (item) {
-          return DateTime(item.year, item.month - 1);
-        },
-        createNextItem: (item) {
-          return DateTime(item.year, item.month + 1);
-        },
+        createPrevItem: (item) => DateTime(item.year, item.month - 1),
+        createNextItem: (item) => DateTime(item.year, item.month + 1),
         onSelectItem: onSelectMonthDate,
         renderItem: (item, isActive, index, controller) {
           final text = '${item.year}.${'${item.month}'.padLeft(2, '0')}';

@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class InfiniteSlider<Item> extends StatefulWidget {
@@ -49,6 +50,8 @@ class _InfiniteSliderState<Item> extends State<InfiniteSlider<Item>> {
         _selectedIndex = index;
       });
     }
+
+    widget.onSelectItem(_items.elementAt(_selectedIndex));
   }
 
   @override
@@ -62,20 +65,15 @@ class _InfiniteSliderState<Item> extends State<InfiniteSlider<Item>> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> itemBuilders = [];
-
-    for (var index = 0; index < _items.length; index++) {
-      itemBuilders.add(Builder(builder: (itemContext) {
-        final isActive = _selectedIndex == index;
-
-        return widget.renderItem(
-            _items.elementAt(index), isActive, index, _carouselController);
-      }));
-    }
-
     return CarouselSlider(
         carouselController: _carouselController,
-        items: itemBuilders,
+        items: _items
+            .mapIndexed((index, item) => widget.renderItem(
+                _items.elementAt(index),
+                _selectedIndex == index,
+                index,
+                _carouselController))
+            .toList(),
         options: widget.options.copyWith(
             initialPage: _selectedIndex, onPageChanged: _handlePageChange));
   }

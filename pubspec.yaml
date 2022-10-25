@@ -38,6 +38,9 @@ dependencies:
   # Swiper 사용 위해...
   carousel_slider: ^4.1.1
 
+  # mapIndexed() 등의 도구들 사용 위해...
+  collection: ^1.16.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
