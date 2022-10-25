@@ -1,5 +1,5 @@
-import 'package:calendar/common/custom_date_utils.dart';
-import 'package:calendar/common/custom_theme.dart';
+import 'package:calendar/common/styles/custom_theme.dart';
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

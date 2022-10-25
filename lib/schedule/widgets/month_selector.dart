@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:calendar/common/custom_theme.dart';
-import 'package:calendar/common/infinite_slider.dart';
+import 'package:calendar/common/styles/custom_theme.dart';
+import 'package:calendar/common/widgets/infinite_slider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 

@@ -1,9 +1,9 @@
-import 'package:calendar/common/custom_backdrop.dart';
-import 'package:calendar/common/custom_theme.dart';
+import 'package:calendar/common/styles/custom_theme.dart';
+import 'package:calendar/common/widgets/custom_backdrop.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleSheet extends StatefulWidget {
-  static const minSize = 0.2;
+  static const minSize = 0.13;
   static const maxSize = 1.0;
   static final snapSizes = [minSize, 0.5, maxSize];
 

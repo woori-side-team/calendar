@@ -1,8 +1,8 @@
-import 'package:calendar/layout/custom_app_bar.dart';
-import 'package:calendar/layout/custom_navigation_bar.dart';
-import 'package:calendar/schedule/month_selector.dart';
-import 'package:calendar/schedule/month_view.dart';
-import 'package:calendar/schedule/schedule_sheet.dart';
+import 'package:calendar/layout/widgets/custom_app_bar.dart';
+import 'package:calendar/layout/widgets/custom_navigation_bar.dart';
+import 'package:calendar/schedule/widgets/month_selector.dart';
+import 'package:calendar/schedule/widgets/month_view.dart';
+import 'package:calendar/schedule/widgets/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 
 class SchedulePage extends StatefulWidget {

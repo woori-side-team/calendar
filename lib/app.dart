@@ -1,5 +1,5 @@
-import 'package:calendar/common/custom_theme.dart';
-import 'package:calendar/schedule/schedule_page.dart';
+import 'package:calendar/common/styles/custom_theme.dart';
+import 'package:calendar/schedule/widgets/schedule_page.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
