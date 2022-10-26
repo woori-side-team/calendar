@@ -1,5 +1,8 @@
 import 'package:calendar/common/styles/custom_theme.dart';
-import 'package:calendar/schedule/widgets/schedule_page.dart';
+import 'package:calendar/common/utils/custom_route_utils.dart';
+import 'package:calendar/schedule/widgets/day_page.dart';
+import 'package:calendar/schedule/widgets/month_page.dart';
+import 'package:calendar/schedule/widgets/week_page.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -18,6 +21,18 @@ class App extends StatelessWidget {
         fontFamily: 'Pretendard', navigationBarTheme: customNavigationBarTheme);
 
     return MaterialApp(
-        title: 'Calendar', theme: customThemeData, home: const SchedulePage());
+        title: 'Calendar',
+        theme: customThemeData,
+        home: const MonthPage(),
+        initialRoute: MonthPage.routeName,
+        onGenerateRoute: (routeSettings) {
+          if (routeSettings.name == WeekPage.routeName) {
+            return CustomRouteUtils.createRoute(() => const WeekPage());
+          } else if (routeSettings.name == DayPage.routeName) {
+            return CustomRouteUtils.createRoute(() => const DayPage());
+          } else {
+            return CustomRouteUtils.createRoute(() => const MonthPage());
+          }
+        });
   }
 }

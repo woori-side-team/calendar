@@ -2,7 +2,9 @@ import 'package:calendar/common/models/schedule.dart';
 import 'package:calendar/common/providers/schedules_provider.dart';
 import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
+import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/common/widgets/custom_bottom_sheet.dart';
+import 'package:calendar/schedule/widgets/day_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +69,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         ]));
   }
 
-  Widget _createScheduleView(Schedule schedule) {
+  Widget _createScheduleView(BuildContext context, Schedule schedule) {
     final controlButtonStyle =
         IconButton.styleFrom(fixedSize: const Size(24, 24));
 
@@ -91,7 +93,9 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                       fontWeight: FontWeight.w400))),
           Expanded(
               child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    CustomRouteUtils.push(context, DayPage.routeName);
+                  },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
                       alignment: Alignment.centerLeft),
@@ -148,7 +152,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         child: Column(children: [
           ...schedulesToShow
               .take(maxShowCount)
-              .map((schedule) => _createScheduleView(schedule))
+              .map((schedule) => _createScheduleView(context, schedule))
               .toList(),
           Container(
               margin: const EdgeInsets.only(top: 4),

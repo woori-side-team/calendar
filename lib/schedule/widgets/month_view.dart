@@ -1,5 +1,6 @@
 import 'package:calendar/common/models/schedule.dart';
 import 'package:calendar/common/providers/schedules_provider.dart';
+import 'package:calendar/common/providers/selection_provider.dart';
 import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:collection/collection.dart';
@@ -16,9 +17,7 @@ class MonthView extends StatelessWidget {
     CustomTheme.tint.teal
   ];
 
-  final DateTime selectedMonthDate;
-
-  const MonthView({super.key, required this.selectedMonthDate});
+  const MonthView({super.key});
 
   /// 날짜를 key로 하는 Map을 만들 때 사용.
   String _getDayKey(DateTime dayDate) {
@@ -56,7 +55,10 @@ class MonthView extends StatelessWidget {
             .toList());
   }
 
-  Widget _createDayLabel(DateTime dayDate) {
+  Widget _createDayLabel(BuildContext context, DateTime dayDate) {
+    final selectedMonthDate =
+        context.watch<SelectionProvider>().getSelectedMonthDate();
+
     final now = CustomDateUtils.getNow();
 
     final decoration = !CustomDateUtils.areSameDays(now, dayDate)
@@ -97,7 +99,8 @@ class MonthView extends StatelessWidget {
             color: _markerColors[schedule.colorIndex % _markerColors.length]));
   }
 
-  Widget _createDayCell(DateTime dayDate, List<_ScheduleInfo> scheduleInfos) {
+  Widget _createDayCell(BuildContext context, DateTime dayDate,
+      List<_ScheduleInfo> scheduleInfos) {
     final allDayMarkers = scheduleInfos
         .where((info) => info.schedule.type == ScheduleType.allDay)
         .map((info) => _createAllDayMarker(info.schedule));
@@ -111,7 +114,7 @@ class MonthView extends StatelessWidget {
         child: Container(
             constraints: const BoxConstraints(minHeight: 58),
             child: Column(children: [
-              _createDayLabel(dayDate),
+              _createDayLabel(context, dayDate),
               ...allDayMarkers,
               Container(
                   margin: const EdgeInsets.only(top: 2),
@@ -121,6 +124,9 @@ class MonthView extends StatelessWidget {
 
   List<Widget> _createDayRows(BuildContext context) {
     final schedules = context.watch<SchedulesProvider>().getSchedules();
+
+    final selectedMonthDate =
+        context.watch<SelectionProvider>().getSelectedMonthDate();
 
     // key: 각 날짜.
     // value: 해당 날짜에 있는 스케줄들.
@@ -155,15 +161,15 @@ class MonthView extends StatelessWidget {
         .map((week) => Row(
             children: week
                 .map((dayDate) => _createDayCell(
-                    dayDate, scheduleMap[_getDayKey(dayDate)] ?? []))
+                    context, dayDate, scheduleMap[_getDayKey(dayDate)] ?? []))
                 .toList()))
         .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 28),
+    return Container(
+        margin: const EdgeInsets.only(top: 28),
         child:
             Column(children: [_createNameRow(), ..._createDayRows(context)]));
   }
