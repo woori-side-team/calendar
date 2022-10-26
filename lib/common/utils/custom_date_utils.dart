@@ -1,7 +1,7 @@
 class CustomDateUtils {
   /// 현재 날짜를 반환합니다.
   /// (만약 앱 전체에서 동일 값을 써야 할 시 수정이 쉽도록 이 함수를 제작하였습니다.)
-  static DateTime getToday() {
+  static DateTime getNow() {
     return DateTime.now();
   }
 

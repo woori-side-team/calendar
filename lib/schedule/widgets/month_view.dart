@@ -57,15 +57,15 @@ class MonthView extends StatelessWidget {
   }
 
   Widget _createDayLabel(DateTime dayDate) {
-    final today = CustomDateUtils.getToday();
+    final now = CustomDateUtils.getNow();
 
-    final decoration = !CustomDateUtils.areSameDays(today, dayDate)
+    final decoration = !CustomDateUtils.areSameDays(now, dayDate)
         ? null
         : BoxDecoration(
             color: CustomTheme.background.secondary,
             borderRadius: BorderRadius.circular(8));
 
-    final color = dayDate.month != today.month
+    final color = dayDate.month != now.month
         ? CustomTheme.scale.scale3
         : _getCellColor(dayDate.weekday);
 
