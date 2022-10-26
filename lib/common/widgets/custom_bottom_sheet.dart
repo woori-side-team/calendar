@@ -2,6 +2,8 @@ import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/widgets/custom_backdrop.dart';
 import 'package:flutter/material.dart';
 
+/// 화면에 항상 떠 있는 bottom sheet입니다.
+/// 드래그하여 크기를 조정할 수 있습니다.
 class CustomBottomSheet extends StatefulWidget {
   final double minSize;
   final double maxSize;
@@ -22,26 +24,28 @@ class CustomBottomSheet extends StatefulWidget {
 }
 
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
+  // Rebuild 이후에도 새로 만들지 않고 재사용해야 하므로 state로 들고 있음.
+  late final DraggableScrollableController _sheetController;
+
   late double _size;
-  late final DraggableScrollableController _controller;
 
   void _handleChange() {
     setState(() {
-      _size = _controller.size;
+      _size = _sheetController.size;
     });
   }
 
   @override
   void initState() {
     super.initState();
+    _sheetController = DraggableScrollableController();
+    _sheetController.addListener(_handleChange);
     _size = widget.minSize;
-    _controller = DraggableScrollableController();
-    _controller.addListener(_handleChange);
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_handleChange);
+    _sheetController.removeListener(_handleChange);
     super.dispose();
   }
 
@@ -79,7 +83,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           maxValue: widget.maxSize,
           minShowValue: widget.minSize + 0.1),
       DraggableScrollableSheet(
-          controller: _controller,
+          controller: _sheetController,
           minChildSize: widget.minSize,
           maxChildSize: widget.maxSize,
           initialChildSize: widget.minSize,

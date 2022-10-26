@@ -1,8 +1,6 @@
-import 'package:calendar/common/providers/schedules_provider.dart';
 import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/schedule/widgets/schedule_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -20,9 +18,6 @@ class App extends StatelessWidget {
         fontFamily: 'Pretendard', navigationBarTheme: customNavigationBarTheme);
 
     return MaterialApp(
-        title: 'Calendar',
-        theme: customThemeData,
-        home: const SchedulePage()
-        );
+        title: 'Calendar', theme: customThemeData, home: const SchedulePage());
   }
 }

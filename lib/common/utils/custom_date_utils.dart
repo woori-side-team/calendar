@@ -1,12 +1,16 @@
 class CustomDateUtils {
+  /// 해당 달의 첫 번째 날(1일)을 반환합니다.
   static DateTime getFirstDayOfMonth(DateTime monthDate) {
     return DateTime(monthDate.year, monthDate.month, 1);
   }
 
+  /// 해당 달에 며칠까지 있는지 계산합니다.
   static int getMonthSize(DateTime monthDate) {
     return DateTime(monthDate.year, monthDate.month + 1, 0).day;
   }
 
+  /// 해당 달의 달력을 만듭니다.
+  /// (해당 달이 주의 중간에 시작/끝이 날 경우, 이전/다음 달도 일부 포함됩니다.)
   static List<List<DateTime>> getMonthCalendar(DateTime monthDate) {
     final monthSize = getMonthSize(monthDate);
     final monthFirstDayDate = getFirstDayOfMonth(monthDate);

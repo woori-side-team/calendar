@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:calendar/common/styles/custom_theme.dart';
-import 'package:calendar/common/widgets/infinite_slider.dart';
+import 'package:calendar/common/widgets/custom_carousel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class MonthSelector extends StatelessWidget {
       initialItems.addLast(DateTime(selectedMonthDate.year, month));
     }
 
-    return InfiniteSlider<DateTime>(
+    return CustomCarousel<DateTime>(
         options: CarouselOptions(
           height: 36,
           viewportFraction: 0.35,
