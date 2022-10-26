@@ -22,12 +22,7 @@ class App extends StatelessWidget {
     return MaterialApp(
         title: 'Calendar',
         theme: customThemeData,
-        home: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-                create: (providerContext) => SchedulesProvider())
-          ],
-          child: const SchedulePage(),
-        ));
+        home: const SchedulePage()
+        );
   }
 }

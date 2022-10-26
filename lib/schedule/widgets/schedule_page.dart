@@ -15,27 +15,12 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  late final DraggableScrollableController _sheetController;
   late DateTime _selectedMonthDate;
 
   @override
   void initState() {
     super.initState();
-    _sheetController = DraggableScrollableController();
     _selectedMonthDate = DateTime(2022, 10);
-  }
-
-  void _handlePressSchedule() {
-    const duration = Duration(milliseconds: 500);
-    const curve = Curves.ease;
-
-    if (_sheetController.size >= ScheduleSheet.maxSize) {
-      _sheetController.animateTo(ScheduleSheet.minSize,
-          duration: duration, curve: curve);
-    } else {
-      _sheetController.animateTo(ScheduleSheet.maxSize,
-          duration: duration, curve: curve);
-    }
   }
 
   void _handleSelectMonth(DateTime newMonthDate) {
@@ -56,10 +41,10 @@ class _SchedulePageState extends State<SchedulePage> {
                 onSelectMonthDate: _handleSelectMonth),
             MonthView(selectedMonthDate: _selectedMonthDate)
           ]),
-          ScheduleSheet(controller: _sheetController)
+          const ScheduleSheet()
         ])),
         bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: _handlePressSchedule,
+          onPressSchedule: () {},
           onPressChecklist: () {},
           onPressMemo: () {},
           onPressSettings: () {},

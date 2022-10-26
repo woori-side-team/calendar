@@ -1,69 +1,14 @@
 import 'package:calendar/common/styles/custom_theme.dart';
-import 'package:calendar/common/widgets/custom_backdrop.dart';
+import 'package:calendar/common/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
-class ScheduleSheet extends StatefulWidget {
-  static const minSize = 0.13;
-  static const maxSize = 1.0;
-  static final snapSizes = [minSize, 0.5, maxSize];
-
-  final DraggableScrollableController controller;
-
-  const ScheduleSheet({super.key, required this.controller});
-
-  @override
-  State<StatefulWidget> createState() {
-    return _ScheduleSheetState();
-  }
-}
-
-class _ScheduleSheetState extends State<ScheduleSheet> {
-  double _sheetSize = ScheduleSheet.minSize;
-
-  void _handleChange() {
-    setState(() {
-      _sheetSize = widget.controller.size;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_handleChange);
-  }
-
-  @override
-  void dispose() {
-    widget.controller.removeListener(_handleChange);
-    super.dispose();
-  }
+class ScheduleSheet extends StatelessWidget {
+  const ScheduleSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final decoration = BoxDecoration(
-        color: CustomTheme.background.primary,
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-        boxShadow: const [
-          BoxShadow(
-              offset: Offset(0, -6),
-              blurRadius: 16,
-              color: Color.fromARGB(128, 174, 174, 178))
-        ]);
-
-    final handle = Padding(
-      padding: const EdgeInsets.only(top: 6, bottom: 6),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Container(
-          width: 40,
-          height: 6,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: CustomTheme.gray.gray4,
-          ),
-        ),
-      ]),
-    );
+    const minSize = 0.13;
+    const maxSize = 1.0;
 
     final header = Padding(
         padding: const EdgeInsets.only(top: 6, left: 20, right: 20),
@@ -77,24 +22,10 @@ class _ScheduleSheetState extends State<ScheduleSheet> {
                   style: TextStyle(fontSize: 14, color: CustomTheme.tint.blue)))
         ]));
 
-    return Stack(children: [
-      CustomBackdrop(
-          value: _sheetSize,
-          minValue: ScheduleSheet.minSize,
-          maxValue: ScheduleSheet.maxSize,
-          minShowValue: ScheduleSheet.minSize + 0.1),
-      DraggableScrollableSheet(
-          controller: widget.controller,
-          minChildSize: ScheduleSheet.minSize,
-          maxChildSize: ScheduleSheet.maxSize,
-          initialChildSize: ScheduleSheet.minSize,
-          snapSizes: ScheduleSheet.snapSizes,
-          snap: true,
-          builder: (sheetContext, scrollController) => Container(
-              decoration: decoration,
-              child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(children: [handle, header]))))
-    ]);
+    return CustomBottomSheet(
+        minSize: minSize,
+        maxSize: maxSize,
+        snapSizes: const [minSize, 0.5, maxSize],
+        child: Column(children: [header]));
   }
 }
