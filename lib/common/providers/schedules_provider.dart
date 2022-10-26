@@ -1,15 +1,15 @@
 import 'package:calendar/common/models/schedule.dart';
 import 'package:flutter/material.dart';
 
-class SchedulesProvider extends ChangeNotifier {
+class SchedulesProvider with ChangeNotifier {
   final _schedules = <Schedule>[
     Schedule(
         tag: '개인',
         content: '공부하기',
         type: ScheduleType.allDay,
-        start: DateTime(2022, 8, 29),
-        end: DateTime(2022, 8, 29),
-        colorIndex: 1),
+        start: DateTime(2022, 9, 28),
+        end: DateTime(2022, 10, 2),
+        colorIndex: 0),
     Schedule(
         tag: '개인',
         content: '종소세 내야해!',

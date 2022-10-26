@@ -13,6 +13,33 @@ class CustomDateUtils {
         dayDate1.day == dayDate2.day;
   }
 
+  /// 첫 날짜부터 둘째 날짜까지의 일들을 반환합니다.
+  static List<DateTime> getDaysUntil(DateTime dayDate1, DateTime dayDate2) {
+    if (dayDate1.compareTo(dayDate2) > 0) {
+      return [];
+    }
+
+    if (areSameDays(dayDate1, dayDate2)) {
+      return [dayDate1];
+    }
+
+    final List<DateTime> result = [dayDate1];
+
+    while (true) {
+      final last = result.last;
+      final next = DateTime(last.year, last.month, last.day + 1);
+
+      if (!areSameDays(next, dayDate2)) {
+        result.add(next);
+      } else {
+        break;
+      }
+    }
+
+    result.add(dayDate2);
+    return result;
+  }
+
   /// 해당 달의 첫 번째 날(1일)을 반환합니다.
   static DateTime getFirstDayOfMonth(DateTime monthDate) {
     return DateTime(monthDate.year, monthDate.month, 1);
