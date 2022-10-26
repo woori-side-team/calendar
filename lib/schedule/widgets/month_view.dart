@@ -57,21 +57,26 @@ class MonthView extends StatelessWidget {
   }
 
   Widget _createDayLabel(DateTime dayDate) {
+    final today = CustomDateUtils.getToday();
+
+    final decoration = !CustomDateUtils.areSameDays(today, dayDate)
+        ? null
+        : BoxDecoration(
+            color: CustomTheme.background.secondary,
+            borderRadius: BorderRadius.circular(8));
+
+    final color = dayDate.month != today.month
+        ? CustomTheme.scale.scale3
+        : _getCellColor(dayDate.weekday);
+
     return Container(
         width: double.infinity,
         height: 26,
         alignment: Alignment.center,
-        decoration:
-            !CustomDateUtils.areSameDays(CustomDateUtils.getToday(), dayDate)
-                ? null
-                : BoxDecoration(
-                    color: CustomTheme.background.secondary,
-                    borderRadius: BorderRadius.circular(8)),
+        decoration: decoration,
         child: Text('${dayDate.day}',
             style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: _getCellColor(dayDate.weekday))));
+                fontSize: 17, fontWeight: FontWeight.w400, color: color)));
   }
 
   Widget _createAllDayMarker(Schedule schedule) {
