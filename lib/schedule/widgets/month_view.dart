@@ -139,7 +139,7 @@ class MonthView extends StatelessWidget {
         }
 
         scheduleMap[key]
-            ?.add(_ScheduleInfo(schedule: schedule, dayCount: dayDates.length));
+            ?.add(_ScheduleInfo(schedule: schedule, dayDates: dayDates));
       }
     }
 
@@ -147,7 +147,8 @@ class MonthView extends StatelessWidget {
     // - 스케줄 막대들이 안 끊기고 나오게 하기 위함. 이 방식 현재 버그 있어서 추후 새로운 방식 필요.
     // - ex. Widget 안 쓰고 캔버스로 직접 그려버리기.
     scheduleMap.forEach((key, infos) {
-      infos.sort((info1, info2) => info2.dayCount - info1.dayCount);
+      infos.sort(
+          (info1, info2) => info2.dayDates.length - info1.dayDates.length);
     });
 
     return CustomDateUtils.getMonthCalendar(selectedMonthDate)
@@ -170,7 +171,10 @@ class MonthView extends StatelessWidget {
 
 class _ScheduleInfo {
   final Schedule schedule;
-  final int dayCount;
 
-  const _ScheduleInfo({required this.schedule, required this.dayCount});
+  /// schedule에 해당하는 날들.
+  /// ex. 일정이 2022.10.01 ~ 2022.10.05면 1일부터 5일까지.
+  final List<DateTime> dayDates;
+
+  const _ScheduleInfo({required this.schedule, required this.dayDates});
 }
