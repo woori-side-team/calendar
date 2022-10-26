@@ -65,7 +65,7 @@ class MonthView extends StatelessWidget {
             color: CustomTheme.background.secondary,
             borderRadius: BorderRadius.circular(8));
 
-    final color = dayDate.month != now.month
+    final color = dayDate.month != selectedMonthDate.month
         ? CustomTheme.scale.scale3
         : _getCellColor(dayDate.weekday);
 

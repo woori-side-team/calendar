@@ -95,11 +95,13 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
                       alignment: Alignment.centerLeft),
-                  child: Text('[${schedule.tag}] ${schedule.content}',
-                      style: TextStyle(
-                          color: CustomTheme.scale.max,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400)))),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text('[${schedule.tag}] ${schedule.content}',
+                          style: TextStyle(
+                              color: CustomTheme.scale.max,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400))))),
           _mode == _Mode.view
               ? Container()
               : Row(children: [
