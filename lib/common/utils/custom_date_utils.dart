@@ -1,4 +1,18 @@
 class CustomDateUtils {
+  /// 현재 날짜를 반환합니다.
+  /// (만약 앱 전체에서 동일 값을 써야 할 시 수정이 쉽도록 이 함수를 제작하였습니다.)
+  static DateTime getToday() {
+    return DateTime.now();
+  }
+
+  /// 두 날짜가 같은 일을 나타내는지 판단합니다.
+  /// (시, 분, 초는 관련 X)
+  static bool areSameDays(DateTime dayDate1, DateTime dayDate2) {
+    return dayDate1.year == dayDate2.year &&
+        dayDate1.month == dayDate2.month &&
+        dayDate1.day == dayDate2.day;
+  }
+
   /// 해당 달의 첫 번째 날(1일)을 반환합니다.
   static DateTime getFirstDayOfMonth(DateTime monthDate) {
     return DateTime(monthDate.year, monthDate.month, 1);

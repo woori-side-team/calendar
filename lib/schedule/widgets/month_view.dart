@@ -8,17 +8,17 @@ class MonthView extends StatelessWidget {
 
   const MonthView({super.key, required this.selectedMonthDate});
 
-  Color _getCellColor(int index) {
-    if (index == 0) {
+  Color _getCellColor(int weekDay) {
+    if (weekDay == DateTime.sunday) {
       return CustomTheme.tint.red;
-    } else if (index == 6) {
+    } else if (weekDay == DateTime.saturday) {
       return CustomTheme.tint.blue;
     } else {
       return CustomTheme.scale.max;
     }
   }
 
-  Widget _createNameCell(int index, String name) {
+  Widget _createNameCell(String name, int weekDay) {
     return Expanded(
         child: Container(
             alignment: Alignment.center,
@@ -27,39 +27,57 @@ class MonthView extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w400,
-                    color: _getCellColor(index)))));
+                    color: _getCellColor(weekDay)))));
   }
 
-  Widget _createDayCell(int index, DateTime dayDate) {
-    final dayArea = SizedBox(
-        height: 28,
+  Widget _createNameRow() {
+    final dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: dayNames
+            .mapIndexed(
+                (index, name) => _createNameCell(name, index == 0 ? 7 : index))
+            .toList());
+  }
+
+  Widget _createDayLabel(DateTime dayDate) {
+    return Container(
+        width: double.infinity,
+        height: 26,
+        alignment: Alignment.center,
+        decoration:
+            !CustomDateUtils.areSameDays(CustomDateUtils.getToday(), dayDate)
+                ? null
+                : BoxDecoration(
+                    color: CustomTheme.background.secondary,
+                    borderRadius: BorderRadius.circular(8)),
         child: Text('${dayDate.day}',
             style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w400,
-                color: _getCellColor(index))));
+                color: _getCellColor(dayDate.weekday))));
+  }
 
+  Widget _createDayCell(DateTime dayDate) {
     return Expanded(
         child: Container(
             constraints: const BoxConstraints(minHeight: 58),
-            child: Column(children: [dayArea])));
+            child: Column(children: [_createDayLabel(dayDate)])));
+  }
+
+  List<Widget> _createDayRows() {
+    final weeks = CustomDateUtils.getMonthCalendar(selectedMonthDate);
+
+    return weeks
+        .map((week) => Row(children: week.map(_createDayCell).toList()))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-    final weeks = CustomDateUtils.getMonthCalendar(selectedMonthDate);
-
-    final nameRow = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: dayNames.mapIndexed(_createNameCell).toList());
-
-    final dayRows = weeks
-        .map((week) => Row(children: week.mapIndexed(_createDayCell).toList()))
-        .toList();
-
     return Padding(
         padding: const EdgeInsets.only(top: 28),
-        child: Column(children: [nameRow, ...dayRows]));
+        child: Column(children: [_createNameRow(), ..._createDayRows()]));
   }
 }
