@@ -15,10 +15,11 @@ class WeekPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppBar(modeType: CustomAppBarModeType.week),
         body: SafeArea(
             child: Stack(children: [
-          Column(children: const [MonthSelector(), WeekView()]),
+          Column(children: const [
+            CustomAppBar(modeType: CustomAppBarModeType.week),
+            MonthSelector(), WeekView()]),
           const ScheduleSheet()
         ])),
         bottomNavigationBar: CustomNavigationBar(

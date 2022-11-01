@@ -12,8 +12,10 @@ class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-        body: const SafeArea(child: Text('Day view')),
+        body: SafeArea(
+            child: Column(children: const [
+          CustomAppBar(modeType: CustomAppBarModeType.hidden)
+        ])),
         bottomNavigationBar: CustomNavigationBar(
           onPressSchedule: () {
             CustomRouteUtils.push(context, MonthPage.routeName);

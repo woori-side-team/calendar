@@ -15,10 +15,13 @@ class MonthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppBar(modeType: CustomAppBarModeType.month),
         body: SafeArea(
             child: Stack(children: [
-          Column(children: const [MonthSelector(), MonthView()]),
+          Column(children: const [
+            CustomAppBar(modeType: CustomAppBarModeType.month),
+            MonthSelector(),
+            MonthView()
+          ]),
           const ScheduleSheet()
         ])),
         bottomNavigationBar: CustomNavigationBar(
