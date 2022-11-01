@@ -44,16 +44,29 @@ dependencies:
   # 상태 관리를 위해...
   provider: ^6.0.4
 
+  # DateFormat 기능을 위해...
+  intl: ^0.17.0
+
+  # freezed를 위한 annotation이 들어있는 패키지
+  freezed_annotation: ^2.2.0
+
+  #json_serializable를 위한 annotation이 들어있는 패키지
+  json_annotation: ^4.7.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  # Dart 코드 생성 도구
+  build_runner: ^2.2.1
+
+  # data-class 생성과 immutable을 위한 패키지
+  freezed: ^2.2.1
+
+  # freezed로 fromJson/toJson 생성을 하게 하기 위한 패키지
+  json_serializable: ^6.5.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

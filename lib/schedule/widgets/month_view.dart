@@ -3,6 +3,8 @@ import 'package:calendar/common/providers/schedules_provider.dart';
 import 'package:calendar/common/providers/selection_provider.dart';
 import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
+import 'package:calendar/common/utils/custom_route_utils.dart';
+import 'package:calendar/schedule/widgets/day_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -111,15 +113,20 @@ class MonthView extends StatelessWidget {
         .toList();
 
     return Expanded(
-        child: Container(
-            constraints: const BoxConstraints(minHeight: 58),
-            child: Column(children: [
-              _createDayLabel(context, dayDate),
-              ...allDayMarkers,
-              Container(
-                  margin: const EdgeInsets.only(top: 2),
-                  child: Wrap(spacing: 2, children: hoursMarkers))
-            ])));
+        child: GestureDetector(
+          onTap: (){
+            CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
+          },
+          child: Container(
+              constraints: const BoxConstraints(minHeight: 58),
+              child: Column(children: [
+                _createDayLabel(context, dayDate),
+                ...allDayMarkers,
+                Container(
+                    margin: const EdgeInsets.only(top: 2),
+                    child: Wrap(spacing: 2, children: hoursMarkers))
+              ])),
+        ));
   }
 
   List<Widget> _createDayRows(BuildContext context) {
