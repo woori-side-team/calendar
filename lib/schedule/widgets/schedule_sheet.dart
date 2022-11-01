@@ -70,8 +70,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   }
 
   Widget _createScheduleView(BuildContext context, Schedule schedule) {
-    final controlButtonStyle =
-        IconButton.styleFrom(fixedSize: const Size(24, 24));
+    const controlWidth = 24.0;
+    const controlHeight = 24.0;
 
     return Container(
         height: 24,
@@ -109,22 +109,26 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           _mode == _Mode.view
               ? Container()
               : Row(children: [
-                  IconButton(
-                      onPressed: () {
-                        // TODO.
-                      },
-                      padding: const EdgeInsets.all(0),
-                      style: controlButtonStyle,
-                      icon: SvgPicture.asset(
-                          'assets/icons/schedule_sheet_schedule_edit.svg')),
-                  IconButton(
-                      onPressed: () {
-                        // TODO.
-                      },
-                      padding: const EdgeInsets.all(0),
-                      style: controlButtonStyle,
-                      icon: SvgPicture.asset(
-                          'assets/icons/schedule_sheet_schedule_close.svg'))
+                  SizedBox(
+                      width: controlWidth,
+                      height: controlHeight,
+                      child: IconButton(
+                          onPressed: () {
+                            // TODO.
+                          },
+                          padding: const EdgeInsets.all(0),
+                          icon: SvgPicture.asset(
+                              'assets/icons/schedule_sheet_schedule_edit.svg'))),
+                  SizedBox(
+                      width: controlWidth,
+                      height: controlHeight,
+                      child: IconButton(
+                          onPressed: () {
+                            // TODO.
+                          },
+                          padding: const EdgeInsets.all(0),
+                          icon: SvgPicture.asset(
+                              'assets/icons/schedule_sheet_schedule_close.svg')))
                 ])
         ]));
   }
