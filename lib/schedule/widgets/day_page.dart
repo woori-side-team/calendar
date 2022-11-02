@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class DayPage extends StatelessWidget {
+class DayPage extends StatefulWidget {
   static const routeName = 'day';
   final DateTime selectedDate;
 
@@ -24,13 +24,24 @@ class DayPage extends StatelessWidget {
 
   const DayPage({super.key, required this.selectedDate});
 
+  @override
+  State<DayPage> createState() => _DayPageState();
+}
+
+class _DayPageState extends State<DayPage> {
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   Widget _createEventRow(Schedule schedule) {
-    int time = schedule.start.hour;
-    String amPm = time <= 12 ? 'AM' : 'PM';
-    String title = '일이삼사오육칠팔구십일이삼';
-    String content = schedule.content;
-    Color color = _markerColors[schedule.colorIndex];
-    double contentBoxHeight = 100;
+    final int time = schedule.start.hour;
+    final String amPm = time <= 12 ? 'AM' : 'PM';
+    const String title = '일이삼사오육칠팔구십일이삼';
+    final String content = schedule.content;
+    final Color color = DayPage._markerColors[schedule.colorIndex];
+    const double contentBoxHeight = 100;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,69 +177,59 @@ class DayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheduleListProvider = context.watch<DayPageScheduleListProvider>();
-
-    return Scaffold(
-        backgroundColor: CustomTheme.background.primary,
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(2);}, child: const Text('2'),),
-            FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(3);}, child: const Text('3'),),
-            FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(24);}, child: const Text('All'),),
-          ],
-        ),
-        body: SafeArea(
-            child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-                _createDateCard(date: selectedDate),
-                Expanded(
-                    child: Stack(
-                  children: [
-                    Container(
-                      width: 5,
-                      color: Colors.red,
-                    ),
-                    ListView.builder(
-                      itemCount: scheduleListProvider.schedules.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return _createEventRow(scheduleListProvider.schedules[index]);
-                      },
-                      // children: [
-                      //   _createEventRow(Schedule(
-                      //       tag: '개인',
-                      //       content: '공부하기',
-                      //       type: ScheduleType.allDay,
-                      //       start: DateTime(2022, 9, 28, 13),
-                      //       end: DateTime(2022, 10, 2, 10),
-                      //       colorIndex: 0),),
-                      //   _createEventRow(Schedule(
-                      //       tag: '개인',
-                      //       content: '공부하기',
-                      //       type: ScheduleType.allDay,
-                      //       start: DateTime(2022, 9, 28, 10),
-                      //       end: DateTime(2022, 10, 2),
-                      //       colorIndex: 1),),
-                      // ],
-                    ),
-                  ],
-                )),
-              ],
-            ),
-            const ScheduleSheet(),
-          ],
-        )),
-        bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: () {
-            CustomRouteUtils.push(context, MonthPage.routeName);
-          },
-          onPressChecklist: () {},
-          onPressMemo: () {},
-          onPressSettings: () {},
-        ));
+    // 페이지 뒤로가기를 하면 provider가 초기화되게 하기 위함.
+    return ChangeNotifierProvider<DayPageScheduleListProvider>(
+      create: (context) => DayPageScheduleListProvider(),
+      builder: (context, _) {
+        final scheduleListProvider =
+            context.watch<DayPageScheduleListProvider>();
+        return Scaffold(
+          backgroundColor: CustomTheme.background.primary,
+          floatingActionButton: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(2);}, child: const Text('2'),),
+              FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(3);}, child: const Text('3'),),
+              FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(24);}, child: const Text('All'),),
+            ],
+          ),
+          body: SafeArea(
+              child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+                  _createDateCard(date: widget.selectedDate),
+                  Expanded(
+                      child: Stack(
+                    children: [
+                      Container(
+                        width: 5,
+                        color: Colors.red,
+                      ),
+                      ListView.builder(
+                        itemCount: scheduleListProvider.schedules.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _createEventRow(scheduleListProvider.schedules[index]);
+                        },
+                      ),
+                    ],
+                  )),
+                ],
+              ),
+              const ScheduleSheet(),
+            ],
+          )),
+          bottomNavigationBar: CustomNavigationBar(
+            onPressSchedule: () {
+              CustomRouteUtils.push(context, MonthPage.routeName);
+            },
+            onPressChecklist: () {},
+            onPressMemo: () {},
+            onPressSettings: () {},
+          ));
+      },
+    );
   }
 }
