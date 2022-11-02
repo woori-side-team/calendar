@@ -1,4 +1,5 @@
 import 'package:calendar/common/models/schedule.dart';
+import 'package:calendar/common/providers/day_page_schedule_list_provider.dart';
 import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/layout/widgets/custom_app_bar.dart';
@@ -7,6 +8,7 @@ import 'package:calendar/schedule/widgets/month_page.dart';
 import 'package:calendar/schedule/widgets/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DayPage extends StatelessWidget {
   static const routeName = 'day';
@@ -110,7 +112,7 @@ class DayPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 28, top: 24),
             child: Container(
               height: contentBoxHeight - 24,
-              padding: const EdgeInsets.only(left: 13),
+              padding: const EdgeInsets.only(left: 13, top: 4),
               decoration: BoxDecoration(
                   color: CustomTheme.groupedBackground.primary,
                   border: Border(left: BorderSide(color: color, width: 3))),
@@ -142,10 +144,40 @@ class DayPage extends StatelessWidget {
     );
   }
 
+  Widget _createDateCard({required DateTime date}){
+    return Card(
+      color: CustomTheme.background.primary,
+      shadowColor: const Color.fromRGBO(0, 0, 0, 0.16),
+      elevation: 9,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: CustomTheme.background.primary,
+        ),
+        padding: const EdgeInsets.only(left: 20, bottom: 40),
+        child: Text(
+          DateFormat('yyyy-MM-dd').format(date),
+          style: const TextStyle(
+              fontWeight: FontWeight.w600, fontSize: 24),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scheduleListProvider = context.watch<DayPageScheduleListProvider>();
+
     return Scaffold(
         backgroundColor: CustomTheme.background.primary,
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(2);}, child: const Text('2'),),
+            FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(3);}, child: const Text('3'),),
+            FloatingActionButton(onPressed: (){scheduleListProvider.addSchedule(24);}, child: const Text('All'),),
+          ],
+        ),
         body: SafeArea(
             child: Stack(
           children: [
@@ -153,23 +185,7 @@ class DayPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-                Card(
-                  color: CustomTheme.background.primary,
-                  shadowColor: const Color.fromRGBO(0, 0, 0, 0.16),
-                  elevation: 9,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: CustomTheme.background.primary,
-                    ),
-                    padding: const EdgeInsets.only(left: 20, bottom: 40),
-                    child: Text(
-                      DateFormat('yyyy-MM-dd').format(selectedDate),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 24),
-                    ),
-                  ),
-                ),
+                _createDateCard(date: selectedDate),
                 Expanded(
                     child: Stack(
                   children: [
@@ -177,23 +193,27 @@ class DayPage extends StatelessWidget {
                       width: 5,
                       color: Colors.red,
                     ),
-                    ListView(
-                      children: [
-                        _createEventRow(Schedule(
-                            tag: '개인',
-                            content: '공부하기',
-                            type: ScheduleType.allDay,
-                            start: DateTime(2022, 9, 28, 13),
-                            end: DateTime(2022, 10, 2, 10),
-                            colorIndex: 0),),
-                        _createEventRow(Schedule(
-                            tag: '개인',
-                            content: '공부하기',
-                            type: ScheduleType.allDay,
-                            start: DateTime(2022, 9, 28, 10),
-                            end: DateTime(2022, 10, 2),
-                            colorIndex: 0),),
-                      ],
+                    ListView.builder(
+                      itemCount: scheduleListProvider.schedules.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _createEventRow(scheduleListProvider.schedules[index]);
+                      },
+                      // children: [
+                      //   _createEventRow(Schedule(
+                      //       tag: '개인',
+                      //       content: '공부하기',
+                      //       type: ScheduleType.allDay,
+                      //       start: DateTime(2022, 9, 28, 13),
+                      //       end: DateTime(2022, 10, 2, 10),
+                      //       colorIndex: 0),),
+                      //   _createEventRow(Schedule(
+                      //       tag: '개인',
+                      //       content: '공부하기',
+                      //       type: ScheduleType.allDay,
+                      //       start: DateTime(2022, 9, 28, 10),
+                      //       end: DateTime(2022, 10, 2),
+                      //       colorIndex: 1),),
+                      // ],
                     ),
                   ],
                 )),
