@@ -53,6 +53,10 @@ dependencies:
   #json_serializable를 위한 annotation이 들어있는 패키지
   json_annotation: ^4.7.0
 
+  # Widget이 viewport 안에 있는지 체크를 위해...
+  visibility_detector: ^0.3.3
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
