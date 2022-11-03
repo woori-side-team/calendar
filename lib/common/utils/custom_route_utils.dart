@@ -10,8 +10,10 @@ class CustomRouteUtils {
 
   /// 새 라우트로 이동합니다.
   /// 이전 라우트들이 히스토리에 남아 있습니다.
-  static void push(BuildContext context, String routeName) {
-    Navigator.pushNamed(context, routeName);
+  ///
+  /// [arguments]는 다음 페이지에 넘길 인수입니다.
+  static void push(BuildContext context, String routeName, {Object? arguments}) {
+    Navigator.pushNamed(context, routeName, arguments: arguments);
   }
 }
 

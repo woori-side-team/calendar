@@ -29,7 +29,9 @@ class App extends StatelessWidget {
           if (routeSettings.name == WeekPage.routeName) {
             return CustomRouteUtils.createRoute(() => const WeekPage());
           } else if (routeSettings.name == DayPage.routeName) {
-            return CustomRouteUtils.createRoute(() => const DayPage());
+            // 터치한 날짜
+            final args = routeSettings.arguments as DateTime;
+            return CustomRouteUtils.createRoute(() => DayPage(selectedDate: args,));
           } else {
             return CustomRouteUtils.createRoute(() => const MonthPage());
           }

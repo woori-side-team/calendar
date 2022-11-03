@@ -8,6 +8,6 @@ import 'app.dart';
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => SchedulesProvider()),
-    ChangeNotifierProvider(create: (context) => SelectionProvider())
+    ChangeNotifierProvider(create: (context) => SelectionProvider()),
   ], child: const App()));
 }
