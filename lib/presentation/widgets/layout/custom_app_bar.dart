@@ -1,6 +1,6 @@
 import 'package:calendar/common/utils/custom_route_utils.dart';
-import 'package:calendar/schedule/widgets/month_page.dart';
-import 'package:calendar/schedule/widgets/week_page.dart';
+import 'package:calendar/presentation/widgets/schedule/month_page.dart';
+import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

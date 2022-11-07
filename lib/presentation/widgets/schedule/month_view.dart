@@ -1,10 +1,10 @@
-import 'package:calendar/common/models/schedule.dart';
-import 'package:calendar/common/providers/schedules_provider.dart';
-import 'package:calendar/common/providers/selection_provider.dart';
-import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
-import 'package:calendar/schedule/widgets/day_page.dart';
+import 'package:calendar/domain/models/schedule_model.dart';
+import 'package:calendar/presentation/providers/schedules_provider.dart';
+import 'package:calendar/presentation/providers/selection_provider.dart';
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -83,7 +83,7 @@ class MonthView extends StatelessWidget {
                 fontSize: 17, fontWeight: FontWeight.w400, color: color)));
   }
 
-  Widget _createAllDayMarker(Schedule schedule) {
+  Widget _createAllDayMarker(ScheduleModel schedule) {
     return Container(
         width: double.infinity,
         height: 6,
@@ -92,7 +92,7 @@ class MonthView extends StatelessWidget {
             color: _markerColors[schedule.colorIndex % _markerColors.length]));
   }
 
-  Widget _createHoursMarker(Schedule schedule) {
+  Widget _createHoursMarker(ScheduleModel schedule) {
     return Container(
         width: 6,
         height: 6,
@@ -114,19 +114,19 @@ class MonthView extends StatelessWidget {
 
     return Expanded(
         child: GestureDetector(
-          onTap: (){
-            CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
-          },
-          child: Container(
-              constraints: const BoxConstraints(minHeight: 58),
-              child: Column(children: [
-                _createDayLabel(context, dayDate),
-                ...allDayMarkers,
-                Container(
-                    margin: const EdgeInsets.only(top: 2),
-                    child: Wrap(spacing: 2, children: hoursMarkers))
-              ])),
-        ));
+      onTap: () {
+        CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
+      },
+      child: Container(
+          constraints: const BoxConstraints(minHeight: 58),
+          child: Column(children: [
+            _createDayLabel(context, dayDate),
+            ...allDayMarkers,
+            Container(
+                margin: const EdgeInsets.only(top: 2),
+                child: Wrap(spacing: 2, children: hoursMarkers))
+          ])),
+    ));
   }
 
   List<Widget> _createDayRows(BuildContext context) {
@@ -140,7 +140,7 @@ class MonthView extends StatelessWidget {
     final Map<String, List<_ScheduleInfo>> scheduleMap = {};
 
     for (final schedule in schedules) {
-      final dayDates = schedule.type == ScheduleType.hours
+      final List<DateTime> dayDates = schedule.type == ScheduleType.hours
           ? [schedule.start]
           : CustomDateUtils.getDaysUntil(schedule.start, schedule.end);
 
@@ -183,7 +183,7 @@ class MonthView extends StatelessWidget {
 }
 
 class _ScheduleInfo {
-  final Schedule schedule;
+  final ScheduleModel schedule;
 
   /// schedule에 해당하는 날들.
   /// ex. 일정이 2022.10.01 ~ 2022.10.05면 1일부터 5일까지.

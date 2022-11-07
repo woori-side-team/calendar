@@ -1,4 +1,4 @@
-import 'package:calendar/common/styles/custom_theme.dart';
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

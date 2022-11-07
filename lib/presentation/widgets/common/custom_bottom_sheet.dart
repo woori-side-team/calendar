@@ -1,5 +1,5 @@
-import 'package:calendar/common/styles/custom_theme.dart';
-import 'package:calendar/common/widgets/custom_backdrop.dart';
+import 'package:calendar/presentation/widgets/common/custom_backdrop.dart';
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 /// 화면에 항상 떠 있는 bottom sheet입니다.
