@@ -1,11 +1,24 @@
-import 'package:calendar/common/providers/schedules_provider.dart';
-import 'package:calendar/common/providers/selection_provider.dart';
+import 'package:calendar/app.dart';
+import 'package:calendar/common/di/di.dart';
+import 'package:calendar/data/data_sources/local//schedule_entity.dart';
+import 'package:calendar/presentation/providers/schedules_provider.dart';
+import 'package:calendar/presentation/providers/selection_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 
-import 'app.dart';
+void main() async {
+  // 필수 작업.
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  // DI 세팅.
+  configureDependencies();
+
+  // DB 세팅.
+  await Hive.initFlutter();
+  Hive.registerAdapter(ScheduleEntityAdapter());
+
+  // 앱 세팅 및 시작.
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => SchedulesProvider()),
     ChangeNotifierProvider(create: (context) => SelectionProvider()),

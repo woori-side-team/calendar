@@ -1,11 +1,11 @@
-import 'package:calendar/common/models/schedule.dart';
-import 'package:calendar/common/providers/day_page_schedule_list_provider.dart';
-import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
-import 'package:calendar/layout/widgets/custom_app_bar.dart';
-import 'package:calendar/layout/widgets/custom_navigation_bar.dart';
-import 'package:calendar/schedule/widgets/month_page.dart';
-import 'package:calendar/schedule/widgets/schedule_sheet.dart';
+import 'package:calendar/domain/models/schedule_model.dart';
+import 'package:calendar/presentation/providers/day_page_schedule_list_provider.dart';
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
+import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
+import 'package:calendar/presentation/widgets/schedule/month_page.dart';
+import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +99,7 @@ class _DayPageState extends State<DayPage> {
     );
   }
 
-  Widget _createScheduleRow(Schedule schedule) {
+  Widget _createScheduleRow(ScheduleModel schedule) {
     final int time = schedule.start.hour;
     final String amPm = time < 12 ? 'AM' : 'PM';
     const String title = '일이삼사오육칠팔구십일이삼사오육칠팔구십';
@@ -255,14 +255,20 @@ class _DayPageState extends State<DayPage> {
                           children: [
                             Flexible(
                               child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
+                                  scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) {
-                                    return Container(width: 5, color: DayPage._markerColors[index%4],);
+                                    return Container(
+                                      width: 5,
+                                      color: DayPage._markerColors[index % 4],
+                                    );
                                   },
                                   separatorBuilder: (context, index) {
-                                    return const SizedBox(width: 0.1,);
+                                    return const SizedBox(
+                                      width: 0.1,
+                                    );
                                   },
-                                  itemCount: scheduleListProvider.allDaySchedulesColorIndexes.length),
+                                  itemCount: scheduleListProvider
+                                      .allDaySchedulesColorIndexes.length),
                             ),
                           ],
                         ),

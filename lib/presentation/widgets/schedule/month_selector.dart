@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:calendar/common/providers/selection_provider.dart';
-import 'package:calendar/common/styles/custom_theme.dart';
-import 'package:calendar/common/widgets/custom_carousel.dart';
+import 'package:calendar/presentation/providers/selection_provider.dart';
+import 'package:calendar/presentation/widgets/common/custom_carousel.dart';
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

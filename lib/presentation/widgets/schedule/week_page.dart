@@ -1,10 +1,10 @@
 import 'package:calendar/common/utils/custom_route_utils.dart';
-import 'package:calendar/layout/widgets/custom_app_bar.dart';
-import 'package:calendar/layout/widgets/custom_navigation_bar.dart';
-import 'package:calendar/schedule/widgets/month_page.dart';
-import 'package:calendar/schedule/widgets/month_selector.dart';
-import 'package:calendar/schedule/widgets/schedule_sheet.dart';
-import 'package:calendar/schedule/widgets/week_view.dart';
+import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
+import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
+import 'package:calendar/presentation/widgets/schedule/month_page.dart';
+import 'package:calendar/presentation/widgets/schedule/month_selector.dart';
+import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
+import 'package:calendar/presentation/widgets/schedule/week_view.dart';
 import 'package:flutter/material.dart';
 
 class WeekPage extends StatelessWidget {
@@ -19,7 +19,9 @@ class WeekPage extends StatelessWidget {
             child: Stack(children: [
           Column(children: const [
             CustomAppBar(modeType: CustomAppBarModeType.week),
-            MonthSelector(), WeekView()]),
+            MonthSelector(),
+            WeekView()
+          ]),
           const ScheduleSheet()
         ])),
         bottomNavigationBar: CustomNavigationBar(

@@ -1,10 +1,10 @@
-import 'package:calendar/common/models/schedule.dart';
-import 'package:calendar/common/providers/schedules_provider.dart';
-import 'package:calendar/common/styles/custom_theme.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
-import 'package:calendar/common/widgets/custom_bottom_sheet.dart';
-import 'package:calendar/schedule/widgets/day_page.dart';
+import 'package:calendar/domain/models/schedule_model.dart';
+import 'package:calendar/presentation/providers/schedules_provider.dart';
+import 'package:calendar/presentation/widgets/common/custom_bottom_sheet.dart';
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +69,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         ]));
   }
 
-  Widget _createScheduleView(BuildContext context, Schedule schedule) {
+  Widget _createScheduleView(BuildContext context, ScheduleModel schedule) {
     const controlWidth = 24.0;
     const controlHeight = 24.0;
 
@@ -94,14 +94,14 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           Expanded(
               child: TextButton(
                   onPressed: () {
-                    CustomRouteUtils.push(context, DayPage.routeName);
+                    CustomRouteUtils.push(context, DayPage.routeName, arguments: schedule.start);
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
                       alignment: Alignment.centerLeft),
                   child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Text('[${schedule.tag}] ${schedule.content}',
+                      child: Text('${schedule.title}: ${schedule.content}',
                           style: TextStyle(
                               color: CustomTheme.scale.max,
                               fontSize: 14,

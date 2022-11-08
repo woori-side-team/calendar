@@ -1,10 +1,10 @@
 import 'package:calendar/common/utils/custom_route_utils.dart';
-import 'package:calendar/layout/widgets/custom_app_bar.dart';
-import 'package:calendar/layout/widgets/custom_navigation_bar.dart';
-import 'package:calendar/schedule/widgets/month_selector.dart';
-import 'package:calendar/schedule/widgets/month_view.dart';
-import 'package:calendar/schedule/widgets/schedule_sheet.dart';
-import 'package:calendar/schedule/widgets/week_page.dart';
+import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
+import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
+import 'package:calendar/presentation/widgets/schedule/month_selector.dart';
+import 'package:calendar/presentation/widgets/schedule/month_view.dart';
+import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
+import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
 
 class MonthPage extends StatelessWidget {

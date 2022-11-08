@@ -5,22 +5,26 @@
 ## 정보
 
 - Flutter 기반
-- 모바일 앱
-- 공통 상태 관리: [Provider](https://pub.dev/packages/provider)
+- 타겟: Android, iOS
 
 ## 구조
 
-(추후 변경 가능)
+- Clean architecture 기반
+- [참고 링크](https://devmuaz.medium.com/flutter-clean-architecture-series-part-1-d2d4c2e75c47)
+- 데이터 흐름: data -> domain -> presentation
 
-기능별로 분류
-
-- common
-- layout
-- schedule
-
-각 기능 폴더
-
-- models: 데이터 표현
-- providers: 공통 상태 관리
-- widgets: View들 (Flutter widget들)
-- ...
+```text
+lib
++- common
+|  +- ...
++- data: 로컬/외부 DB 담당
+|  +- data_sources: DB 데이터 표현 (Entity)
+|  +- mappers: Entity -> Model 변환
+|  +- repositories_impl: domain/repositories 구현
++- domain: 비즈니스 로직 담당, data랑 presentation 연결
+|  +- models: 앱 내부용 (i.e view용) 데이터 표현
+|  +- repositories: 데이터 관련 연산들
++- presentation: View 담당
+|  +- widgets: View (및 ViewModel)
+|  +- providers: 여러 view들 간의 공통 상태
+```
