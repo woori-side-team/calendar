@@ -94,7 +94,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           Expanded(
               child: TextButton(
                   onPressed: () {
-                    CustomRouteUtils.push(context, DayPage.routeName);
+                    CustomRouteUtils.push(context, DayPage.routeName, arguments: schedule.start);
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
