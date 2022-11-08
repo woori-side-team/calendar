@@ -92,8 +92,66 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           builder: (sheetContext, scrollController) => Container(
               decoration: decoration,
               child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
                   controller: scrollController,
-                  child: Column(children: [handle, widget.child]))))
+                  child: Column(children: [
+                    Tooltip(
+                      padding: const EdgeInsets.only(top: 6, bottom: 10, left: 11, right: 11),
+                      textAlign: TextAlign.center,
+                        richMessage: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '안내\n',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: CustomTheme.scale.scale1,
+                                )),
+                            TextSpan(
+                                text: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수'
+                                    '있고 일정을 추가할 수도 있습니다.',
+                                style:
+                                    TextStyle(color: CustomTheme.scale.scale1)),
+                          ],
+                        ),
+                        decoration: ShapeDecoration(
+                            shape: const ToolTipCustomShape(),
+                            color: CustomTheme.scale.scale10.withOpacity(0.7)),
+                        preferBelow: false,
+                        verticalOffset: 10,
+                        child: handle),
+                    widget.child
+                  ]))))
     ]);
   }
+}
+
+class ToolTipCustomShape extends ShapeBorder {
+  final bool usePadding;
+
+  const ToolTipCustomShape({this.usePadding = true});
+
+  @override
+  EdgeInsetsGeometry get dimensions =>
+      EdgeInsets.only(bottom: usePadding ? 20 : 0);
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => Path();
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    rect =
+        Rect.fromPoints(rect.topLeft, rect.bottomRight - const Offset(0, 20));
+    return Path()
+      ..addRect(rect)
+      ..moveTo(rect.bottomCenter.dx - 10, rect.bottomCenter.dy)
+      ..relativeLineTo(10, 20)
+      ..relativeLineTo(10, -20)
+      ..close();
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+
+  @override
+  ShapeBorder scale(double t) => this;
 }

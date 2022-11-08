@@ -115,6 +115,8 @@ class MonthView extends StatelessWidget {
     return Expanded(
         child: GestureDetector(
       onTap: () {
+        final schedulesProvider = context.read<SchedulesProvider>();
+        schedulesProvider.loadOneDaySchedules(dayDate);
         CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
       },
       child: Container(

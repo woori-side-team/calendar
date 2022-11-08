@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 enum _Mode { edit, view }
 
 class ScheduleSheet extends StatefulWidget {
-  const ScheduleSheet({super.key});
+  const ScheduleSheet({super.key, this.minSizeRatio});
+
+  final double? minSizeRatio;
 
   @override
   State<StatefulWidget> createState() {
@@ -169,13 +171,13 @@ class _ScheduleSheet extends State<ScheduleSheet> {
 
   @override
   Widget build(BuildContext context) {
-    const minSize = 0.13;
+    double minSize = widget.minSizeRatio ?? 0.13;
     const maxSize = 1.0;
 
     return CustomBottomSheet(
         minSize: minSize,
         maxSize: maxSize,
-        snapSizes: const [minSize, 0.5, maxSize],
+        snapSizes: [minSize, 0.5, maxSize],
         child: Column(children: [_createHeader(), _createContent(context)]));
   }
 }
