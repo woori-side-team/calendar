@@ -10,17 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../common/marker_colors.dart';
+
 class DayPage extends StatelessWidget {
   static const routeName = 'day';
   final DateTime selectedDate;
-
-  // 글로벌로 돌리기
-  final _markerColors = [
-    CustomTheme.tint.indigo,
-    CustomTheme.tint.orange,
-    CustomTheme.tint.pink,
-    CustomTheme.tint.teal
-  ];
 
   DayPage({super.key, required this.selectedDate});
 
@@ -102,7 +96,7 @@ class DayPage extends StatelessWidget {
     final String amPm = time < 12 ? 'AM' : 'PM';
     final String title = schedule.title;
     final String content = schedule.content;
-    final Color color = _markerColors[schedule.colorIndex];
+    final Color color = markerColors[schedule.colorIndex];
     int progressTime = schedule.end.hour - schedule.start.hour;
     if (progressTime < 0) progressTime = 1;
     final double contentBoxHeight = 100 + progressTime.toDouble() * 25;
@@ -127,7 +121,7 @@ class DayPage extends StatelessWidget {
                         height: 11 / 12,
                         fontSize: 24,
                         fontWeight: FontWeight.w400,
-                        color: _markerColors[schedule.colorIndex]),
+                        color: markerColors[schedule.colorIndex]),
                   ),
                 ),
               ),
@@ -254,8 +248,9 @@ class DayPage extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return Container(
                                   width: 5,
-                                  color: _markerColors[schedulesProvider
-                                      .allDaySchedulesColorIndexes[index % 4]],
+                                  color: markerColors[schedulesProvider
+                                          .allDaySchedulesColorIndexes[
+                                      index % markerColors.length]],
                                 );
                               },
                               separatorBuilder: (context, index) {

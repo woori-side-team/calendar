@@ -16,77 +16,77 @@ class SchedulesProvider with ChangeNotifier {
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 5),
         end: DateTime(2022, 11, 9),
-        colorIndex: 3),
+        colorIndex: 1),
     ScheduleModel(
         title: '업무',
         content: '개발팀과 QA 미팅',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 1, 14 - 1),
         end: DateTime(2022, 11, 1, 15 - 1),
-        colorIndex: 0),
+        colorIndex: 2),
     ScheduleModel(
         title: '업무',
         content: '가족 모임',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 1, 16 - 1),
         end: DateTime(2022, 11, 1, 17 - 1, 30),
-        colorIndex: 1),
+        colorIndex: 3),
     ScheduleModel(
         title: '업무',
         content: '매니저님에게 기획서 전달',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 1, 17 - 1),
         end: DateTime(2022, 11, 1, 18 - 1, 30),
-        colorIndex: 2),
+        colorIndex: 4),
     ScheduleModel(
         title: '개인',
         content: '기타 연습하기',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 4, 17 - 1),
         end: DateTime(2022, 11, 4, 18 - 1, 30),
-        colorIndex: 2),
+        colorIndex: 5),
     ScheduleModel(
         title: '개인',
         content: '피아노 연습하기',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 4, 17 - 1),
         end: DateTime(2022, 11, 4, 18 - 1, 30),
-        colorIndex: 1),
+        colorIndex: 6),
     ScheduleModel(
         title: '개인',
         content: '운동하기',
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 11),
         end: DateTime(2022, 11, 11),
-        colorIndex: 2),
+        colorIndex: 7),
     ScheduleModel(
         title: '개인',
         content: '운동하기',
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 25),
         end: DateTime(2022, 11, 25),
-        colorIndex: 2),
+        colorIndex: 8),
     ScheduleModel(
         title: '개인',
         content: 'Vue 공부하기',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 25, 17 - 1),
         end: DateTime(2022, 11, 25, 18 - 1, 30),
-        colorIndex: 4),
+        colorIndex: 1),
     ScheduleModel(
         title: '개인',
         content: 'Svelte 공부하기',
         type: ScheduleType.hours,
         start: DateTime(2022, 11, 25, 17 - 1, 30),
         end: DateTime(2022, 11, 25, 18 - 1, 30),
-        colorIndex: 3),
+        colorIndex: 0),
     ScheduleModel(
         title: '개인',
         content: 'React 공부하기',
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 25),
         end: DateTime(2022, 11, 30),
-        colorIndex: 1),
+        colorIndex: 2),
   ];
 
   List<ScheduleModel> getSchedules() {
@@ -101,6 +101,7 @@ class SchedulesProvider with ChangeNotifier {
 
   List<ScheduleModel> get oneDaySchedules => _oneDaySchedules;
 
+  /// day에 있는 스케줄 불러오기
   void loadOneDaySchedules(DateTime day) {
     // start와 end 사이에 있거나 같은가?
     bool isBetweenStartAndEnd(ScheduleModel schedule, DateTime day) {
@@ -163,7 +164,7 @@ class SchedulesProvider with ChangeNotifier {
         colorIndex: listLength % 4));
 
     _allDaySchedulesColorIndexes.add(listLength % 4);
-
+    loadOneDaySchedules(day);
     notifyListeners();
   }
 
