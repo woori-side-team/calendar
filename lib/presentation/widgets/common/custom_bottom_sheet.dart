@@ -96,28 +96,16 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   controller: scrollController,
                   child: Column(children: [
                     Tooltip(
+                      showDuration: const Duration(seconds: 5),
                       padding: const EdgeInsets.only(top: 6, bottom: 10, left: 11, right: 11),
-                      textAlign: TextAlign.center,
-                        richMessage: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '안내\n',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: CustomTheme.scale.scale1,
-                                )),
-                            TextSpan(
-                                text: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수'
-                                    '있고 일정을 추가할 수도 있습니다.',
-                                style:
-                                    TextStyle(color: CustomTheme.scale.scale1)),
-                          ],
-                        ),
+                        message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수'
+                            '있고 일정을 추가할 수도 있습니다.',
+                        textStyle: TextStyle(color: CustomTheme.scale.scale1),
                         decoration: ShapeDecoration(
                             shape: const ToolTipCustomShape(),
                             color: CustomTheme.scale.scale10.withOpacity(0.7)),
                         preferBelow: false,
-                        verticalOffset: 10,
+                        verticalOffset: -10,
                         child: handle),
                     widget.child
                   ]))))
@@ -143,9 +131,9 @@ class ToolTipCustomShape extends ShapeBorder {
         Rect.fromPoints(rect.topLeft, rect.bottomRight - const Offset(0, 20));
     return Path()
       ..addRect(rect)
-      ..moveTo(rect.bottomCenter.dx - 10, rect.bottomCenter.dy)
-      ..relativeLineTo(10, 20)
-      ..relativeLineTo(10, -20)
+      ..moveTo(rect.bottomCenter.dx - 6, rect.bottomCenter.dy)
+      ..relativeLineTo(6, 9)
+      ..relativeLineTo(6, -9)
       ..close();
   }
 
