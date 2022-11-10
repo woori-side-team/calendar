@@ -124,6 +124,12 @@ class SchedulesProvider with ChangeNotifier {
         isSameDay(e.end, day) ||
         isBetweenStartAndEnd(e, day)));
 
+    _allDaySchedulesColorIndexes.clear();
+    final allDaySchedules = _oneDaySchedules.where((e) => e.type == ScheduleType.allDay);
+    for(var item in allDaySchedules){
+      _allDaySchedulesColorIndexes.add(item.colorIndex);
+    }
+
     notifyListeners();
   }
 

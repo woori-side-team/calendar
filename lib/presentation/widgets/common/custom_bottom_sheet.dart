@@ -98,7 +98,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     Tooltip(
                       showDuration: const Duration(seconds: 5),
                       padding: const EdgeInsets.only(top: 6, bottom: 10, left: 11, right: 11),
-                        message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수'
+                        message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수 '
                             '있고 일정을 추가할 수도 있습니다.',
                         textStyle: TextStyle(color: CustomTheme.scale.scale1),
                         decoration: ShapeDecoration(

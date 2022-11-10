@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../common/marker_colors.dart';
+
 enum _Mode { edit, view }
 
 class ScheduleSheet extends StatefulWidget {
@@ -23,13 +25,6 @@ class ScheduleSheet extends StatefulWidget {
 }
 
 class _ScheduleSheet extends State<ScheduleSheet> {
-  static final _markerColors = [
-    CustomTheme.tint.indigo,
-    CustomTheme.tint.orange,
-    CustomTheme.tint.pink,
-    CustomTheme.tint.teal
-  ];
-
   late _Mode _mode;
 
   void _handlePressEdit() {
@@ -74,27 +69,37 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         ]));
   }
 
+  /// DateTime.now()와 target이 며칠 차이나는지 반환
+  int _getDCount(DateTime target) {
+    final startDate = DateTime(target.year, target.month, target.day);
+    final nowDate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    return startDate.difference(nowDate).inDays;
+  }
+
   Widget _createScheduleView(BuildContext context, ScheduleModel schedule) {
     const controlWidth = 24.0;
     const controlHeight = 24.0;
+    final dCount = _getDCount(schedule.start);
 
     return Container(
         height: 24,
         margin: const EdgeInsets.only(bottom: 24, right: 24),
         child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Container(
-              width: 24,
+              width: 40,
               height: 24,
-              margin: const EdgeInsets.only(left: 40, right: 14),
+              margin: const EdgeInsets.only(left: 28, right: 14),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _markerColors[
-                      schedule.colorIndex % _markerColors.length]),
-              child: Text('${schedule.start.day}',
+                  borderRadius: schedule.type == ScheduleType.hours
+                      ? BorderRadius.circular(50)
+                      : null,
+                  color: markerColors[schedule.colorIndex]),
+              child: Text('D-$dCount',
                   style: TextStyle(
                       color: CustomTheme.background.primary,
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400))),
           Expanded(
               child: TextButton(
@@ -152,10 +157,15 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   }
 
   Widget _createContent(BuildContext context) {
+    bool isDCountMoreThanZero(ScheduleModel schedule) {
+      final dCount = _getDCount(schedule.start);
+      return dCount > 0;
+    }
+
     final now = CustomDateUtils.getNow();
     final schedules = context.watch<SchedulesProvider>().getSchedules();
-    final schedulesToShow =
-        schedules.where((schedule) => schedule.start.month == now.month);
+    final schedulesToShow = schedules.where((schedule) =>
+        schedule.start.month == now.month && isDCountMoreThanZero(schedule));
 
     // 최대 몇개까지만 보여줄지.
     const maxShowCount = 7;
@@ -180,7 +190,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
       child: TextField(
-        style: const TextStyle(fontSize: 15, height: 0.8),
+        cursorHeight: 15,
+        style: const TextStyle(fontSize: 15),
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(left: 14),
           border: OutlineInputBorder(
@@ -201,7 +212,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     final double minSize = widget.minSizeRatio ?? 0.3;
     double safePadding = MediaQuery.of(context).padding.top;
     double totalHeight = MediaQuery.of(context).size.height;
-    double safeTotalRatio = safePadding/totalHeight;
+    double safeTotalRatio = safePadding / totalHeight;
     final double maxSize = 1.0 - safeTotalRatio;
 
     return CustomBottomSheet(
