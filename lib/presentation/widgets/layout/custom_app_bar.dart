@@ -2,6 +2,7 @@ import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 /// 모드 버튼을 어떻게 표시할 건지.
@@ -50,14 +51,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(backgroundColor: Colors.transparent, elevation: 0, actions: [
-      _createAction(
-          icon: SvgPicture.asset('assets/icons/app_bar_search.svg'),
-          onPressed: _handlePressSearch),
-      _createModeAction(context),
-      _createAction(
-          icon: SvgPicture.asset('assets/icons/app_bar_profile.svg'),
-          onPressed: _handlePressProfile)
-    ]);
+    return AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          _createAction(
+              icon: SvgPicture.asset('assets/icons/app_bar_search.svg'),
+              onPressed: _handlePressSearch),
+          _createModeAction(context),
+          _createAction(
+              icon: SvgPicture.asset('assets/icons/app_bar_profile.svg'),
+              onPressed: _handlePressProfile)
+        ]);
   }
 }

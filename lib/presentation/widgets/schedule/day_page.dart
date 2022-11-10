@@ -1,6 +1,6 @@
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
-import 'package:calendar/presentation/providers/day_page_schedule_list_provider.dart';
+import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
@@ -10,26 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class DayPage extends StatefulWidget {
+import '../common/marker_colors.dart';
+
+class DayPage extends StatelessWidget {
   static const routeName = 'day';
   final DateTime selectedDate;
 
-  // 글로벌로 돌리기
-  static final _markerColors = [
-    CustomTheme.tint.indigo,
-    CustomTheme.tint.orange,
-    CustomTheme.tint.pink,
-    CustomTheme.tint.teal
-  ];
-
-  const DayPage({super.key, required this.selectedDate});
-
-  @override
-  State<DayPage> createState() => _DayPageState();
-}
-
-class _DayPageState extends State<DayPage> {
-  double bottomSheetPosition = 0;
+  DayPage({super.key, required this.selectedDate});
 
   Widget _createLimitedScheduleTextContainer({
     required String title,
@@ -39,10 +26,9 @@ class _DayPageState extends State<DayPage> {
   }) {
     return Container(
       height: contentBoxHeight - 24,
-      padding: const EdgeInsets.only(left: 13, top: 4),
-      decoration: BoxDecoration(
-          color: CustomTheme.groupedBackground.primary,
-          border: Border(left: BorderSide(color: color, width: 3))),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration:
+          BoxDecoration(color: color, borderRadius: BorderRadius.circular(14)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -51,15 +37,18 @@ class _DayPageState extends State<DayPage> {
             style: TextStyle(
                 height: 1.2,
                 fontSize: 18,
-                color: color,
+                color: CustomTheme.groupedBackground.primary,
                 fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(
+            height: 8,
           ),
           Text(
             content,
             style: TextStyle(
                 height: 1.2,
                 fontSize: 18,
-                color: color.withOpacity(0.5),
+                color: CustomTheme.groupedBackground.primary.withOpacity(0.7),
                 fontWeight: FontWeight.w500),
           ),
         ],
@@ -83,15 +72,18 @@ class _DayPageState extends State<DayPage> {
             style: TextStyle(
                 height: 1.2,
                 fontSize: 18,
-                color: color,
+                color: CustomTheme.scale.scale8,
                 fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(
+            height: 3,
           ),
           Text(
             content,
             style: TextStyle(
                 height: 1.2,
                 fontSize: 18,
-                color: color.withOpacity(0.5),
+                color: CustomTheme.scale.scale8.withOpacity(0.5),
                 fontWeight: FontWeight.w500),
           ),
         ],
@@ -102,12 +94,12 @@ class _DayPageState extends State<DayPage> {
   Widget _createScheduleRow(ScheduleModel schedule) {
     final int time = schedule.start.hour;
     final String amPm = time < 12 ? 'AM' : 'PM';
-    const String title = '일이삼사오육칠팔구십일이삼사오육칠팔구십';
+    final String title = schedule.title;
     final String content = schedule.content;
-    final Color color = DayPage._markerColors[schedule.colorIndex];
+    final Color color = markerColors[schedule.colorIndex];
     int progressTime = schedule.end.hour - schedule.start.hour;
     if (progressTime < 0) progressTime = 1;
-    final double contentBoxHeight = 100 + (progressTime.toDouble() - 1) * 25;
+    final double contentBoxHeight = 100 + progressTime.toDouble() * 25;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +121,7 @@ class _DayPageState extends State<DayPage> {
                         height: 11 / 12,
                         fontSize: 24,
                         fontWeight: FontWeight.w400,
-                        color: CustomTheme.scale.scale10),
+                        color: markerColors[schedule.colorIndex]),
                   ),
                 ),
               ),
@@ -165,7 +157,10 @@ class _DayPageState extends State<DayPage> {
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(left: 28, top: 24),
+            padding: EdgeInsets.only(
+                left: schedule.type == ScheduleType.hours ? 14 : 28,
+                top: 24,
+                right: 12),
             child: schedule.type == ScheduleType.hours
                 ? _createLimitedScheduleTextContainer(
                     title: title,
@@ -206,112 +201,101 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 페이지 뒤로가기를 하면 provider가 초기화되게 하기 위함.
-    return ChangeNotifierProvider<DayPageScheduleListProvider>(
-      create: (context) => DayPageScheduleListProvider(),
-      builder: (context, _) {
-        final scheduleListProvider =
-            context.watch<DayPageScheduleListProvider>();
-        scheduleListProvider.init();
-        return Scaffold(
-            backgroundColor: CustomTheme.background.primary,
-            floatingActionButton: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    scheduleListProvider.addSchedule(2);
-                  },
-                  child: const Text('2'),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    scheduleListProvider.addSchedule(3);
-                  },
-                  child: const Text('3'),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    scheduleListProvider.addAllDaySchedule();
-                  },
-                  child: const Text('All'),
-                ),
-              ],
+    final schedulesProvider = context.watch<SchedulesProvider>();
+    return Scaffold(
+        backgroundColor: CustomTheme.background.primary,
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                schedulesProvider.addSchedule(2, selectedDate);
+              },
+              child: const Text('2'),
             ),
-            body: SafeArea(
+            FloatingActionButton(
+              onPressed: () {
+                schedulesProvider.addSchedule(3, selectedDate);
+              },
+              child: const Text('3'),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                schedulesProvider.addAllDaySchedule(selectedDate);
+              },
+              child: const Text('All'),
+            ),
+          ],
+        ),
+        body: Stack(
+          children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+            _createDateCard(date: selectedDate),
+            Flexible(
                 child: Stack(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-                    _createDateCard(date: widget.selectedDate),
                     Flexible(
-                        child: Stack(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      width: 5,
-                                      color: DayPage._markerColors[index % 4],
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      width: 0.1,
-                                    );
-                                  },
-                                  itemCount: scheduleListProvider
-                                      .allDaySchedulesColorIndexes.length),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 77.0),
-                          child: VerticalDivider(
-                            color: CustomTheme.scale.scale7,
-                            indent: 0,
-                            endIndent: 0,
-                            width: 0,
-                            thickness: 1,
-                          ),
-                        ),
-                        ListView.builder(
-                          physics: const ClampingScrollPhysics(),
-                          controller: scheduleListProvider.scrollController,
-                          itemCount: scheduleListProvider.schedules.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _createScheduleRow(
-                                scheduleListProvider.schedules[index]);
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 5,
+                              color: markerColors[schedulesProvider
+                                      .allDaySchedulesColorIndexes[
+                                  index % markerColors.length]],
+                            );
                           },
-                        ),
-                      ],
-                    )),
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 0.1,
+                            );
+                          },
+                          itemCount: schedulesProvider
+                              .allDaySchedulesColorIndexes.length),
+                    ),
                   ],
                 ),
-                AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInSine,
-                    padding: EdgeInsets.only(
-                        top: scheduleListProvider.bottomSheetPosition),
-                    child: const ScheduleSheet()),
+                Padding(
+                  padding: const EdgeInsets.only(left: 77.0),
+                  child: VerticalDivider(
+                    color: CustomTheme.scale.scale7,
+                    indent: 0,
+                    endIndent: 0,
+                    width: 0,
+                    thickness: 1,
+                  ),
+                ),
+                ListView.builder(
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: schedulesProvider.oneDaySchedules.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _createScheduleRow(
+                        schedulesProvider.oneDaySchedules[index]);
+                  },
+                ),
               ],
             )),
-            bottomNavigationBar: CustomNavigationBar(
-              onPressSchedule: () {
-                CustomRouteUtils.push(context, MonthPage.routeName);
-              },
-              onPressChecklist: () {},
-              onPressMemo: () {},
-              onPressSettings: () {},
-            ));
-      },
-    );
+          ],
+        ),
+        const ScheduleSheet(
+          minSizeRatio: 0.03,
+        ),
+          ],
+        ),
+        bottomNavigationBar: CustomNavigationBar(
+          onPressSchedule: () {
+            CustomRouteUtils.push(context, MonthPage.routeName);
+          },
+          onPressChecklist: () {},
+          onPressMemo: () {},
+          onPressSettings: () {},
+        ));
   }
 }

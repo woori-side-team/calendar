@@ -9,15 +9,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../common/marker_colors.dart';
+
 class MonthView extends StatelessWidget {
   static const _dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-
-  static final _markerColors = [
-    CustomTheme.tint.indigo,
-    CustomTheme.tint.orange,
-    CustomTheme.tint.pink,
-    CustomTheme.tint.teal
-  ];
 
   const MonthView({super.key});
 
@@ -89,7 +84,7 @@ class MonthView extends StatelessWidget {
         height: 6,
         margin: const EdgeInsets.only(top: 2),
         decoration: BoxDecoration(
-            color: _markerColors[schedule.colorIndex % _markerColors.length]));
+            color: markerColors[schedule.colorIndex % markerColors.length]));
   }
 
   Widget _createHoursMarker(ScheduleModel schedule) {
@@ -98,7 +93,7 @@ class MonthView extends StatelessWidget {
         height: 6,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _markerColors[schedule.colorIndex % _markerColors.length]));
+            color: markerColors[schedule.colorIndex % markerColors.length]));
   }
 
   Widget _createDayCell(BuildContext context, DateTime dayDate,
@@ -115,6 +110,8 @@ class MonthView extends StatelessWidget {
     return Expanded(
         child: GestureDetector(
       onTap: () {
+        final schedulesProvider = context.read<SchedulesProvider>();
+        schedulesProvider.loadOneDaySchedules(dayDate);
         CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
       },
       child: Container(

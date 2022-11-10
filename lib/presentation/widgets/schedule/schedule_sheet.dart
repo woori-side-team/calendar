@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 enum _Mode { edit, view }
 
 class ScheduleSheet extends StatefulWidget {
-  const ScheduleSheet({super.key});
+  const ScheduleSheet({super.key, this.minSizeRatio});
+
+  final double? minSizeRatio;
 
   @override
   State<StatefulWidget> createState() {
@@ -51,17 +53,20 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   Widget _createHeader() {
     return Container(
         alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(top: 6, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 14, left: 20, right: 18),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Text('다가오는 일정',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+          Text('다가오는 일정',
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTheme.scale.scale10)),
           _mode == _Mode.view
               ? TextButton(
                   onPressed: _handlePressEdit,
                   child: Text('편집',
                       style: TextStyle(
-                          fontSize: 14, color: CustomTheme.tint.blue)))
+                          fontSize: 17, color: CustomTheme.tint.blue)))
               : IconButton(
                   onPressed: _handlePressView,
                   icon:
@@ -94,7 +99,11 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           Expanded(
               child: TextButton(
                   onPressed: () {
-                    CustomRouteUtils.push(context, DayPage.routeName, arguments: schedule.start);
+                    // TODO 여러 날 스케줄은 어떻게?
+                    final schedulesProvider = context.read<SchedulesProvider>();
+                    schedulesProvider.loadOneDaySchedules(schedule.start);
+                    CustomRouteUtils.push(context, DayPage.routeName,
+                        arguments: schedule.start);
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
@@ -167,15 +176,46 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         ]));
   }
 
+  Widget _createCommandTextField() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+      child: TextField(
+        style: const TextStyle(fontSize: 15, height: 0.8),
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(left: 14),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          hintText: '일정을 입력하세요.',
+          hintStyle: TextStyle(color: CustomTheme.gray.gray2, fontSize: 15),
+          fillColor: CustomTheme.background.secondary,
+          filled: true,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    const minSize = 0.13;
-    const maxSize = 1.0;
+    final double minSize = widget.minSizeRatio ?? 0.3;
+    double safePadding = MediaQuery.of(context).padding.top;
+    double totalHeight = MediaQuery.of(context).size.height;
+    double safeTotalRatio = safePadding/totalHeight;
+    final double maxSize = 1.0 - safeTotalRatio;
 
     return CustomBottomSheet(
         minSize: minSize,
         maxSize: maxSize,
-        snapSizes: const [minSize, 0.5, maxSize],
-        child: Column(children: [_createHeader(), _createContent(context)]));
+        snapSizes: [minSize, 0.5, maxSize],
+        child: Column(children: [
+          _createCommandTextField(),
+          Container(
+            color: CustomTheme.gray.gray4,
+            height: 1,
+          ),
+          _createHeader(),
+          _createContent(context)
+        ]));
   }
 }
