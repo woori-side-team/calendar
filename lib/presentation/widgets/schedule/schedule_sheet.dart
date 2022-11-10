@@ -198,8 +198,11 @@ class _ScheduleSheet extends State<ScheduleSheet> {
 
   @override
   Widget build(BuildContext context) {
-    double minSize = widget.minSizeRatio ?? 0.3;
-    const maxSize = 1.0;
+    final double minSize = widget.minSizeRatio ?? 0.3;
+    double safePadding = MediaQuery.of(context).padding.top;
+    double totalHeight = MediaQuery.of(context).size.height;
+    double safeTotalRatio = safePadding/totalHeight;
+    final double maxSize = 1.0 - safeTotalRatio;
 
     return CustomBottomSheet(
         minSize: minSize,

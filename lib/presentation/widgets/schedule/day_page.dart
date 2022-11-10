@@ -227,69 +227,68 @@ class DayPage extends StatelessWidget {
             ),
           ],
         ),
-        body: SafeArea(
-            child: Stack(
+        body: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+            _createDateCard(date: selectedDate),
+            Flexible(
+                child: Stack(
               children: [
-                const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-                _createDateCard(date: selectedDate),
-                Flexible(
-                    child: Stack(
+                Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: 5,
-                                  color: markerColors[schedulesProvider
-                                          .allDaySchedulesColorIndexes[
-                                      index % markerColors.length]],
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 0.1,
-                                );
-                              },
-                              itemCount: schedulesProvider
-                                  .allDaySchedulesColorIndexes.length),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 77.0),
-                      child: VerticalDivider(
-                        color: CustomTheme.scale.scale7,
-                        indent: 0,
-                        endIndent: 0,
-                        width: 0,
-                        thickness: 1,
-                      ),
-                    ),
-                    ListView.builder(
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: schedulesProvider.oneDaySchedules.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return _createScheduleRow(
-                            schedulesProvider.oneDaySchedules[index]);
-                      },
+                    Flexible(
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 5,
+                              color: markerColors[schedulesProvider
+                                      .allDaySchedulesColorIndexes[
+                                  index % markerColors.length]],
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 0.1,
+                            );
+                          },
+                          itemCount: schedulesProvider
+                              .allDaySchedulesColorIndexes.length),
                     ),
                   ],
-                )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 77.0),
+                  child: VerticalDivider(
+                    color: CustomTheme.scale.scale7,
+                    indent: 0,
+                    endIndent: 0,
+                    width: 0,
+                    thickness: 1,
+                  ),
+                ),
+                ListView.builder(
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: schedulesProvider.oneDaySchedules.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _createScheduleRow(
+                        schedulesProvider.oneDaySchedules[index]);
+                  },
+                ),
               ],
-            ),
-            const ScheduleSheet(
-              minSizeRatio: 0.03,
-            ),
+            )),
           ],
-        )),
+        ),
+        const ScheduleSheet(
+          minSizeRatio: 0.03,
+        ),
+          ],
+        ),
         bottomNavigationBar: CustomNavigationBar(
           onPressSchedule: () {
             CustomRouteUtils.push(context, MonthPage.routeName);
