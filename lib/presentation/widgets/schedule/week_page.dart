@@ -15,15 +15,14 @@ class WeekPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Stack(children: [
+        body: Stack(children: [
           Column(children: const [
             CustomAppBar(modeType: CustomAppBarModeType.week),
             MonthSelector(),
             WeekView()
           ]),
           const ScheduleSheet()
-        ])),
+        ]),
         bottomNavigationBar: CustomNavigationBar(
           onPressSchedule: () {
             CustomRouteUtils.push(context, MonthPage.routeName);
