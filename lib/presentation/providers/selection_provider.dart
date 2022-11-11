@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class SelectionProvider with ChangeNotifier {
   var _selectedMonthDate = DateTime(2022, 11);
 
-  getSelectedMonthDate() {
+  DateTime get selectedMonthDate {
     return _selectedMonthDate;
   }
 
-  setSelectedMonthDate(DateTime date) {
+  set selectedMonthDate(DateTime date) {
     _selectedMonthDate = date;
     notifyListeners();
   }

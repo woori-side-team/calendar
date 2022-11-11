@@ -54,7 +54,7 @@ class MonthView extends StatelessWidget {
 
   Widget _createDayLabel(BuildContext context, DateTime dayDate) {
     final selectedMonthDate =
-        context.watch<SelectionProvider>().getSelectedMonthDate();
+        context.watch<SelectionProvider>().selectedMonthDate;
 
     final now = CustomDateUtils.getNow();
 
@@ -127,10 +127,10 @@ class MonthView extends StatelessWidget {
   }
 
   List<Widget> _createDayRows(BuildContext context) {
-    final schedules = context.watch<SchedulesProvider>().getSchedules();
+    final schedules = context.watch<SchedulesProvider>().schedules;
 
     final selectedMonthDate =
-        context.watch<SelectionProvider>().getSelectedMonthDate();
+        context.watch<SelectionProvider>().selectedMonthDate;
 
     // key: 각 날짜.
     // value: 해당 날짜에 있는 스케줄들.

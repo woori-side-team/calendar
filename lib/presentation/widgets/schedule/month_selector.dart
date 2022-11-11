@@ -13,7 +13,7 @@ class MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedMonthDate =
-        context.watch<SelectionProvider>().getSelectedMonthDate();
+        context.watch<SelectionProvider>().selectedMonthDate;
     final Queue<DateTime> initialItems = Queue();
 
     for (var month = 1; month <= 12; month++) {
@@ -31,7 +31,9 @@ class MonthSelector extends StatelessWidget {
         initialSelectedIndex: selectedMonthDate.month - 1,
         createPrevItem: (item) => DateTime(item.year, item.month - 1),
         createNextItem: (item) => DateTime(item.year, item.month + 1),
-        onSelectItem: context.watch<SelectionProvider>().setSelectedMonthDate,
+        onSelectItem: (item) {
+          context.watch<SelectionProvider>().selectedMonthDate = item;
+        },
         renderItem: (item, isActive, index, controller) {
           final text = '${item.year}.${'${item.month}'.padLeft(2, '0')}';
 

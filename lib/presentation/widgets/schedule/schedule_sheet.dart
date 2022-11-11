@@ -153,7 +153,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
 
   Widget _createContent(BuildContext context) {
     final now = CustomDateUtils.getNow();
-    final schedules = context.watch<SchedulesProvider>().getSchedules();
+    final schedules = context.watch<SchedulesProvider>().schedules;
     final schedulesToShow =
         schedules.where((schedule) => schedule.start.month == now.month);
 

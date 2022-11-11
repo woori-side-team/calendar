@@ -89,10 +89,6 @@ class SchedulesProvider with ChangeNotifier {
         colorIndex: 2),
   ];
 
-  List<ScheduleModel> getSchedules() {
-    return _schedules;
-  }
-
   final List<ScheduleModel> _oneDaySchedules = [];
 
   final List<int> _allDaySchedulesColorIndexes = [];
