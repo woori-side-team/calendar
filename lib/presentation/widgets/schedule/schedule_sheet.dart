@@ -201,7 +201,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     final double minSize = widget.minSizeRatio ?? 0.3;
     double safePadding = MediaQuery.of(context).padding.top;
     double totalHeight = MediaQuery.of(context).size.height;
-    double safeTotalRatio = safePadding/totalHeight;
+    double safeTotalRatio = safePadding / totalHeight;
     final double maxSize = 1.0 - safeTotalRatio;
 
     return CustomBottomSheet(

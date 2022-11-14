@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class SchedulesProvider with ChangeNotifier {
   final List<ScheduleModel> _schedules = <ScheduleModel>[
     ScheduleModel(
+        id: "",
         title: '개인',
         content: '공부하기',
         type: ScheduleType.allDay,
@@ -11,6 +12,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 2),
         colorIndex: 0),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: '종소세 내야해!',
         type: ScheduleType.allDay,
@@ -18,6 +20,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 9),
         colorIndex: 1),
     ScheduleModel(
+        id: "",
         title: '업무',
         content: '개발팀과 QA 미팅',
         type: ScheduleType.hours,
@@ -25,6 +28,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 1, 15 - 1),
         colorIndex: 2),
     ScheduleModel(
+        id: "",
         title: '업무',
         content: '가족 모임',
         type: ScheduleType.hours,
@@ -32,6 +36,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 1, 17 - 1, 30),
         colorIndex: 3),
     ScheduleModel(
+        id: "",
         title: '업무',
         content: '매니저님에게 기획서 전달',
         type: ScheduleType.hours,
@@ -39,6 +44,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 1, 18 - 1, 30),
         colorIndex: 4),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: '기타 연습하기',
         type: ScheduleType.hours,
@@ -46,6 +52,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 4, 18 - 1, 30),
         colorIndex: 5),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: '피아노 연습하기',
         type: ScheduleType.hours,
@@ -53,6 +60,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 4, 18 - 1, 30),
         colorIndex: 6),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: '운동하기',
         type: ScheduleType.allDay,
@@ -60,6 +68,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 11),
         colorIndex: 7),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: '운동하기',
         type: ScheduleType.allDay,
@@ -67,6 +76,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 25),
         colorIndex: 8),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: 'Vue 공부하기',
         type: ScheduleType.hours,
@@ -74,6 +84,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 25, 18 - 1, 30),
         colorIndex: 1),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: 'Svelte 공부하기',
         type: ScheduleType.hours,
@@ -81,6 +92,7 @@ class SchedulesProvider with ChangeNotifier {
         end: DateTime(2022, 11, 25, 18 - 1, 30),
         colorIndex: 0),
     ScheduleModel(
+        id: "",
         title: '개인',
         content: 'React 공부하기',
         type: ScheduleType.allDay,
@@ -135,6 +147,7 @@ class SchedulesProvider with ChangeNotifier {
     int endHour = startHour + progressHours;
 
     _schedules.add(ScheduleModel(
+        id: "",
         title: '${_schedules.length}번 요소',
         content: '공부하기',
         type: ScheduleType.hours,
@@ -152,6 +165,7 @@ class SchedulesProvider with ChangeNotifier {
 
     int listLength = _schedules.length;
     _schedules.add(ScheduleModel(
+        id: "",
         title: '$listLength번 요소',
         content: '공부하기',
         type: ScheduleType.allDay,
