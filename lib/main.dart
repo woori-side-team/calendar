@@ -1,11 +1,11 @@
 import 'package:calendar/app.dart';
 import 'package:calendar/common/di/di.dart';
-import 'package:calendar/data/data_sources/local//schedule_entity.dart';
+import 'package:calendar/data/data_sources/local/schedule_entity.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/providers/selection_provider.dart';
 import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,8 +21,8 @@ void main() async {
 
   // 앱 세팅 및 시작.
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => SchedulesProvider()),
     ChangeNotifierProvider(create: (context) => SelectionProvider()),
     ChangeNotifierProvider(create: (context) => SheetProvider()),
+    ChangeNotifierProvider(create: (context) => getIt<SchedulesProvider>())
   ], child: const App()));
 }

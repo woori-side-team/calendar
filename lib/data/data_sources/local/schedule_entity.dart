@@ -5,7 +5,7 @@ part 'schedule_entity.g.dart';
 @HiveType(typeId: 0)
 class ScheduleEntity extends HiveObject {
   @HiveField(0)
-  final int id;
+  final String id;
 
   @HiveField(1)
   String title;

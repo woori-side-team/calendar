@@ -5,8 +5,13 @@ class CustomDateUtils {
     return DateTime.now();
   }
 
+  /// 시, 분, 초 등을 제거하고 일만 반환합니다.
+  static DateTime toDay(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
   /// 두 날짜가 같은 일을 나타내는지 판단합니다.
-  /// (시, 분, 초는 관련 X)
+  /// (시, 분, 초 등은 관련 X)
   static bool areSameDays(DateTime dayDate1, DateTime dayDate2) {
     return dayDate1.year == dayDate2.year &&
         dayDate1.month == dayDate2.month &&

@@ -2,15 +2,15 @@ import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import '../common/marker_colors.dart';
 
 class DayPage extends StatelessWidget {
   static const routeName = 'day';
@@ -96,7 +96,7 @@ class DayPage extends StatelessWidget {
     final String amPm = time < 12 ? 'AM' : 'PM';
     final String title = schedule.title;
     final String content = schedule.content;
-    final Color color = markerColors[schedule.colorIndex];
+    final Color color = markerColors[schedule.colorIndex % markerColors.length];
     int progressTime = schedule.end.hour - schedule.start.hour;
     if (progressTime < 0) progressTime = 1;
     final double contentBoxHeight = 100 + progressTime.toDouble() * 25;
@@ -205,26 +205,39 @@ class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schedulesProvider = context.watch<SchedulesProvider>();
+    final currentSchedules = schedulesProvider
+        .getOneDaySchedules(selectedDate)
+        .sorted((a, b) => a.start.compareTo(b.start));
+    final allDaySchedules = currentSchedules
+        .where((schedule) => schedule.type == ScheduleType.allDay)
+        .toList();
+
     return Scaffold(
         backgroundColor: CustomTheme.background.primary,
         floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FloatingActionButton(
-              onPressed: () {
-                schedulesProvider.addSchedule(2, selectedDate);
+              onPressed: () async {
+                await schedulesProvider.deleteAllSchedules();
+              },
+              child: const Text('C'),
+            ),
+            FloatingActionButton(
+              onPressed: () async {
+                await schedulesProvider.generateHoursSchedule(2, selectedDate);
               },
               child: const Text('2'),
             ),
             FloatingActionButton(
-              onPressed: () {
-                schedulesProvider.addSchedule(3, selectedDate);
+              onPressed: () async {
+                await schedulesProvider.generateHoursSchedule(3, selectedDate);
               },
               child: const Text('3'),
             ),
             FloatingActionButton(
-              onPressed: () {
-                schedulesProvider.addAllDaySchedule(selectedDate);
+              onPressed: () async {
+                await schedulesProvider.generateAllDaySchedule(selectedDate);
               },
               child: const Text('All'),
             ),
@@ -250,9 +263,9 @@ class DayPage extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return Container(
                                   width: 7.5,
-                                  color: markerColors[schedulesProvider
-                                          .allDaySchedulesColorIndexes[
-                                      index % markerColors.length]],
+                                  color: markerColors[
+                                      allDaySchedules[index].colorIndex %
+                                          markerColors.length],
                                 );
                               },
                               separatorBuilder: (context, index) {
@@ -260,11 +273,9 @@ class DayPage extends StatelessWidget {
                                   width: 0.1,
                                 );
                               },
-                              itemCount: schedulesProvider
-                                          .allDaySchedulesColorIndexes.length <=
+                              itemCount: allDaySchedules.length <=
                                       3
-                                  ? schedulesProvider
-                                      .allDaySchedulesColorIndexes.length
+                                  ? allDaySchedules.length
                                   : 3),
                         ),
                       ],
@@ -282,10 +293,9 @@ class DayPage extends StatelessWidget {
                     ListView.builder(
                       padding: EdgeInsets.zero,
                       physics: const ClampingScrollPhysics(),
-                      itemCount: schedulesProvider.oneDaySchedules.length,
+                      itemCount: currentSchedules.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return _createScheduleRow(
-                            schedulesProvider.oneDaySchedules[index]);
+                        return _createScheduleRow(currentSchedules[index]);
                       },
                     ),
                   ],
