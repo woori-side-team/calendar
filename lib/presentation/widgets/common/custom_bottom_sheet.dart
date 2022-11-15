@@ -1,6 +1,8 @@
+import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_backdrop.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 /// 화면에 항상 떠 있는 bottom sheet입니다.
 /// 드래그하여 크기를 조정할 수 있습니다.
@@ -9,13 +11,15 @@ class CustomBottomSheet extends StatefulWidget {
   final double maxSize;
   final List<double> snapSizes;
   final Widget child;
+  final int sheetIndex;
 
   const CustomBottomSheet(
       {super.key,
       required this.minSize,
       required this.maxSize,
       required this.snapSizes,
-      required this.child});
+      required this.child,
+      required this.sheetIndex});
 
   @override
   State<StatefulWidget> createState() {
@@ -24,33 +28,32 @@ class CustomBottomSheet extends StatefulWidget {
 }
 
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
-  // Rebuild 이후에도 새로 만들지 않고 재사용해야 하므로 state로 들고 있음.
-  late final DraggableScrollableController _sheetController;
-
   late double _size;
 
-  void _handleChange() {
+  void _handleChange(SheetProvider viewModel) {
     setState(() {
-      _size = _sheetController.size;
+      _size = viewModel.sheetScrollControllers[widget.sheetIndex].size;
+      viewModel.setEditColor(widget.sheetIndex, _size);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _sheetController = DraggableScrollableController();
-    _sheetController.addListener(_handleChange);
+    final viewModel = context.read<SheetProvider>();
+    viewModel.addScrollController();
+    final scrollController =
+        viewModel.sheetScrollControllers[widget.sheetIndex];
+    scrollController.addListener(() {
+      _handleChange(viewModel);
+    });
     _size = widget.minSize;
   }
 
   @override
-  void dispose() {
-    _sheetController.removeListener(_handleChange);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<SheetProvider>();
+
     final decoration = BoxDecoration(
         color: CustomTheme.background.primary,
         borderRadius: const BorderRadius.only(
@@ -83,7 +86,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           maxValue: widget.maxSize,
           minShowValue: widget.minSize + 0.1),
       DraggableScrollableSheet(
-          controller: _sheetController,
+          controller: viewModel.sheetScrollControllers[widget.sheetIndex],
           minChildSize: widget.minSize,
           maxChildSize: widget.maxSize,
           initialChildSize: widget.minSize,
@@ -99,7 +102,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                         showDuration: const Duration(seconds: 5),
                         padding: const EdgeInsets.only(
                             top: 6, bottom: 10, left: 11, right: 11),
-                        message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수'
+                        message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수 '
                             '있고 일정을 추가할 수도 있습니다.',
                         textStyle: TextStyle(color: CustomTheme.scale.scale1),
                         decoration: ShapeDecoration(

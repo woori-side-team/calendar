@@ -145,7 +145,7 @@ class DayPage extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 12, top: 24),
+          padding: const EdgeInsets.only(left: 12, top: 30),
           child: Container(
             width: 14,
             height: 14,
@@ -181,20 +181,23 @@ class DayPage extends StatelessWidget {
   }
 
   Widget _createDateCard({required DateTime date}) {
-    return Card(
-      color: CustomTheme.background.primary,
-      shadowColor: const Color.fromRGBO(0, 0, 0, 0.16),
-      elevation: 9,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: CustomTheme.background.primary,
-        ),
-        padding: const EdgeInsets.only(left: 20, bottom: 40),
-        child: Text(
-          DateFormat('yyyy-MM-dd').format(date),
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
-        ),
+    return Container(
+      width: double.infinity,
+      height: 48,
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+              offset: Offset(0, 15),
+              color: Color.fromRGBO(0, 0, 0, 0.16),
+              blurRadius: 12,
+              spreadRadius: -12)
+        ],
+        color: CustomTheme.background.primary,
+      ),
+      padding: const EdgeInsets.only(left: 20, bottom: 10),
+      child: Text(
+        DateFormat('yyyy-MM-dd').format(date),
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
       ),
     );
   }
@@ -257,10 +260,9 @@ class DayPage extends StatelessWidget {
                         Flexible(
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,
-                              itemCount: allDaySchedules.length,
                               itemBuilder: (context, index) {
                                 return Container(
-                                  width: 5,
+                                  width: 7.5,
                                   color: markerColors[
                                       allDaySchedules[index].colorIndex %
                                           markerColors.length],
@@ -270,7 +272,11 @@ class DayPage extends StatelessWidget {
                                 return const SizedBox(
                                   width: 0.1,
                                 );
-                              }),
+                              },
+                              itemCount: allDaySchedules.length <=
+                                      3
+                                  ? allDaySchedules.length
+                                  : 3),
                         ),
                       ],
                     ),
@@ -285,6 +291,7 @@ class DayPage extends StatelessWidget {
                       ),
                     ),
                     ListView.builder(
+                      padding: EdgeInsets.zero,
                       physics: const ClampingScrollPhysics(),
                       itemCount: currentSchedules.length,
                       itemBuilder: (BuildContext context, int index) {
