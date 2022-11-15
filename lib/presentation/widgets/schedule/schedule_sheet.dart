@@ -1,7 +1,7 @@
-import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
+import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_bottom_sheet.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
@@ -45,7 +45,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     _mode = _Mode.view;
   }
 
-  Widget _createHeader() {
+  Widget _createHeader(SheetProvider viewModel) {
     return Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(top: 14, left: 20, right: 18),
@@ -60,8 +60,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
               ? TextButton(
                   onPressed: _handlePressEdit,
                   child: Text('편집',
-                      style: TextStyle(
-                          fontSize: 17, color: CustomTheme.tint.blue)))
+                      style:
+                          TextStyle(fontSize: 17, color: viewModel.editColor)))
               : IconButton(
                   onPressed: _handlePressView,
                   icon:
@@ -69,18 +69,11 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         ]));
   }
 
-  /// DateTime.now()와 target이 며칠 차이나는지 반환
-  int _getDCount(DateTime target) {
-    final startDate = DateTime(target.year, target.month, target.day);
-    final nowDate =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    return startDate.difference(nowDate).inDays;
-  }
-
-  Widget _createScheduleView(BuildContext context, ScheduleModel schedule) {
+  Widget _createScheduleView(
+      SheetProvider viewModel, BuildContext context, ScheduleModel schedule) {
     const controlWidth = 24.0;
     const controlHeight = 24.0;
-    final dCount = _getDCount(schedule.start);
+    final dCount = viewModel.getDCount(schedule.start);
 
     return Container(
         height: 24,
@@ -96,7 +89,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                       ? BorderRadius.circular(50)
                       : null,
                   color: markerColors[schedule.colorIndex]),
-              child: Text('D-$dCount',
+              child: Text(dCount != 0 ? 'D-$dCount' : 'D-Day',
                   style: TextStyle(
                       color: CustomTheme.background.primary,
                       fontSize: 12,
@@ -156,16 +149,10 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         margin: const EdgeInsets.only(top: 4));
   }
 
-  Widget _createContent(BuildContext context) {
-    bool isDCountMoreThanZero(ScheduleModel schedule) {
-      final dCount = _getDCount(schedule.start);
-      return dCount > 0;
-    }
-
-    final now = CustomDateUtils.getNow();
+  Widget _createContent(SheetProvider viewModel, BuildContext context) {
     final schedules = context.watch<SchedulesProvider>().getSchedules();
     final schedulesToShow = schedules.where((schedule) =>
-        schedule.start.month == now.month && isDCountMoreThanZero(schedule));
+        viewModel.isScheduleToShow(schedule));
 
     // 최대 몇개까지만 보여줄지.
     const maxShowCount = 7;
@@ -175,7 +162,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         child: Column(children: [
           ...schedulesToShow
               .take(maxShowCount)
-              .map((schedule) => _createScheduleView(context, schedule))
+              .map((schedule) =>
+                  _createScheduleView(viewModel, context, schedule))
               .toList(),
           Container(
               margin: const EdgeInsets.only(top: 4),
@@ -209,11 +197,9 @@ class _ScheduleSheet extends State<ScheduleSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<SheetProvider>();
     final double minSize = widget.minSizeRatio ?? 0.3;
-    double safePadding = MediaQuery.of(context).padding.top;
-    double totalHeight = MediaQuery.of(context).size.height;
-    double safeTotalRatio = safePadding / totalHeight;
-    final double maxSize = 1.0 - safeTotalRatio;
+    final double maxSize = viewModel.getMaxSheetSize(context);
 
     return CustomBottomSheet(
         minSize: minSize,
@@ -225,8 +211,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
             color: CustomTheme.gray.gray4,
             height: 1,
           ),
-          _createHeader(),
-          _createContent(context)
+          _createHeader(viewModel),
+          _createContent(viewModel, context)
         ]));
   }
 }

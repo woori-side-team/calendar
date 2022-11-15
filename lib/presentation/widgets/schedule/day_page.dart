@@ -16,7 +16,7 @@ class DayPage extends StatelessWidget {
   static const routeName = 'day';
   final DateTime selectedDate;
 
-  DayPage({super.key, required this.selectedDate});
+  const DayPage({super.key, required this.selectedDate});
 
   Widget _createLimitedScheduleTextContainer({
     required String title,
@@ -145,7 +145,7 @@ class DayPage extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 12, top: 24),
+          padding: const EdgeInsets.only(left: 12, top: 30),
           child: Container(
             width: 14,
             height: 14,
@@ -181,20 +181,23 @@ class DayPage extends StatelessWidget {
   }
 
   Widget _createDateCard({required DateTime date}) {
-    return Card(
-      color: CustomTheme.background.primary,
-      shadowColor: const Color.fromRGBO(0, 0, 0, 0.16),
-      elevation: 9,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: CustomTheme.background.primary,
-        ),
-        padding: const EdgeInsets.only(left: 20, bottom: 40),
-        child: Text(
-          DateFormat('yyyy-MM-dd').format(date),
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
-        ),
+    return Container(
+      width: double.infinity,
+      height: 48,
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+              offset: Offset(0, 15),
+              color: Color.fromRGBO(0, 0, 0, 0.16),
+              blurRadius: 12,
+              spreadRadius: -12)
+        ],
+        color: CustomTheme.background.primary,
+      ),
+      padding: const EdgeInsets.only(left: 20, bottom: 10),
+      child: Text(
+        DateFormat('yyyy-MM-dd').format(date),
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
       ),
     );
   }
@@ -229,64 +232,69 @@ class DayPage extends StatelessWidget {
         ),
         body: Stack(
           children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-            _createDateCard(date: selectedDate),
-            Flexible(
-                child: Stack(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+                _createDateCard(date: selectedDate),
+                Flexible(
+                    child: Stack(
                   children: [
-                    Flexible(
-                      child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              width: 5,
-                              color: markerColors[schedulesProvider
-                                      .allDaySchedulesColorIndexes[
-                                  index % markerColors.length]],
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              width: 0.1,
-                            );
-                          },
-                          itemCount: schedulesProvider
-                              .allDaySchedulesColorIndexes.length),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: 7.5,
+                                  color: markerColors[schedulesProvider
+                                          .allDaySchedulesColorIndexes[
+                                      index % markerColors.length]],
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  width: 0.1,
+                                );
+                              },
+                              itemCount: schedulesProvider
+                                          .allDaySchedulesColorIndexes.length <=
+                                      3
+                                  ? schedulesProvider
+                                      .allDaySchedulesColorIndexes.length
+                                  : 3),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 77.0),
+                      child: VerticalDivider(
+                        color: CustomTheme.scale.scale7,
+                        indent: 0,
+                        endIndent: 0,
+                        width: 0,
+                        thickness: 1,
+                      ),
+                    ),
+                    ListView.builder(
+                      padding: EdgeInsets.zero,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: schedulesProvider.oneDaySchedules.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _createScheduleRow(
+                            schedulesProvider.oneDaySchedules[index]);
+                      },
                     ),
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 77.0),
-                  child: VerticalDivider(
-                    color: CustomTheme.scale.scale7,
-                    indent: 0,
-                    endIndent: 0,
-                    width: 0,
-                    thickness: 1,
-                  ),
-                ),
-                ListView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: schedulesProvider.oneDaySchedules.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _createScheduleRow(
-                        schedulesProvider.oneDaySchedules[index]);
-                  },
-                ),
+                )),
               ],
-            )),
-          ],
-        ),
-        const ScheduleSheet(
-          minSizeRatio: 0.03,
-        ),
+            ),
+            const ScheduleSheet(
+              minSizeRatio: 0.03,
+            ),
           ],
         ),
         bottomNavigationBar: CustomNavigationBar(
