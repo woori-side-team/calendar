@@ -29,8 +29,8 @@ void main() {
         colorIndex: 0);
 
     // Test insert.
-    await repository.insertSchedule(model1);
-    await repository.insertSchedule(model2);
+    await repository.addSchedule(model1);
+    await repository.addSchedule(model2);
 
     var schedulesInRange = await repository.getSchedulesBetweenDays(
         DateTime(2022, 11, 11), DateTime(2022, 11, 15));

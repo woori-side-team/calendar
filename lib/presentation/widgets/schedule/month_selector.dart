@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:calendar/presentation/providers/selection_provider.dart';
+import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_carousel.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -13,7 +13,7 @@ class MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedMonthDate =
-        context.watch<SelectionProvider>().selectedMonthDate;
+        context.watch<SchedulesProvider>().getSelectedMonthDate();
     final Queue<DateTime> initialItems = Queue();
 
     for (var month = 1; month <= 12; month++) {
@@ -32,7 +32,7 @@ class MonthSelector extends StatelessWidget {
         createPrevItem: (item) => DateTime(item.year, item.month - 1),
         createNextItem: (item) => DateTime(item.year, item.month + 1),
         onSelectItem: (item) {
-          context.watch<SelectionProvider>().selectedMonthDate = item;
+          context.watch<SchedulesProvider>().setSelectedMonthDate(item);
         },
         renderItem: (item, isActive, index, controller) {
           final text = '${item.year}.${'${item.month}'.padLeft(2, '0')}';

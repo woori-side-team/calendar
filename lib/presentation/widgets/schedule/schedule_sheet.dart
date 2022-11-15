@@ -101,7 +101,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   onPressed: () {
                     // TODO 여러 날 스케줄은 어떻게?
                     final schedulesProvider = context.read<SchedulesProvider>();
-                    schedulesProvider.loadOneDaySchedules(schedule.start);
+                    schedulesProvider.getOneDaySchedules(schedule.start);
                     CustomRouteUtils.push(context, DayPage.routeName,
                         arguments: schedule.start);
                   },
@@ -153,7 +153,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
 
   Widget _createContent(BuildContext context) {
     final now = CustomDateUtils.getNow();
-    final schedules = context.watch<SchedulesProvider>().schedules;
+    final schedules = context.watch<SchedulesProvider>().selectedMonthSchedules;
     final schedulesToShow =
         schedules.where((schedule) => schedule.start.month == now.month);
 

@@ -2,7 +2,6 @@ import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
-import 'package:calendar/presentation/providers/selection_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:collection/collection.dart';
@@ -54,7 +53,7 @@ class MonthView extends StatelessWidget {
 
   Widget _createDayLabel(BuildContext context, DateTime dayDate) {
     final selectedMonthDate =
-        context.watch<SelectionProvider>().selectedMonthDate;
+        context.watch<SchedulesProvider>().getSelectedMonthDate();
 
     final now = CustomDateUtils.getNow();
 
@@ -111,7 +110,7 @@ class MonthView extends StatelessWidget {
         child: GestureDetector(
       onTap: () {
         final schedulesProvider = context.read<SchedulesProvider>();
-        schedulesProvider.loadOneDaySchedules(dayDate);
+        schedulesProvider.getOneDaySchedules(dayDate);
         CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
       },
       child: Container(
@@ -127,10 +126,10 @@ class MonthView extends StatelessWidget {
   }
 
   List<Widget> _createDayRows(BuildContext context) {
-    final schedules = context.watch<SchedulesProvider>().schedules;
+    final schedules = context.watch<SchedulesProvider>().selectedMonthSchedules;
 
     final selectedMonthDate =
-        context.watch<SelectionProvider>().selectedMonthDate;
+        context.watch<SchedulesProvider>().getSelectedMonthDate();
 
     // key: 각 날짜.
     // value: 해당 날짜에 있는 스케줄들.

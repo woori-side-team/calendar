@@ -37,7 +37,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       }
     });
 
-    await box.close();
+    // await box.close();
     return models;
   }
 
@@ -45,35 +45,35 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   Future<ScheduleModel?> getScheduleByID(String id) async {
     final box = await Hive.openLazyBox<ScheduleEntity>(_tableName);
     final entity = await box.get(id);
-    await box.close();
+    // await box.close();
     return entity?.toScheduleModel();
   }
 
   @override
-  Future<void> insertSchedule(ScheduleModel scheduleModel) async {
+  Future<void> addSchedule(ScheduleModel scheduleModel) async {
     final box = await Hive.openLazyBox<ScheduleEntity>(_tableName);
     await box.put(scheduleModel.id, scheduleModel.toScheduleEntity());
-    await box.close();
+    // await box.close();
   }
 
   @override
   Future<void> updateSchedule(ScheduleModel scheduleModel) async {
     final box = await Hive.openLazyBox<ScheduleEntity>(_tableName);
     await box.put(scheduleModel.id, scheduleModel.toScheduleEntity());
-    await box.close();
+    // await box.close();
   }
 
   @override
   Future<void> deleteSchedule(String id) async {
     final box = await Hive.openLazyBox<ScheduleEntity>(_tableName);
     await box.delete(id);
-    await box.close();
+    // await box.close();
   }
 
   @override
   Future<void> deleteAllSchedules() async {
     final box = await Hive.openLazyBox<ScheduleEntity>(_tableName);
     await box.clear();
-    await box.close();
+    // await box.close();
   }
 }

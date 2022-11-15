@@ -7,7 +7,7 @@ abstract class ScheduleRepository {
 
   Future<ScheduleModel?> getScheduleByID(String id);
 
-  Future<void> insertSchedule(ScheduleModel scheduleModel);
+  Future<void> addSchedule(ScheduleModel scheduleModel);
 
   Future<void> updateSchedule(ScheduleModel scheduleModel);
 
