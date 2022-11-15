@@ -14,7 +14,8 @@ enum ScheduleType {
 @freezed
 class ScheduleModel with _$ScheduleModel {
   const factory ScheduleModel(
-      {required String title,
+      {required String id,
+      required String title,
       required String content,
       required ScheduleType type,
       required DateTime start,

@@ -24,6 +24,7 @@ lib
 +- domain: 비즈니스 로직 담당, data랑 presentation 연결
 |  +- models: 앱 내부용 (i.e view용) 데이터 표현
 |  +- repositories: 데이터 관련 연산들
+|  +- use_cases: 각 비즈니스 로직
 +- presentation: View 담당
 |  +- widgets: View (및 ViewModel)
 |  +- providers: 여러 view들 간의 공통 상태

@@ -1,108 +1,51 @@
+import 'package:calendar/common/utils/custom_date_utils.dart';
+import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
+import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class SchedulesProvider with ChangeNotifier {
-  final List<ScheduleModel> _schedules = <ScheduleModel>[
-    ScheduleModel(
-        title: '개인',
-        content: '공부하기',
-        type: ScheduleType.allDay,
-        start: DateTime(2022, 10, 28),
-        end: DateTime(2022, 11, 2),
-        colorIndex: 0),
-    ScheduleModel(
-        title: '개인',
-        content: '종소세 내야해!',
-        type: ScheduleType.allDay,
-        start: DateTime(2022, 11, 5),
-        end: DateTime(2022, 11, 9),
-        colorIndex: 1),
-    ScheduleModel(
-        title: '업무',
-        content: '개발팀과 QA 미팅',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 1, 14 - 1),
-        end: DateTime(2022, 11, 1, 15 - 1),
-        colorIndex: 2),
-    ScheduleModel(
-        title: '업무',
-        content: '가족 모임',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 1, 16 - 1),
-        end: DateTime(2022, 11, 1, 17 - 1, 30),
-        colorIndex: 3),
-    ScheduleModel(
-        title: '업무',
-        content: '매니저님에게 기획서 전달',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 1, 17 - 1),
-        end: DateTime(2022, 11, 1, 18 - 1, 30),
-        colorIndex: 4),
-    ScheduleModel(
-        title: '개인',
-        content: '기타 연습하기',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 4, 17 - 1),
-        end: DateTime(2022, 11, 4, 18 - 1, 30),
-        colorIndex: 5),
-    ScheduleModel(
-        title: '개인',
-        content: '피아노 연습하기',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 4, 17 - 1),
-        end: DateTime(2022, 11, 4, 18 - 1, 30),
-        colorIndex: 6),
-    ScheduleModel(
-        title: '개인',
-        content: '운동하기',
-        type: ScheduleType.allDay,
-        start: DateTime(2022, 11, 11),
-        end: DateTime(2022, 11, 11),
-        colorIndex: 7),
-    ScheduleModel(
-        title: '개인',
-        content: '운동하기',
-        type: ScheduleType.allDay,
-        start: DateTime(2022, 11, 25),
-        end: DateTime(2022, 11, 25),
-        colorIndex: 8),
-    ScheduleModel(
-        title: '개인',
-        content: 'Vue 공부하기',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 25, 17 - 1),
-        end: DateTime(2022, 11, 25, 18 - 1, 30),
-        colorIndex: 1),
-    ScheduleModel(
-        title: '개인',
-        content: 'Svelte 공부하기',
-        type: ScheduleType.hours,
-        start: DateTime(2022, 11, 25, 17 - 1, 30),
-        end: DateTime(2022, 11, 25, 18 - 1, 30),
-        colorIndex: 0),
-    ScheduleModel(
-        title: '개인',
-        content: 'React 공부하기',
-        type: ScheduleType.allDay,
-        start: DateTime(2022, 11, 25),
-        end: DateTime(2022, 11, 30),
-        colorIndex: 2),
-  ];
+  final AddScheduleUseCase _addScheduleUseCase;
+  final GetSchedulesAtMonthUseCase _getSchedulesAtMonthUseCase;
+  final DeleteAllSchedulesUseCase _deleteAllSchedulesUseCase;
 
-  List<ScheduleModel> getSchedules() {
-    return _schedules;
+  /// 변화 있을 때마다 이번 달 일정들을 미리 계산해서 여기에 캐싱.
+  List<ScheduleModel> _selectedMonthSchedulesCache = [];
+
+  /// 현재 선택한 달.
+  var _selectedMonthDate = CustomDateUtils.toDay(CustomDateUtils.getNow());
+
+  /// 일정 생성 테스트용.
+  int _nextStartHour = 9;
+  int _nextItemIndex = 0;
+
+  SchedulesProvider(this._addScheduleUseCase, this._getSchedulesAtMonthUseCase,
+      this._deleteAllSchedulesUseCase) {
+    // 시작 때 필요 데이터 로딩.
+    (() async {
+      await _loadData();
+      notifyListeners();
+    })();
   }
 
-  final List<ScheduleModel> _oneDaySchedules = [];
+  DateTime getSelectedMonthDate() {
+    return _selectedMonthDate;
+  }
 
-  final List<int> _allDaySchedulesColorIndexes = [];
+  // async 때문에 setter 안 씀.
+  Future<void> setSelectedMonthDate(DateTime value) async {
+    _selectedMonthDate = value;
 
-  List<ScheduleModel> get schedules => _schedules;
+    await _loadData();
+    notifyListeners();
+  }
 
-  List<ScheduleModel> get oneDaySchedules => _oneDaySchedules;
+  get selectedMonthSchedules => _selectedMonthSchedulesCache;
 
   /// day에 있는 스케줄 불러오기
-  void loadOneDaySchedules(DateTime day) {
+  List<ScheduleModel> getOneDaySchedules(DateTime day) {
     // start와 end 사이에 있거나 같은가?
     bool isBetweenStartAndEnd(ScheduleModel schedule, DateTime day) {
       return day.isAfter(schedule.start) && day.isBefore(schedule.end) ||
@@ -110,67 +53,72 @@ class SchedulesProvider with ChangeNotifier {
           day.isAtSameMomentAs(schedule.end);
     }
 
-    bool isSameDay(DateTime scheduleTime, DateTime day) {
-      return scheduleTime.year == day.year &&
-          scheduleTime.month == day.month &&
-          scheduleTime.day == day.day;
-    }
-
-    sortByDate();
-
-    _oneDaySchedules.clear();
-    _oneDaySchedules.addAll(_schedules.where((e) =>
-        isSameDay(e.start, day) ||
-        isSameDay(e.end, day) ||
-        isBetweenStartAndEnd(e, day)));
-
-    notifyListeners();
+    return selectedMonthSchedules
+        .where((e) =>
+            CustomDateUtils.areSameDays(e.start, day) ||
+            CustomDateUtils.areSameDays(e.end, day) ||
+            isBetweenStartAndEnd(e, day))
+        .toList();
   }
 
-  List<int> get allDaySchedulesColorIndexes => _allDaySchedulesColorIndexes;
-
-  void addSchedule(int progressHours, DateTime day) {
+  /// 테스트용.
+  Future<void> generateHoursSchedule(int progressHours, DateTime day) async {
     if (progressHours == 24) {
       return;
     }
 
     // 테스트용 시작 시간
-    int startHour = _schedules.isEmpty ? 9 : _schedules.last.end.hour;
-    int endHour = startHour + progressHours;
+    int startHour = _nextStartHour;
+    int endHour = (startHour + progressHours) % 24;
+    _nextStartHour = endHour;
+    _nextItemIndex++;
 
-    _schedules.add(ScheduleModel(
-        title: '${_schedules.length}번 요소',
+    final schedule = ScheduleModel(
+        id: CustomStringUtils.generateID(),
+        title: '$_nextItemIndex번 요소',
         content: '공부하기',
         type: ScheduleType.hours,
         start: DateTime(day.year, day.month, day.day, startHour),
         end: DateTime(day.year, day.month, day.day, endHour),
-        colorIndex: _schedules.length % 4));
-    loadOneDaySchedules(day);
+        colorIndex: _nextItemIndex % 4);
+
+    await _addScheduleUseCase(schedule);
+    await _loadData();
     notifyListeners();
   }
 
-  void addAllDaySchedule(DateTime day) {
+  /// 테스트용.
+  Future<void> generateAllDaySchedule(DateTime day) async {
     // 테스트용 시작 시간
-    int startHour = _schedules.isEmpty ? 9 : _schedules.last.end.hour;
-    int endHour = startHour + 2;
+    int startHour = _nextStartHour;
+    int endHour = (startHour + 2) % 24;
+    _nextStartHour = endHour;
+    _nextItemIndex++;
 
-    int listLength = _schedules.length;
-    _schedules.add(ScheduleModel(
-        title: '$listLength번 요소',
+    final schedule = ScheduleModel(
+        id: CustomStringUtils.generateID(),
+        title: '$_nextItemIndex번 요소',
         content: '공부하기',
         type: ScheduleType.allDay,
         start: DateTime(day.year, day.month, day.day, startHour),
         end: DateTime(day.year, day.month, day.day, endHour),
-        colorIndex: listLength % 4));
+        colorIndex: _nextItemIndex % 4);
 
-    _allDaySchedulesColorIndexes.add(listLength % 4);
-    loadOneDaySchedules(day);
+    await _addScheduleUseCase(schedule);
+    await _loadData();
     notifyListeners();
   }
 
-  void sortByDate() {
-    _schedules.sort((a, b) => a.start.compareTo(b.start));
-
+  /// 테스트용.
+  Future<void> deleteAllSchedules() async {
+    await _deleteAllSchedulesUseCase();
+    await _loadData();
     notifyListeners();
+  }
+
+  /// DB에서 캐싱할 것들 로딩.
+  Future<void> _loadData() async {
+    _selectedMonthSchedulesCache =
+        await _getSchedulesAtMonthUseCase(_selectedMonthDate);
   }
 }
