@@ -11,13 +11,15 @@ class CustomBottomSheet extends StatefulWidget {
   final double maxSize;
   final List<double> snapSizes;
   final Widget child;
+  final int sheetIndex;
 
   const CustomBottomSheet(
       {super.key,
       required this.minSize,
       required this.maxSize,
       required this.snapSizes,
-      required this.child});
+      required this.child,
+      required this.sheetIndex});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,18 +30,10 @@ class CustomBottomSheet extends StatefulWidget {
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
   late double _size;
 
-  //몇 번째 sheet냐?
-  late int sheetIndex;
-
   void _handleChange(SheetProvider viewModel) {
     setState(() {
-      double middleSize = 0.5;
-      _size = viewModel.sheetScrollControllers[sheetIndex].size;
-      if (_size == widget.minSize ||
-          _size == middleSize ||
-          _size == widget.maxSize) {
-        viewModel.setEditColor(sheetIndex, _size);
-      }
+      _size = viewModel.sheetScrollControllers[widget.sheetIndex].size;
+      viewModel.setEditColor(widget.sheetIndex, _size);
     });
   }
 
@@ -47,9 +41,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   void initState() {
     super.initState();
     final viewModel = context.read<SheetProvider>();
-    sheetIndex = viewModel.sheetScrollControllers.length;
     viewModel.addScrollController();
-    final scrollController = viewModel.sheetScrollControllers[sheetIndex];
+    final scrollController =
+        viewModel.sheetScrollControllers[widget.sheetIndex];
     scrollController.addListener(() {
       _handleChange(viewModel);
     });
@@ -92,7 +86,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           maxValue: widget.maxSize,
           minShowValue: widget.minSize + 0.1),
       DraggableScrollableSheet(
-          controller: viewModel.sheetScrollControllers[sheetIndex],
+          controller: viewModel.sheetScrollControllers[widget.sheetIndex],
           minChildSize: widget.minSize,
           maxChildSize: widget.maxSize,
           initialChildSize: widget.minSize,

@@ -26,6 +26,7 @@ class ScheduleSheet extends StatefulWidget {
 
 class _ScheduleSheet extends State<ScheduleSheet> {
   late _Mode _mode;
+  late int sheetIndex;
 
   void _handlePressEdit() {
     setState(() {
@@ -42,6 +43,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   @override
   void initState() {
     super.initState();
+    final viewModel = context.read<SheetProvider>();
+    sheetIndex = viewModel.sheetScrollControllers.length;
     _mode = _Mode.view;
   }
 
@@ -58,10 +61,12 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   color: CustomTheme.scale.scale10)),
           _mode == _Mode.view
               ? TextButton(
-                  onPressed: _handlePressEdit,
+                  onPressed: viewModel.editColors[sheetIndex] != viewModel.disableColor
+                      ? _handlePressEdit
+                      : null,
                   child: Text('편집',
                       style:
-                          TextStyle(fontSize: 17, color: viewModel.editColor)))
+                          TextStyle(fontSize: 17, color: viewModel.editColors[sheetIndex])))
               : IconButton(
                   onPressed: _handlePressView,
                   icon:
@@ -151,8 +156,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
 
   Widget _createContent(SheetProvider viewModel, BuildContext context) {
     final schedules = context.watch<SchedulesProvider>().getSchedules();
-    final schedulesToShow = schedules.where((schedule) =>
-        viewModel.isScheduleToShow(schedule));
+    final schedulesToShow =
+        schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
 
     // 최대 몇개까지만 보여줄지.
     const maxShowCount = 7;
@@ -202,6 +207,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     final double maxSize = viewModel.getMaxSheetSize(context);
 
     return CustomBottomSheet(
+        sheetIndex: sheetIndex,
         minSize: minSize,
         maxSize: maxSize,
         snapSizes: [minSize, 0.5, maxSize],

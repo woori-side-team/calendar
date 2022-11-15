@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:flutter/material.dart';
 
@@ -10,33 +12,40 @@ class SheetProvider with ChangeNotifier {
   // 이미 할당된 controller라면서 error가 뜬다.
   // 그래서 page마다 다 다른 controller를 할당
   final List<DraggableScrollableController> _sheetScrollControllers = [];
-  Color _editColor = CustomTheme.gray.gray3;
+  final Color disableColor = CustomTheme.gray.gray3;
+  final List<Color> _editColors = [CustomTheme.gray.gray3,];
+  Timer? _debounce;
 
   @override
   void dispose() {
     for (var controller in _sheetScrollControllers) {
       controller.dispose();
     }
+    _debounce?.cancel();
     super.dispose();
   }
 
   void addScrollController() {
     _sheetScrollControllers.add(DraggableScrollableController());
+    _editColors.add(disableColor);
   }
 
   List<DraggableScrollableController> get sheetScrollControllers =>
       _sheetScrollControllers;
 
-  Color get editColor => _editColor;
+  List<Color> get editColors => _editColors;
 
   void setEditColor(int scrollControllerIndex, double size) {
-    if (_sheetScrollControllers[scrollControllerIndex].isAttached &&
-        _sheetScrollControllers[scrollControllerIndex].size >= 0.5) {
-      _editColor = CustomTheme.tint.blue;
-    } else {
-      _editColor = CustomTheme.gray.gray3;
-    }
-    notifyListeners();
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 250), () {
+      if (_sheetScrollControllers[scrollControllerIndex].isAttached &&
+          _sheetScrollControllers[scrollControllerIndex].size >= 0.4) {
+        _editColors[scrollControllerIndex] = CustomTheme.tint.blue;
+      } else {
+        _editColors[scrollControllerIndex] = CustomTheme.gray.gray3;
+      }
+      notifyListeners();
+    });
   }
 
   /// DateTime.now()와 target이 며칠 차이나는지 반환
