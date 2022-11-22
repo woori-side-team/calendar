@@ -273,8 +273,7 @@ class DayPage extends StatelessWidget {
                                   width: 0.1,
                                 );
                               },
-                              itemCount: allDaySchedules.length <=
-                                      3
+                              itemCount: allDaySchedules.length <= 3
                                   ? allDaySchedules.length
                                   : 3),
                         ),
@@ -302,9 +301,7 @@ class DayPage extends StatelessWidget {
                 )),
               ],
             ),
-            const ScheduleSheet(
-              minSizeRatio: 0.03,
-            ),
+            const ScheduleSheet(),
           ],
         ),
         bottomNavigationBar: CustomNavigationBar(

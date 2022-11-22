@@ -13,7 +13,9 @@ class SheetProvider with ChangeNotifier {
   // 그래서 page마다 다 다른 controller를 할당
   final List<DraggableScrollableController> _sheetScrollControllers = [];
   final Color disableColor = CustomTheme.gray.gray3;
-  final List<Color> _editColors = [CustomTheme.gray.gray3,];
+  final List<Color> _editColors = [
+    CustomTheme.gray.gray3,
+  ];
   Timer? _debounce;
 
   @override
