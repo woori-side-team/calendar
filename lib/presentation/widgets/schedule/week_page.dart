@@ -16,10 +16,13 @@ class WeekPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(children: [
-          Column(children: const [
-            CustomAppBar(modeType: CustomAppBarModeType.week),
-            MonthSelector(),
-            WeekView()
+          Column(children: [
+            const CustomAppBar(modeType: CustomAppBarModeType.week),
+            Expanded(
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child:
+                        Column(children: const [MonthSelector(), WeekView()]))),
           ]),
           const ScheduleSheet()
         ]),

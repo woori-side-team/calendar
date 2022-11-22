@@ -1,7 +1,11 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
+import 'package:calendar/domain/models/schedule_model.dart';
+import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class WeekView extends StatelessWidget {
@@ -9,22 +13,19 @@ class WeekView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Container(
-                margin: const EdgeInsets.only(top: 37, bottom: 72),
-                child: Column(children: [
-                  const _DayRow(),
-                  _SectionTitle(
-                      icon: Image.asset('assets/icons/week_view_checklist.png'),
-                      title: '금주의 체크리스트'),
-                  const _ChecklistColumn(),
-                  _SectionTitle(
-                      icon: Image.asset('assets/icons/week_view_memo.png'),
-                      title: '꼭 잊지 말아야 할 메모'),
-                  const _MemoRow()
-                ]))));
+    return Container(
+        margin: const EdgeInsets.only(top: 37, bottom: 72),
+        child: Column(children: [
+          const _DayRow(),
+          _SectionTitle(
+              icon: Image.asset('assets/icons/week_view_checklist.png'),
+              title: '금주의 체크리스트'),
+          const _ChecklistColumn(),
+          _SectionTitle(
+              icon: Image.asset('assets/icons/week_view_memo.png'),
+              title: '꼭 잊지 말아야 할 메모'),
+          const _MemoRow()
+        ]));
   }
 }
 
@@ -123,6 +124,9 @@ class _DayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schedulesProvider = context.watch<SchedulesProvider>();
+    final schedules = schedulesProvider.getOneDaySchedules(dayDate);
+
     final textColor = dayDate.weekday == DateTime.sunday
         ? CustomTheme.tint.red
         : dayDate.weekday == DateTime.saturday
@@ -146,8 +150,60 @@ class _DayCard extends StatelessWidget {
                 const SizedBox(width: 2),
                 Text(_dayNames[dayDate.weekday % 7],
                     style: TextStyle(fontSize: 16, color: textColor))
-              ])
+              ]),
+          const SizedBox(height: 14),
+          SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                  children: schedules
+                      .map((schedule) => Container(
+                          margin: const EdgeInsets.only(top: 7),
+                          child: schedule.type == ScheduleType.hours
+                              ? _DayHoursSchedule(schedule: schedule)
+                              : _DayAllDaySchedule(schedule: schedule)))
+                      .toList()))
         ]));
+  }
+}
+
+class _DayHoursSchedule extends StatelessWidget {
+  final ScheduleModel schedule;
+
+  const _DayHoursSchedule({super.key, required this.schedule});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      Container(
+          width: 18,
+          height: 18,
+          margin: const EdgeInsets.only(right: 4),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: markerColors[schedule.colorIndex % markerColors.length])),
+      Text(schedule.content,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400))
+    ]);
+  }
+}
+
+class _DayAllDaySchedule extends StatelessWidget {
+  final ScheduleModel schedule;
+
+  const _DayAllDaySchedule({super.key, required this.schedule});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+            color: markerColors[schedule.colorIndex % markerColors.length],
+            borderRadius: const BorderRadius.all(Radius.circular(6))),
+        child: Text(schedule.content,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)));
   }
 }
 
