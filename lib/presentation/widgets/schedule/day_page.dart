@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
@@ -7,7 +8,6 @@ import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +22,9 @@ class DayPage extends StatelessWidget {
     required String title,
     required String content,
     required Color color,
-    required double contentBoxHeight,
   }) {
     return Container(
-      height: contentBoxHeight - 24,
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration:
           BoxDecoration(color: color, borderRadius: BorderRadius.circular(14)),
@@ -60,10 +59,8 @@ class DayPage extends StatelessWidget {
     required String title,
     required String content,
     required Color color,
-    required double contentBoxHeight,
   }) {
     return SizedBox(
-      height: contentBoxHeight - 24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -91,6 +88,32 @@ class DayPage extends StatelessWidget {
     );
   }
 
+  Widget _createDateRangeText(ScheduleModel schedule) {
+    String startDayOfWeek = CustomDateUtils.getKoreanDayOfWeek(
+        DateFormat('E').format(schedule.start));
+    String endDayOfWeek = CustomDateUtils.getKoreanDayOfWeek(
+        DateFormat('E').format(schedule.end));
+    // 24시를 저장하려고 하면 다음 날 0시로 저장된다.
+    // 24시 저장 대신에 23시 59분 59초로 저장하게 했다.(SchedulesProvider에서)
+    // 59초를 저장할린 없지 않겠는가? 그래서 59초인지 아닌지로 판단하게 했다.
+    String endHour = schedule.end.second == 59
+        ? '24:00'
+        : DateFormat('H:mm').format(schedule.end);
+
+    return Text(
+      '${DateFormat('MM.dd').format(schedule.start)} '
+      '$startDayOfWeek '
+      '${DateFormat('H:mm').format(schedule.start)} '
+      '~ ${DateFormat('MM.dd').format(schedule.end)} '
+      '$endDayOfWeek '
+      '$endHour',
+      style: TextStyle(
+        fontSize: 15,
+        color: CustomTheme.scale.scale8.withOpacity(0.5),
+      ),
+    );
+  }
+
   Widget _createScheduleRow(ScheduleModel schedule) {
     final int time = schedule.start.hour;
     final String amPm = time < 12 ? 'AM' : 'PM';
@@ -99,7 +122,6 @@ class DayPage extends StatelessWidget {
     final Color color = markerColors[schedule.colorIndex % markerColors.length];
     int progressTime = schedule.end.hour - schedule.start.hour;
     if (progressTime < 0) progressTime = 1;
-    final double contentBoxHeight = 100 + progressTime.toDouble() * 25;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +130,7 @@ class DayPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 37, top: 24),
+              padding: const EdgeInsets.only(left: 29, top: 24),
               child: Container(
                 width: 21,
                 height: 22,
@@ -127,7 +149,7 @@ class DayPage extends StatelessWidget {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(left: 36, right: 1),
+              margin: const EdgeInsets.only(left: 28, right: 1),
               width: 21,
               height: 12,
               alignment: AlignmentDirectional.centerEnd,
@@ -156,24 +178,34 @@ class DayPage extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-                left: schedule.type == ScheduleType.hours ? 14 : 28,
-                top: 24,
-                right: 12),
-            child: schedule.type == ScheduleType.hours
-                ? _createLimitedScheduleTextContainer(
-                    title: title,
-                    content: content,
-                    color: color,
-                    contentBoxHeight: contentBoxHeight,
-                  )
-                : _createAllDayScheduleTextContainer(
-                    title: title,
-                    content: content,
-                    color: color,
-                    contentBoxHeight: contentBoxHeight,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    left: schedule.type == ScheduleType.hours ? 14 : 21,
+                    top: 24,
+                    right: 12),
+                child: schedule.type == ScheduleType.hours
+                    ? _createLimitedScheduleTextContainer(
+                        title: title,
+                        content: content,
+                        color: color,
+                      )
+                    : _createAllDayScheduleTextContainer(
+                        title: title,
+                        content: content,
+                        color: color,
+                      ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 4,
+                  left: schedule.type == ScheduleType.hours ? 14 : 21,
+                ),
+                child: _createDateRangeText(schedule),
+              ),
+            ],
           ),
         ),
       ],
@@ -205,12 +237,7 @@ class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schedulesProvider = context.watch<SchedulesProvider>();
-    final currentSchedules = schedulesProvider
-        .getOneDaySchedules(selectedDate)
-        .sorted((a, b) => a.start.compareTo(b.start));
-    final allDaySchedules = currentSchedules
-        .where((schedule) => schedule.type == ScheduleType.allDay)
-        .toList();
+    final currentSchedules = schedulesProvider.getSortedOneDaySchedules(selectedDate);
 
     return Scaffold(
         backgroundColor: CustomTheme.background.primary,
@@ -254,33 +281,8 @@ class DayPage extends StatelessWidget {
                 Flexible(
                     child: Stack(
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: 7.5,
-                                  color: markerColors[
-                                      allDaySchedules[index].colorIndex %
-                                          markerColors.length],
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 0.1,
-                                );
-                              },
-                              itemCount: allDaySchedules.length <= 3
-                                  ? allDaySchedules.length
-                                  : 3),
-                        ),
-                      ],
-                    ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 77.0),
+                      padding: const EdgeInsets.only(left: 69.0),
                       child: VerticalDivider(
                         color: CustomTheme.scale.scale7,
                         indent: 0,
@@ -292,9 +294,13 @@ class DayPage extends StatelessWidget {
                     ListView.builder(
                       padding: EdgeInsets.zero,
                       physics: const ClampingScrollPhysics(),
-                      itemCount: currentSchedules.length,
+                      itemCount: currentSchedules.length + 1,
                       itemBuilder: (BuildContext context, int index) {
-                        return _createScheduleRow(currentSchedules[index]);
+                        if (index != currentSchedules.length) {
+                          return _createScheduleRow(currentSchedules[index]);
+                        }
+                        // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
+                        return const SizedBox(height: 50);
                       },
                     ),
                   ],
