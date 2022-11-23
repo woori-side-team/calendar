@@ -36,3 +36,14 @@ class DeleteAllSchedulesUseCase {
     await _scheduleRepository.deleteAllSchedules();
   }
 }
+
+@injectable
+class DeleteScheduleUseCase {
+  final ScheduleRepository _scheduleRepository;
+
+  const DeleteScheduleUseCase(this._scheduleRepository);
+
+  Future<void> call(String id) async {
+    await _scheduleRepository.deleteSchedule(id);
+  }
+}

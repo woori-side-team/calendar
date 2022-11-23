@@ -99,4 +99,27 @@ class CustomDateUtils {
 
     return weeks;
   }
+
+  /// 영어 요일 한글로 변환
+  static String getKoreanDayOfWeek(String dayOfWeek){
+    switch(dayOfWeek){
+      case 'Sun':
+        return '일';
+      case 'Mon':
+        return '월';
+      case 'Tue':
+        return '화';
+      case 'Wed':
+        return '수';
+      case 'Thu':
+        return '목';
+      case 'Fri':
+        return '금';
+      case 'Sat':
+        return '토';
+      default:
+        assert(false, 'CustomDateUtils: getKoreanDayOfWeek error.');
+        return '';
+    }
+  }
 }

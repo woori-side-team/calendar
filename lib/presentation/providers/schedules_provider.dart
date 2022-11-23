@@ -2,6 +2,7 @@ import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -10,6 +11,7 @@ class SchedulesProvider with ChangeNotifier {
   final AddScheduleUseCase _addScheduleUseCase;
   final GetSchedulesAtMonthUseCase _getSchedulesAtMonthUseCase;
   final DeleteAllSchedulesUseCase _deleteAllSchedulesUseCase;
+  final DeleteScheduleUseCase _deleteScheduleUseCase;
 
   /// 변화 있을 때마다 이번 달 일정들을 미리 계산해서 여기에 캐싱.
   List<ScheduleModel> _selectedMonthSchedulesCache = [];
@@ -22,7 +24,7 @@ class SchedulesProvider with ChangeNotifier {
   int _nextItemIndex = 0;
 
   SchedulesProvider(this._addScheduleUseCase, this._getSchedulesAtMonthUseCase,
-      this._deleteAllSchedulesUseCase) {
+      this._deleteAllSchedulesUseCase, this._deleteScheduleUseCase) {
     // 시작 때 필요 데이터 로딩.
     (() async {
       await _loadData();
@@ -42,7 +44,14 @@ class SchedulesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  get selectedMonthSchedules => _selectedMonthSchedulesCache;
+  List<ScheduleModel> get selectedMonthSchedules =>
+      _selectedMonthSchedulesCache;
+
+  List<ScheduleModel> get sortedSelectedMonthSchedules {
+    final sortedList = [..._selectedMonthSchedulesCache];
+    sortedList.sort((a, b) => a.start.compareTo(b.start));
+    return sortedList;
+  }
 
   /// day에 있는 스케줄 불러오기
   List<ScheduleModel> getOneDaySchedules(DateTime day) {
@@ -53,12 +62,21 @@ class SchedulesProvider with ChangeNotifier {
           day.isAtSameMomentAs(schedule.end);
     }
 
-    return selectedMonthSchedules
+    return _selectedMonthSchedulesCache
         .where((e) =>
             CustomDateUtils.areSameDays(e.start, day) ||
             CustomDateUtils.areSameDays(e.end, day) ||
             isBetweenStartAndEnd(e, day))
         .toList();
+  }
+
+  List<ScheduleModel> getSortedOneDaySchedules(DateTime day) {
+    List<ScheduleModel> sortedList =
+        getOneDaySchedules(day).sorted((a, b) => a.start.compareTo(b.start));
+    List<ScheduleModel> sortedAllDayList = sortedList.where((e) => e.type == ScheduleType.allDay).toList();
+    sortedList.removeWhere((e) => e.type == ScheduleType.allDay);
+    sortedList.insertAll(0, sortedAllDayList);
+    return sortedList;
   }
 
   /// 테스트용.
@@ -91,8 +109,10 @@ class SchedulesProvider with ChangeNotifier {
   Future<void> generateAllDaySchedule(DateTime day) async {
     // 테스트용 시작 시간
     int startHour = _nextStartHour;
-    int endHour = (startHour + 2) % 24;
-    _nextStartHour = endHour;
+    int endHour = 24;
+    DateTime realRecordedDateTime =
+        DateTime(day.year, day.month, day.day, 23, 59, 59);
+    _nextStartHour = (startHour + 2) % 24;
     _nextItemIndex++;
 
     final schedule = ScheduleModel(
@@ -101,7 +121,7 @@ class SchedulesProvider with ChangeNotifier {
         content: '공부하기',
         type: ScheduleType.allDay,
         start: DateTime(day.year, day.month, day.day, startHour),
-        end: DateTime(day.year, day.month, day.day, endHour),
+        end: realRecordedDateTime,
         colorIndex: _nextItemIndex % 4);
 
     await _addScheduleUseCase(schedule);
@@ -112,6 +132,12 @@ class SchedulesProvider with ChangeNotifier {
   /// 테스트용.
   Future<void> deleteAllSchedules() async {
     await _deleteAllSchedulesUseCase();
+    await _loadData();
+    notifyListeners();
+  }
+
+  Future<void> deleteSchedule(String id) async {
+    await _deleteScheduleUseCase(id);
     await _loadData();
     notifyListeners();
   }

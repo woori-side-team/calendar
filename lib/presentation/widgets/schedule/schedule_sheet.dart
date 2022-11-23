@@ -11,8 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../common/marker_colors.dart';
 
-enum _Mode { edit, view }
-
 class ScheduleSheet extends StatefulWidget {
   const ScheduleSheet({super.key, this.minSizeRatio});
 
@@ -25,19 +23,16 @@ class ScheduleSheet extends StatefulWidget {
 }
 
 class _ScheduleSheet extends State<ScheduleSheet> {
-  late _Mode _mode;
   late int sheetIndex;
 
   void _handlePressEdit() {
-    setState(() {
-      _mode = _Mode.edit;
-    });
+    final viewModel = context.read<SheetProvider>();
+    viewModel.setSheetEditMode(sheetIndex);
   }
 
   void _handlePressView() {
-    setState(() {
-      _mode = _Mode.view;
-    });
+    final viewModel = context.read<SheetProvider>();
+    viewModel.setSheetViewMode(sheetIndex);
   }
 
   @override
@@ -45,7 +40,6 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     super.initState();
     final viewModel = context.read<SheetProvider>();
     sheetIndex = viewModel.sheetScrollControllers.length;
-    _mode = _Mode.view;
   }
 
   Widget _createHeader(SheetProvider viewModel) {
@@ -59,7 +53,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
                   color: CustomTheme.scale.scale10)),
-          _mode == _Mode.view
+          viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? TextButton(
                   onPressed: viewModel.editColors[sheetIndex] != viewModel.disableColor
                       ? _handlePressEdit
@@ -79,6 +73,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     const controlWidth = 24.0;
     const controlHeight = 24.0;
     final dCount = viewModel.getDCount(schedule.start);
+    final schedulesProvider = context.read<SchedulesProvider>();
 
     return Container(
         height: 24,
@@ -103,7 +98,6 @@ class _ScheduleSheet extends State<ScheduleSheet> {
               child: TextButton(
                   onPressed: () {
                     // TODO 여러 날 스케줄은 어떻게?
-                    final schedulesProvider = context.read<SchedulesProvider>();
                     schedulesProvider.getOneDaySchedules(schedule.start);
                     CustomRouteUtils.push(context, DayPage.routeName,
                         arguments: schedule.start);
@@ -118,7 +112,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                               color: CustomTheme.scale.max,
                               fontSize: 14,
                               fontWeight: FontWeight.w400))))),
-          _mode == _Mode.view
+          viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? Container()
               : Row(children: [
                   SizedBox(
@@ -135,8 +129,11 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                       width: controlWidth,
                       height: controlHeight,
                       child: IconButton(
-                          onPressed: () {
-                            // TODO.
+                          onPressed: () async {
+                            await schedulesProvider.deleteSchedule(schedule.id);
+                            if(schedulesProvider.selectedMonthSchedules.isEmpty){
+                              viewModel.setSheetViewMode(sheetIndex);
+                            }
                           },
                           padding: const EdgeInsets.all(0),
                           icon: SvgPicture.asset(
@@ -155,7 +152,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   }
 
   Widget _createContent(SheetProvider viewModel, BuildContext context) {
-    final schedules = context.watch<SchedulesProvider>().selectedMonthSchedules;
+    final schedules = context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
     final schedulesToShow =
         schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
 
