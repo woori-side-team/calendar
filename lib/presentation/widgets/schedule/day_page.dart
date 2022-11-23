@@ -307,9 +307,7 @@ class DayPage extends StatelessWidget {
                 )),
               ],
             ),
-            const ScheduleSheet(
-              minSizeRatio: 0.03,
-            ),
+            const ScheduleSheet(),
           ],
         ),
         bottomNavigationBar: CustomNavigationBar(

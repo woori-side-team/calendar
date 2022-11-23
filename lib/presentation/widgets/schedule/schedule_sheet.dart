@@ -55,12 +55,14 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   color: CustomTheme.scale.scale10)),
           viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? TextButton(
-                  onPressed: viewModel.editColors[sheetIndex] != viewModel.disableColor
-                      ? _handlePressEdit
-                      : null,
+                  onPressed:
+                      viewModel.editColors[sheetIndex] != viewModel.disableColor
+                          ? _handlePressEdit
+                          : null,
                   child: Text('편집',
-                      style:
-                          TextStyle(fontSize: 17, color: viewModel.editColors[sheetIndex])))
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: viewModel.editColors[sheetIndex])))
               : IconButton(
                   onPressed: _handlePressView,
                   icon:
@@ -200,7 +202,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SheetProvider>();
-    final double minSize = widget.minSizeRatio ?? 0.3;
+    final double minSize = widget.minSizeRatio ?? 0.1;
     final double maxSize = viewModel.getMaxSheetSize(context);
 
     return CustomBottomSheet(
