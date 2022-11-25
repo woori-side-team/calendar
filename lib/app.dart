@@ -2,6 +2,7 @@ import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
+import 'package:calendar/presentation/widgets/schedule/schedule_search_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
 
@@ -34,8 +35,10 @@ class App extends StatelessWidget {
             return CustomRouteUtils.createRoute(() => DayPage(
                   selectedDate: args,
                 ));
-          } else {
+          } else if (routeSettings.name == MonthPage.routeName){
             return CustomRouteUtils.createRoute(() => const MonthPage());
+          } else {
+            return CustomRouteUtils.createRoute(() => const ScheduleSearchPage());
           }
         });
   }

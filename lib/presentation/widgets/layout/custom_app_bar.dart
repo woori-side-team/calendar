@@ -1,5 +1,6 @@
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
+import 'package:calendar/presentation/widgets/schedule/schedule_search_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return IconButton(onPressed: onPressed, icon: icon);
   }
 
-  void _handlePressSearch() {}
+  void _handlePressSearch(BuildContext context) {
+    CustomRouteUtils.push(context, ScheduleSearchPage.routeName);
+  }
 
   void _handlePressMode(BuildContext context) {
     if (modeType == CustomAppBarModeType.month) {
@@ -59,7 +62,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           _createAction(
               icon: SvgPicture.asset('assets/icons/app_bar_search.svg'),
-              onPressed: _handlePressSearch),
+              onPressed: () {
+                _handlePressSearch(context);
+              }),
           _createModeAction(context),
           _createAction(
               icon: SvgPicture.asset('assets/icons/app_bar_profile.svg'),

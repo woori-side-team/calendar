@@ -18,6 +18,7 @@ void main() async {
     final addScheduleUseCase = getIt<AddScheduleUseCase>();
     final getSchedulesAtMonthUseCase = getIt<GetSchedulesAtMonthUseCase>();
     final deleteAllSchedulesUseCase = getIt<DeleteAllSchedulesUseCase>();
+    final searchScheduleUseCase = getIt<SearchScheduleUseCase>();
 
     final model1 = ScheduleModel(
         id: '1',
@@ -35,5 +36,14 @@ void main() async {
     await deleteAllSchedulesUseCase();
     models = await getSchedulesAtMonthUseCase(model1.start);
     expect(models.length, 0);
+
+    await addScheduleUseCase(model1);
+    await addScheduleUseCase(model1.copyWith(id: '2', title: '11'));
+    await addScheduleUseCase(model1.copyWith(id: '3', title: '22', content: '1'));
+    await addScheduleUseCase(model1.copyWith(id: '4', title: '22', content: '2'));
+    var searchedResult = await searchScheduleUseCase('1');
+    expect(searchedResult[0].title, '1');
+    expect(searchedResult[1].title, '11');
+    expect(searchedResult.length, 3);
   });
 }

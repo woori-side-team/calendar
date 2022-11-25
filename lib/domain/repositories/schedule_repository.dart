@@ -15,4 +15,6 @@ abstract class ScheduleRepository {
 
   /// 일정 모두 삭제. (-> 주로 디버깅, 테스트용)
   Future<void> deleteAllSchedules();
+
+  Future<List<ScheduleModel>> getAllSchedules(String inputString);
 }

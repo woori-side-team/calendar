@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
@@ -12,6 +14,8 @@ class SchedulesProvider with ChangeNotifier {
   final GetSchedulesAtMonthUseCase _getSchedulesAtMonthUseCase;
   final DeleteAllSchedulesUseCase _deleteAllSchedulesUseCase;
   final DeleteScheduleUseCase _deleteScheduleUseCase;
+  final SearchScheduleUseCase _searchScheduleUseCase;
+  Timer? _debounce;
 
   /// 변화 있을 때마다 이번 달 일정들을 미리 계산해서 여기에 캐싱.
   List<ScheduleModel> _selectedMonthSchedulesCache = [];
@@ -23,8 +27,12 @@ class SchedulesProvider with ChangeNotifier {
   int _nextStartHour = 9;
   int _nextItemIndex = 0;
 
-  SchedulesProvider(this._addScheduleUseCase, this._getSchedulesAtMonthUseCase,
-      this._deleteAllSchedulesUseCase, this._deleteScheduleUseCase) {
+  SchedulesProvider(
+      this._addScheduleUseCase,
+      this._getSchedulesAtMonthUseCase,
+      this._deleteAllSchedulesUseCase,
+      this._deleteScheduleUseCase,
+      this._searchScheduleUseCase) {
     // 시작 때 필요 데이터 로딩.
     (() async {
       await _loadData();
@@ -73,10 +81,24 @@ class SchedulesProvider with ChangeNotifier {
   List<ScheduleModel> getSortedOneDaySchedules(DateTime day) {
     List<ScheduleModel> sortedList =
         getOneDaySchedules(day).sorted((a, b) => a.start.compareTo(b.start));
-    List<ScheduleModel> sortedAllDayList = sortedList.where((e) => e.type == ScheduleType.allDay).toList();
+    List<ScheduleModel> sortedAllDayList =
+        sortedList.where((e) => e.type == ScheduleType.allDay).toList();
     sortedList.removeWhere((e) => e.type == ScheduleType.allDay);
     sortedList.insertAll(0, sortedAllDayList);
     return sortedList;
+  }
+
+  Future<List<ScheduleModel>> searchSchedules(String inputString) async {
+    List<ScheduleModel> searched = [];
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      searched = await _searchScheduleUseCase(inputString);
+    });
+    // 바로 searched를 반환하면 항상 빈 리스트만 가니까
+    // 그걸 막기 위해 딜레이를 줌
+    // 더 깔쌈한 로직이 없을까
+    await Future.delayed(const Duration(milliseconds: 400));
+    return searched;
   }
 
   /// 테스트용.
