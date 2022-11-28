@@ -8,7 +8,7 @@ import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
 
 class MonthPage extends StatelessWidget {
-  static const routeName = 'month';
+  static const routeName = 'schedule/month';
 
   const MonthPage({super.key});
 
@@ -17,19 +17,14 @@ class MonthPage extends StatelessWidget {
     return Scaffold(
         body: Stack(children: [
           Column(children: const [
-            CustomAppBar(modeType: CustomAppBarModeType.month),
+            CustomAppBar(modeType: CustomAppBarModeType.vertical),
             MonthSelector(),
             MonthView()
           ]),
           const ScheduleSheet()
         ]),
-        bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: () {
-            CustomRouteUtils.push(context, WeekPage.routeName);
-          },
-          onPressChecklist: () {},
-          onPressMemo: () {},
-          onPressSettings: () {},
-        ));
+        bottomNavigationBar: CustomNavigationBar(onPressSchedule: () {
+          CustomRouteUtils.push(context, WeekPage.routeName);
+        }));
   }
 }

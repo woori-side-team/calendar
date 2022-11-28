@@ -1,19 +1,17 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
-import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DayPage extends StatelessWidget {
-  static const routeName = 'day';
+  static const routeName = 'schedule/day';
   final DateTime selectedDate;
 
   const DayPage({super.key, required this.selectedDate});
@@ -237,7 +235,8 @@ class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schedulesProvider = context.watch<SchedulesProvider>();
-    final currentSchedules = schedulesProvider.getSortedOneDaySchedules(selectedDate);
+    final currentSchedules =
+        schedulesProvider.getSortedOneDaySchedules(selectedDate);
 
     return Scaffold(
         backgroundColor: CustomTheme.background.primary,
@@ -310,13 +309,6 @@ class DayPage extends StatelessWidget {
             const ScheduleSheet(),
           ],
         ),
-        bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: () {
-            CustomRouteUtils.push(context, MonthPage.routeName);
-          },
-          onPressChecklist: () {},
-          onPressMemo: () {},
-          onPressSettings: () {},
-        ));
+        bottomNavigationBar: const CustomNavigationBar());
   }
 }

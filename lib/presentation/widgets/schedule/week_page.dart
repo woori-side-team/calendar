@@ -1,14 +1,12 @@
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
-import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/month_selector.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
 import 'package:calendar/presentation/widgets/schedule/week_view.dart';
 import 'package:flutter/material.dart';
 
 class WeekPage extends StatelessWidget {
-  static const routeName = 'week';
+  static const routeName = 'schedule/week';
 
   const WeekPage({super.key});
 
@@ -17,7 +15,7 @@ class WeekPage extends StatelessWidget {
     return Scaffold(
         body: Stack(children: [
           Column(children: [
-            const CustomAppBar(modeType: CustomAppBarModeType.week),
+            const CustomAppBar(modeType: CustomAppBarModeType.horizontal),
             Expanded(
                 child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
@@ -26,13 +24,6 @@ class WeekPage extends StatelessWidget {
           ]),
           const ScheduleSheet()
         ]),
-        bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: () {
-            CustomRouteUtils.push(context, MonthPage.routeName);
-          },
-          onPressChecklist: () {},
-          onPressMemo: () {},
-          onPressSettings: () {},
-        ));
+        bottomNavigationBar: const CustomNavigationBar());
   }
 }

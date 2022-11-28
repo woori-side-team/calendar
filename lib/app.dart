@@ -1,5 +1,7 @@
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/memo/memo_edit_page.dart';
+import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
@@ -26,16 +28,25 @@ class App extends StatelessWidget {
         home: const MonthPage(),
         initialRoute: MonthPage.routeName,
         onGenerateRoute: (routeSettings) {
-          if (routeSettings.name == WeekPage.routeName) {
-            return CustomRouteUtils.createRoute(() => const WeekPage());
-          } else if (routeSettings.name == DayPage.routeName) {
-            // 터치한 날짜
-            final args = routeSettings.arguments as DateTime;
-            return CustomRouteUtils.createRoute(() => DayPage(
-                  selectedDate: args,
-                ));
-          } else {
-            return CustomRouteUtils.createRoute(() => const MonthPage());
+          switch (routeSettings.name) {
+            case WeekPage.routeName:
+              return CustomRouteUtils.createRoute(() => const WeekPage());
+            case DayPage.routeName:
+              // 터치한 날짜
+              final args = routeSettings.arguments as DateTime;
+              return CustomRouteUtils.createRoute(() => DayPage(
+                    selectedDate: args,
+                  ));
+            case MemoGridViewPage.routeName:
+              return CustomRouteUtils.createRoute(
+                  () => const MemoGridViewPage());
+            case MemoListViewPage.routeName:
+              return CustomRouteUtils.createRoute(
+                  () => const MemoListViewPage());
+            case MemoEditPage.routeName:
+              return CustomRouteUtils.createRoute(() => const MemoEditPage());
+            default:
+              return CustomRouteUtils.createRoute(() => const MonthPage());
           }
         });
   }

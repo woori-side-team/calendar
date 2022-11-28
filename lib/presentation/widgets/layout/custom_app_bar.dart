@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 /// 모드 버튼을 어떻게 표시할 건지.
-enum CustomAppBarModeType { month, week, hidden }
+enum CustomAppBarModeType { vertical, horizontal, hidden }
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final CustomAppBarModeType modeType;
@@ -21,9 +21,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   void _handlePressSearch() {}
 
   void _handlePressMode(BuildContext context) {
-    if (modeType == CustomAppBarModeType.month) {
+    if (modeType == CustomAppBarModeType.vertical) {
       CustomRouteUtils.push(context, WeekPage.routeName);
-    } else if (modeType == CustomAppBarModeType.week) {
+    } else if (modeType == CustomAppBarModeType.horizontal) {
       CustomRouteUtils.push(context, MonthPage.routeName);
     } else {
       CustomRouteUtils.push(context, MonthPage.routeName);
@@ -41,7 +41,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     return RotatedBox(
-        quarterTurns: modeType == CustomAppBarModeType.month ? 1 : 0,
+        quarterTurns: modeType == CustomAppBarModeType.vertical ? 1 : 0,
         child: _createAction(
             icon: SvgPicture.asset('assets/icons/app_bar_mode.svg'),
             onPressed: () {

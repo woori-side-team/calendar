@@ -1,19 +1,22 @@
+import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
+import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomNavigationBar extends StatelessWidget {
-  final void Function() onPressSchedule;
-  final void Function() onPressChecklist;
-  final void Function() onPressMemo;
-  final void Function() onPressSettings;
+  final void Function()? onPressSchedule;
+  final void Function()? onPressChecklist;
+  final void Function()? onPressMemo;
+  final void Function()? onPressSettings;
 
   const CustomNavigationBar(
       {super.key,
-      required this.onPressSchedule,
-      required this.onPressChecklist,
-      required this.onPressMemo,
-      required this.onPressSettings});
+      this.onPressSchedule,
+      this.onPressChecklist,
+      this.onPressMemo,
+      this.onPressSettings});
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +25,36 @@ class CustomNavigationBar extends StatelessWidget {
         onDestinationSelected: (value) {
           switch (value) {
             case 0:
-              onPressSchedule();
+              if (onPressSchedule != null) {
+                onPressSchedule!();
+              } else {
+                CustomRouteUtils.push(context, MonthPage.routeName);
+              }
+
               break;
             case 1:
-              onPressChecklist();
+              if (onPressChecklist != null) {
+                onPressChecklist!();
+              } else {
+                CustomRouteUtils.push(context, MonthPage.routeName);
+              }
+
               break;
             case 2:
-              onPressMemo();
+              if (onPressMemo != null) {
+                onPressMemo!();
+              } else {
+                CustomRouteUtils.push(context, MemoGridViewPage.routeName);
+              }
+
               break;
             case 3:
-              onPressSettings();
+              if (onPressSettings != null) {
+                onPressSettings!();
+              } else {
+                // TODO.
+              }
+
               break;
           }
         },

@@ -101,8 +101,8 @@ class CustomDateUtils {
   }
 
   /// 영어 요일 한글로 변환
-  static String getKoreanDayOfWeek(String dayOfWeek){
-    switch(dayOfWeek){
+  static String getKoreanDayOfWeek(String dayOfWeek) {
+    switch (dayOfWeek) {
       case 'Sun':
         return '일';
       case 'Mon':

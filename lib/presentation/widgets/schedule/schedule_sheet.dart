@@ -133,7 +133,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                       child: IconButton(
                           onPressed: () async {
                             await schedulesProvider.deleteSchedule(schedule.id);
-                            if(schedulesProvider.selectedMonthSchedules.isEmpty){
+                            if (schedulesProvider
+                                .selectedMonthSchedules.isEmpty) {
                               viewModel.setSheetViewMode(sheetIndex);
                             }
                           },
@@ -154,7 +155,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   }
 
   Widget _createContent(SheetProvider viewModel, BuildContext context) {
-    final schedules = context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
+    final schedules =
+        context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
     final schedulesToShow =
         schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
 

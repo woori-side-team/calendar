@@ -56,12 +56,12 @@ class SheetProvider with ChangeNotifier {
     });
   }
 
-  void setSheetViewMode(int scrollControllerIndex){
+  void setSheetViewMode(int scrollControllerIndex) {
     _sheetModes[scrollControllerIndex] = SheetMode.view;
     notifyListeners();
   }
 
-  void setSheetEditMode(int scrollControllerIndex){
+  void setSheetEditMode(int scrollControllerIndex) {
     _sheetModes[scrollControllerIndex] = SheetMode.edit;
     notifyListeners();
   }
@@ -70,8 +70,7 @@ class SheetProvider with ChangeNotifier {
   int getDCount(DateTime target) {
     final startDate = DateTime(target.year, target.month, target.day);
     final now = CustomDateUtils.getNow();
-    final nowDate =
-        DateTime(now.year, now.month, now.day);
+    final nowDate = DateTime(now.year, now.month, now.day);
     return startDate.difference(nowDate).inDays;
   }
 
