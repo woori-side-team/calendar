@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 받아오기
+        uses: actions/checkout@main
+
+      - name: JDK 세팅
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '15'
+
+      - name: Android SDK 세팅
+        uses: android-actions/setup-android@v2
+
+      - name: Flutter SDK 세팅
+        uses: subosito/flutter-action@v1.5.3
+        with:
+          channel: 'stable'
+
+      - name: 의존성 설치
+        run: flutter pub get
+
+      - name: 코드 생성
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 결과물들 모을 폴더 생성
+        run: mkdir -p releases
+
+      - name: 테스트용 apk 빌드
+        run: |
+          flutter build apk --release
+          cp build/app/outputs/flutter-apk/app-release.apk releases/calendar-demo.apk
+
+      - name: GitHub release에 업로드
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'releases/*'
