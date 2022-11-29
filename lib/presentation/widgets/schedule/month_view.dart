@@ -1,14 +1,12 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
-import 'package:calendar/presentation/widgets/schedule/day_page.dart';
+import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
-import '../common/marker_colors.dart';
 
 class MonthView extends StatelessWidget {
   static const _dayNames = ['일', '월', '화', '수', '목', '금', '토'];
@@ -111,7 +109,8 @@ class MonthView extends StatelessWidget {
       onTap: () {
         final schedulesProvider = context.read<SchedulesProvider>();
         schedulesProvider.getOneDaySchedules(dayDate);
-        CustomRouteUtils.push(context, DayPage.routeName, arguments: dayDate);
+        context.pushNamed('dayPage',
+            params: {'selectedDate': CustomDateUtils.dateToString(dayDate)});
       },
       child: Container(
           constraints: const BoxConstraints(minHeight: 58),

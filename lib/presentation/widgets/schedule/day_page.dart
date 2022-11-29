@@ -244,24 +244,28 @@ class DayPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FloatingActionButton(
+              heroTag: 'Clear',
               onPressed: () async {
                 await schedulesProvider.deleteAllSchedules();
               },
               child: const Text('C'),
             ),
             FloatingActionButton(
+              heroTag: 'Add2',
               onPressed: () async {
                 await schedulesProvider.generateHoursSchedule(2, selectedDate);
               },
               child: const Text('2'),
             ),
             FloatingActionButton(
+              heroTag: 'Add3',
               onPressed: () async {
                 await schedulesProvider.generateHoursSchedule(3, selectedDate);
               },
               child: const Text('3'),
             ),
             FloatingActionButton(
+              heroTag: 'All',
               onPressed: () async {
                 await schedulesProvider.generateAllDaySchedule(selectedDate);
               },
@@ -275,7 +279,10 @@ class DayPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+                const CustomAppBar(actions: [
+                  CustomAppBarSearchButton(),
+                  CustomAppBarProfileButton()
+                ]),
                 _createDateCard(date: selectedDate),
                 Flexible(
                     child: Stack(

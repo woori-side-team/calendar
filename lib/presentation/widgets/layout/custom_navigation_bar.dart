@@ -1,9 +1,7 @@
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
-import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
-import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   final void Function()? onPressSchedule;
@@ -28,7 +26,7 @@ class CustomNavigationBar extends StatelessWidget {
               if (onPressSchedule != null) {
                 onPressSchedule!();
               } else {
-                CustomRouteUtils.push(context, MonthPage.routeName);
+                context.pushNamed('monthPage');
               }
 
               break;
@@ -36,7 +34,7 @@ class CustomNavigationBar extends StatelessWidget {
               if (onPressChecklist != null) {
                 onPressChecklist!();
               } else {
-                CustomRouteUtils.push(context, MonthPage.routeName);
+                // TODO.
               }
 
               break;
@@ -44,7 +42,7 @@ class CustomNavigationBar extends StatelessWidget {
               if (onPressMemo != null) {
                 onPressMemo!();
               } else {
-                CustomRouteUtils.push(context, MemoGridViewPage.routeName);
+                context.pushNamed('memoGridViewPage');
               }
 
               break;

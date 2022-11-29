@@ -11,7 +11,7 @@ class MemoEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Column(children: const [
-          CustomAppBar(modeType: CustomAppBarModeType.horizontal),
+          CustomAppBar(actions: []),
           Text('Memo edit page')
         ]),
         bottomNavigationBar: const CustomNavigationBar());

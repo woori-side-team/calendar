@@ -122,4 +122,12 @@ class CustomDateUtils {
         return '';
     }
   }
+
+  static String dateToString(DateTime date) {
+    return '${date.millisecondsSinceEpoch}';
+  }
+
+  static DateTime stringToDate(String value) {
+    return DateTime.fromMillisecondsSinceEpoch(int.parse(value));
+  }
 }
