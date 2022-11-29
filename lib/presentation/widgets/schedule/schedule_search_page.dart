@@ -1,5 +1,4 @@
-import 'package:calendar/domain/models/schedule_model.dart';
-import 'package:calendar/presentation/providers/schedules_provider.dart';
+import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -14,16 +13,23 @@ class ScheduleSearchPage extends StatefulWidget {
 }
 
 class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
-  List<ScheduleModel> searched = [];
+  late ScheduleSearchProvider viewModel;
 
   void _onChanged(String text) async {
-    final viewModel = context.read<SchedulesProvider>();
-    searched = await viewModel.searchSchedules(text);
-    setState(() {});
+    final viewModel = context.read<ScheduleSearchProvider>();
+    await viewModel.searchSchedules(text);
+  }
+
+  @override
+  void dispose() {
+    viewModel.textEditingController.text = '';
+    viewModel.searched.clear();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    viewModel = context.watch<ScheduleSearchProvider>();
     return Scaffold(
       body: Column(
         children: [
@@ -31,19 +37,21 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
             height: 100,
           ),
           TextField(
+            controller: viewModel.textEditingController,
             onChanged: _onChanged,
           ),
           SizedBox(
             height: 500,
             child: ListView.builder(
-                itemCount: searched.length,
+                itemCount: viewModel.searched.length,
                 itemBuilder: (context, index) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text('제목: ${searched[index].title}'),
-                      Text('내용: ${searched[index].content}'),
-                      Text(DateFormat('yy-MM-dd HH:mm').format(searched[index].start)),
+                      Text('제목: ${viewModel.searched[index].title}'),
+                      Text('내용: ${viewModel.searched[index].content}'),
+                      Text(DateFormat('yy-MM-dd HH:mm')
+                          .format(viewModel.searched[index].start)),
                     ],
                   );
                 }),
