@@ -1,12 +1,12 @@
-import 'package:calendar/common/utils/custom_route_utils.dart';
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_bottom_sheet.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
-import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../common/marker_colors.dart';
@@ -101,8 +101,10 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   onPressed: () {
                     // TODO 여러 날 스케줄은 어떻게?
                     schedulesProvider.getOneDaySchedules(schedule.start);
-                    CustomRouteUtils.push(context, DayPage.routeName,
-                        arguments: schedule.start);
+                    context.pushNamed('dayPage', params: {
+                      'selectedDate':
+                          CustomDateUtils.dateToString(schedule.start)
+                    });
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
@@ -133,7 +135,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                       child: IconButton(
                           onPressed: () async {
                             await schedulesProvider.deleteSchedule(schedule.id);
-                            if(schedulesProvider.selectedMonthSchedules.isEmpty){
+                            if (schedulesProvider
+                                .selectedMonthSchedules.isEmpty) {
                               viewModel.setSheetViewMode(sheetIndex);
                             }
                           },
@@ -154,7 +157,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   }
 
   Widget _createContent(SheetProvider viewModel, BuildContext context) {
-    final schedules = context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
+    final schedules =
+        context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
     final schedulesToShow =
         schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
 

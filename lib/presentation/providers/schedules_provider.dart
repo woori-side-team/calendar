@@ -73,7 +73,8 @@ class SchedulesProvider with ChangeNotifier {
   List<ScheduleModel> getSortedOneDaySchedules(DateTime day) {
     List<ScheduleModel> sortedList =
         getOneDaySchedules(day).sorted((a, b) => a.start.compareTo(b.start));
-    List<ScheduleModel> sortedAllDayList = sortedList.where((e) => e.type == ScheduleType.allDay).toList();
+    List<ScheduleModel> sortedAllDayList =
+        sortedList.where((e) => e.type == ScheduleType.allDay).toList();
     sortedList.removeWhere((e) => e.type == ScheduleType.allDay);
     sortedList.insertAll(0, sortedAllDayList);
     return sortedList;

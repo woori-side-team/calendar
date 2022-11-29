@@ -1,14 +1,13 @@
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/schedule/month_selector.dart';
 import 'package:calendar/presentation/widgets/schedule/month_view.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
-import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MonthPage extends StatelessWidget {
-  static const routeName = 'month';
+  static const routeName = 'schedule/month';
 
   const MonthPage({super.key});
 
@@ -16,20 +15,25 @@ class MonthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(children: [
-          Column(children: const [
-            CustomAppBar(modeType: CustomAppBarModeType.month),
-            MonthSelector(),
-            MonthView()
+          Column(children: [
+            CustomAppBar(actions: [
+              const CustomAppBarSearchButton(),
+              CustomAppBarModeButton(
+                  type: CustomAppBarModeType.vertical,
+                  onPressed: () {
+                    context.pushNamed('weekPage');
+                  }),
+              const CustomAppBarProfileButton()
+            ]),
+            const MonthSelector(),
+            const MonthView()
           ]),
           const ScheduleSheet()
         ]),
         bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: () {
-            CustomRouteUtils.push(context, WeekPage.routeName);
-          },
-          onPressChecklist: () {},
-          onPressMemo: () {},
-          onPressSettings: () {},
-        ));
+            selectedType: CustomNavigationType.schedule,
+            onPressSchedule: () {
+              context.pushNamed('weekPage');
+            }));
   }
 }
