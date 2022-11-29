@@ -1,3 +1,4 @@
+import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +31,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
   @override
   Widget build(BuildContext context) {
     viewModel = context.watch<ScheduleSearchProvider>();
+    List<ScheduleModel> searched = viewModel.searched;
     return Scaffold(
       body: Column(
         children: [
@@ -43,15 +45,15 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
           SizedBox(
             height: 500,
             child: ListView.builder(
-                itemCount: viewModel.searched.length,
+                itemCount: searched.length,
                 itemBuilder: (context, index) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text('제목: ${viewModel.searched[index].title}'),
-                      Text('내용: ${viewModel.searched[index].content}'),
+                      Text('제목: ${searched[index].title}'),
+                      Text('내용: ${searched[index].content}'),
                       Text(DateFormat('yy-MM-dd HH:mm')
-                          .format(viewModel.searched[index].start)),
+                          .format(searched[index].start)),
                     ],
                   );
                 }),
