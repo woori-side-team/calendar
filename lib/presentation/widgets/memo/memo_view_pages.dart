@@ -47,7 +47,8 @@ class MemoGridViewPage extends StatelessWidget {
                       child: Column(children: [const _MemoMarkers(), memo])))
                   .toList())
         ]),
-        bottomNavigationBar: const CustomNavigationBar());
+        bottomNavigationBar:
+            const CustomNavigationBar(selectedType: CustomNavigationType.memo));
   }
 }
 
@@ -92,7 +93,8 @@ class MemoListViewPage extends StatelessWidget {
                       child: Column(children: [const _MemoMarkers(), memo])))
                   .toList())
         ]),
-        bottomNavigationBar: const CustomNavigationBar());
+        bottomNavigationBar:
+            const CustomNavigationBar(selectedType: CustomNavigationType.memo));
   }
 }
 

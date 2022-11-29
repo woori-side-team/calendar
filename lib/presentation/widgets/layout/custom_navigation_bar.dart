@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+enum CustomNavigationType { schedule, checklist, memo, settings }
+
 class CustomNavigationBar extends StatelessWidget {
+  final CustomNavigationType selectedType;
   final void Function()? onPressSchedule;
   final void Function()? onPressChecklist;
   final void Function()? onPressMemo;
@@ -11,6 +14,7 @@ class CustomNavigationBar extends StatelessWidget {
 
   const CustomNavigationBar(
       {super.key,
+      required this.selectedType,
       this.onPressSchedule,
       this.onPressChecklist,
       this.onPressMemo,
@@ -20,6 +24,7 @@ class CustomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     // 참고: 모든 스타일이 인수로 뚫려있진 않아서, 일부 스타일은 app.dart의 ThemeData에서 설정해야 함.
     return NavigationBar(
+        selectedIndex: selectedType.index,
         onDestinationSelected: (value) {
           switch (value) {
             case 0:

@@ -18,7 +18,8 @@ class SectionTitle extends StatelessWidget {
         child: Row(children: [
           icon,
           const SizedBox(width: 4),
-          Text(title, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w600))
+          Text(title,
+              style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w600))
         ]));
   }
 }

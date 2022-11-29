@@ -14,6 +14,7 @@ class MemoEditPage extends StatelessWidget {
           CustomAppBar(actions: []),
           Text('Memo edit page')
         ]),
-        bottomNavigationBar: const CustomNavigationBar());
+        bottomNavigationBar:
+            const CustomNavigationBar(selectedType: CustomNavigationType.memo));
   }
 }

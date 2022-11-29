@@ -30,8 +30,10 @@ class MonthPage extends StatelessWidget {
           ]),
           const ScheduleSheet()
         ]),
-        bottomNavigationBar: CustomNavigationBar(onPressSchedule: () {
-          context.pushNamed('weekPage');
-        }));
+        bottomNavigationBar: CustomNavigationBar(
+            selectedType: CustomNavigationType.schedule,
+            onPressSchedule: () {
+              context.pushNamed('weekPage');
+            }));
   }
 }

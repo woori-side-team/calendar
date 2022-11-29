@@ -33,6 +33,7 @@ class WeekPage extends StatelessWidget {
           ]),
           const ScheduleSheet()
         ]),
-        bottomNavigationBar: const CustomNavigationBar());
+        bottomNavigationBar: const CustomNavigationBar(
+            selectedType: CustomNavigationType.schedule));
   }
 }

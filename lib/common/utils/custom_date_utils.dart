@@ -123,10 +123,13 @@ class CustomDateUtils {
     }
   }
 
+  /// Route 매개변수 등에 사용하기 위한 문자열.
+  /// 빈칸없음 & 정확한 파싱 위해 Unix time 사용.
   static String dateToString(DateTime date) {
     return '${date.millisecondsSinceEpoch}';
   }
 
+  /// [dateToString]의 반대.
   static DateTime stringToDate(String value) {
     return DateTime.fromMillisecondsSinceEpoch(int.parse(value));
   }
