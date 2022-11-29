@@ -3,6 +3,7 @@ import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
+import 'package:calendar/presentation/widgets/common/section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -17,35 +18,14 @@ class WeekView extends StatelessWidget {
         margin: const EdgeInsets.only(top: 37, bottom: 72),
         child: Column(children: [
           const _DayRow(),
-          _SectionTitle(
+          SubsectionTitle(
               icon: Image.asset('assets/icons/week_view_checklist.png'),
               title: '금주의 체크리스트'),
           const _ChecklistColumn(),
-          _SectionTitle(
+          SubsectionTitle(
               icon: Image.asset('assets/icons/week_view_memo.png'),
               title: '꼭 잊지 말아야 할 메모'),
           const _MemoRow()
-        ]));
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final Widget icon;
-  final String title;
-
-  const _SectionTitle({super.key, required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.only(right: 32, bottom: 10),
-        padding: const EdgeInsets.only(top: 14, bottom: 14, left: 20),
-        decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: CustomTheme.gray.gray3))),
-        child: Row(children: [
-          icon,
-          const SizedBox(width: 4),
-          Text(title, style: const TextStyle(fontSize: 18))
         ]));
   }
 }
