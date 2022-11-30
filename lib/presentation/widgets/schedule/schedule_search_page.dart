@@ -1,8 +1,8 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
+import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
-import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +45,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
       child: TextField(
         controller: viewModel.textEditingController,
         onChanged: _onChanged,
-        cursorHeight: 15,
+        cursorHeight: 18,
         style: const TextStyle(fontSize: 18),
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(left: 14),
@@ -54,7 +54,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
             borderRadius: BorderRadius.circular(12),
           ),
           hintText: '일정을 입력하세요.',
-          hintStyle: TextStyle(color: CustomTheme.gray.gray2, fontSize: 15),
+          hintStyle: TextStyle(color: CustomTheme.gray.gray2, fontSize: 18),
           fillColor: CustomTheme.background.secondary,
           filled: true,
         ),
@@ -141,7 +141,9 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
             height: 38,
             decoration: BoxDecoration(
               color: dContainerColor,
-              borderRadius: BorderRadius.circular(39),
+              borderRadius: schedule.type == ScheduleType.allDay
+                  ? null
+                  : BorderRadius.circular(39),
             ),
             child: Text(
               dString,
@@ -234,56 +236,53 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
   Widget build(BuildContext context) {
     viewModel = context.watch<ScheduleSearchProvider>();
     return Scaffold(
-      body: Stack(children: [
-        Column(
-          children: [
-            const CustomAppBar(modeType: CustomAppBarModeType.hidden),
-            _createTextField(viewModel),
-            Container(
-              height: 1,
-              color: CustomTheme.gray.gray4,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 14, left: 20),
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  '일정',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: CustomTheme.gray.gray2,
-                  ),
+      body: Column(
+        children: [
+          const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+          _createTextField(viewModel),
+          Container(
+            height: 1,
+            color: CustomTheme.gray.gray4,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 14, left: 20),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                '일정',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: CustomTheme.gray.gray2,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 4,
-            ),
-            Flexible(
-              child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: viewModel.searched.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < viewModel.todayAndFutureSchedules.length) {
-                      return _createScheduleRow(
-                          viewModel, index, TimeState.todayAndFuture);
-                    } else if (index >
-                        viewModel.todayAndFutureSchedules.length) {
-                      return _createScheduleRow(
-                        viewModel,
-                        index - viewModel.todayAndFutureSchedules.length - 1,
-                        TimeState.past,
-                      );
-                    } else {
-                      return const SizedBox(height: 28);
-                    }
-                  }),
-            ),
-            const SizedBox(height: 28),
-          ],
-        ),
-        const ScheduleSheet(minSizeRatio: 0.06),
-      ]),
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Flexible(
+            child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: viewModel.searched.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < viewModel.todayAndFutureSchedules.length) {
+                    return _createScheduleRow(
+                        viewModel, index, TimeState.todayAndFuture);
+                  } else if (index >
+                      viewModel.todayAndFutureSchedules.length) {
+                    return _createScheduleRow(
+                      viewModel,
+                      index - viewModel.todayAndFutureSchedules.length - 1,
+                      TimeState.past,
+                    );
+                  } else {
+                    return const SizedBox(height: 28);
+                  }
+                }),
+          ),
+          const SizedBox(height: 28),
+        ],
+      ),
       bottomNavigationBar: CustomNavigationBar(
         onPressSchedule: () {
           CustomRouteUtils.push(context, MonthPage.routeName);
