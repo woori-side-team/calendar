@@ -101,8 +101,8 @@ class CustomDateUtils {
   }
 
   /// 영어 요일 한글로 변환
-  static String getKoreanDayOfWeek(String dayOfWeek){
-    switch(dayOfWeek){
+  static String getKoreanDayOfWeek(String dayOfWeek) {
+    switch (dayOfWeek) {
       case 'Sun':
         return '일';
       case 'Mon':
@@ -121,5 +121,18 @@ class CustomDateUtils {
         assert(false, 'CustomDateUtils: getKoreanDayOfWeek error.');
         return '';
     }
+  }
+
+  /// DateTime.now()와 target이 며칠 차이나는지 반환
+  static int getDCount(DateTime target) {
+    final startDate = DateTime(target.year, target.month, target.day);
+    final now = getNow();
+    final nowDate = DateTime(now.year, now.month, now.day);
+    return startDate.difference(nowDate).inDays;
+  }
+
+  /// 해당 날짜의 자정 반환
+  static DateTime getMidnightOfThisDay(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 }

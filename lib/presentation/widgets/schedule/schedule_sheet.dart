@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
@@ -74,7 +75,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
       SheetProvider viewModel, BuildContext context, ScheduleModel schedule) {
     const controlWidth = 24.0;
     const controlHeight = 24.0;
-    final dCount = viewModel.getDCount(schedule.start);
+    final dCount = CustomDateUtils.getDCount(schedule.start);
     final schedulesProvider = context.read<SchedulesProvider>();
 
     return Container(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
@@ -26,5 +27,25 @@ class ScheduleSearchProvider with ChangeNotifier {
       _searched.addAll(await _searchScheduleUseCase(inputString));
       notifyListeners();
     });
+  }
+
+  List<ScheduleModel> get pastSchedules {
+    return searched
+        .where((e) => e.start.isBefore(CustomDateUtils.getMidnightOfThisDay(CustomDateUtils.getNow())))
+        .toList();
+  }
+
+  List<ScheduleModel> get todayAndFutureSchedules {
+    return searched
+        .where((e) => e.start.isAfter(CustomDateUtils.getMidnightOfThisDay(CustomDateUtils.getNow())))
+        .toList();
+  }
+
+  bool isSearchKeywordInTitle(ScheduleModel schedule) {
+    return schedule.title.contains(_textEditingController.text);
+  }
+
+  bool isSearchKeywordInContent(ScheduleModel schedule) {
+    return schedule.content.contains(_textEditingController.text);
   }
 }
