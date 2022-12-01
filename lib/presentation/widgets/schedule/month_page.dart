@@ -17,7 +17,7 @@ class MonthPage extends StatelessWidget {
         body: Stack(children: [
           Column(children: [
             CustomAppBar(actions: [
-              const CustomAppBarSearchButton(),
+              const CustomAppBarSearchButton(type: PageType.schedule),
               CustomAppBarModeButton(
                   type: CustomAppBarModeType.vertical,
                   onPressed: () {

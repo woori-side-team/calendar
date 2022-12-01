@@ -280,7 +280,7 @@ class DayPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CustomAppBar(actions: [
-                  CustomAppBarSearchButton(),
+                  CustomAppBarSearchButton(type: PageType.schedule),
                   CustomAppBarProfileButton()
                 ]),
                 _createDateCard(date: selectedDate),

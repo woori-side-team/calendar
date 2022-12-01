@@ -24,7 +24,7 @@ class MemoGridViewPage extends StatelessWidget {
     return Scaffold(
         body: Column(children: [
           CustomAppBar(actions: [
-            const CustomAppBarSearchButton(),
+            const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.vertical,
                 onPressed: () {
@@ -70,7 +70,7 @@ class MemoListViewPage extends StatelessWidget {
     return Scaffold(
         body: Column(children: [
           CustomAppBar(actions: [
-            const CustomAppBarSearchButton(),
+            const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.horizontal,
                 onPressed: () {

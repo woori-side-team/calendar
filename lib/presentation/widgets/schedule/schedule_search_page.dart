@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import '../../../common/utils/custom_route_utils.dart';
 import '../common/custom_theme.dart';
 import '../layout/custom_navigation_bar.dart';
-import 'month_page.dart';
 
 enum TimeState { past, todayAndFuture }
 
@@ -238,7 +235,10 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+          const CustomAppBar(actions: [
+            CustomAppBarSearchButton(type: PageType.schedule),
+            CustomAppBarProfileButton()
+          ]),
           _createTextField(viewModel),
           Container(
             height: 1,
@@ -283,14 +283,8 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
           const SizedBox(height: 28),
         ],
       ),
-      bottomNavigationBar: CustomNavigationBar(
-        onPressSchedule: () {
-          CustomRouteUtils.push(context, MonthPage.routeName);
-        },
-        onPressChecklist: () {},
-        onPressMemo: () {},
-        onPressSettings: () {},
-      ),
+      bottomNavigationBar: const CustomNavigationBar(
+          selectedType: CustomNavigationType.schedule),
     );
   }
 }

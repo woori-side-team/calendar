@@ -46,11 +46,12 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
           child: DayPage(
               selectedDate: DateTime.fromMillisecondsSinceEpoch(
                   int.parse(state.params['selectedDate']!))))),
+  // 검색 창은 뒤로가기가 되게끔
   GoRoute(
       name: 'scheduleSearchPage',
       path: '/schedule/search',
-      pageBuilder: (context, state) =>
-          const NoTransitionPage(child: ScheduleSearchPage())),
+      builder: (context, state) =>
+          const ScheduleSearchPage()),
   GoRoute(
       name: 'memoGridViewPage',
       path: '/memo/grid',

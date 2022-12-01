@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget> actions;
@@ -21,14 +22,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
+enum PageType {
+  schedule, memo
+}
+
 /// 검색 버튼.
 class CustomAppBarSearchButton extends StatelessWidget {
-  const CustomAppBarSearchButton({super.key});
+  final String _scheduleSearchPageName = 'scheduleSearchPage';
+  final PageType type;
+
+  const CustomAppBarSearchButton({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        onPressed: () {},
+        onPressed: () {
+          switch(type){
+            case PageType.schedule:
+              context.pushNamed(_scheduleSearchPageName);
+              break;
+            case PageType.memo:
+              // TODO: Handle this case.
+              break;
+          }
+        },
         icon: SvgPicture.asset('assets/icons/app_bar_search.svg'));
   }
 }
