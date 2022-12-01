@@ -48,6 +48,9 @@ dependencies:
   get_it: ^7.2.0
   injectable: ^1.5.4
 
+  # Routing
+  go_router: ^5.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

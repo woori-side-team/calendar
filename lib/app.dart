@@ -1,10 +1,12 @@
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
+import 'package:calendar/presentation/widgets/memo/memo_edit_page.dart';
+import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_search_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -21,25 +23,47 @@ class App extends StatelessWidget {
     final customThemeData = ThemeData(
         fontFamily: 'Pretendard', navigationBarTheme: customNavigationBarTheme);
 
-    return MaterialApp(
-        title: 'Calendar',
-        theme: customThemeData,
-        home: const MonthPage(),
-        initialRoute: MonthPage.routeName,
-        onGenerateRoute: (routeSettings) {
-          if (routeSettings.name == WeekPage.routeName) {
-            return CustomRouteUtils.createRoute(() => const WeekPage());
-          } else if (routeSettings.name == DayPage.routeName) {
-            // 터치한 날짜
-            final args = routeSettings.arguments as DateTime;
-            return CustomRouteUtils.createRoute(() => DayPage(
-                  selectedDate: args,
-                ));
-          } else if (routeSettings.name == MonthPage.routeName){
-            return CustomRouteUtils.createRoute(() => const MonthPage());
-          } else {
-            return CustomRouteUtils.createRoute(() => const ScheduleSearchPage());
-          }
-        });
+    return MaterialApp.router(
+        title: 'Calendar', theme: customThemeData, routerConfig: _router);
   }
 }
+
+final _router = GoRouter(initialLocation: '/schedule/month', routes: [
+  GoRoute(
+      name: 'monthPage',
+      path: '/schedule/month',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: MonthPage())),
+  GoRoute(
+      name: 'weekPage',
+      path: '/schedule/week',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: WeekPage())),
+  GoRoute(
+      name: 'dayPage',
+      path: '/schedule/day/:selectedDate',
+      pageBuilder: (context, state) => NoTransitionPage(
+          child: DayPage(
+              selectedDate: DateTime.fromMillisecondsSinceEpoch(
+                  int.parse(state.params['selectedDate']!))))),
+  GoRoute(
+      name: 'scheduleSearchPage',
+      path: '/schedule/search',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: ScheduleSearchPage())),
+  GoRoute(
+      name: 'memoGridViewPage',
+      path: '/memo/grid',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: MemoGridViewPage())),
+  GoRoute(
+      name: 'memoListViewPage',
+      path: '/memo/list',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: MemoListViewPage())),
+  GoRoute(
+      name: 'memoEditPage',
+      path: '/memo/edit',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: MemoEditPage())),
+]);

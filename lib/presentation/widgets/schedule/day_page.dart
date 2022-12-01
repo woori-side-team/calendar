@@ -1,19 +1,17 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
-import 'package:calendar/common/utils/custom_route_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
-import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DayPage extends StatelessWidget {
-  static const routeName = 'day';
+  static const routeName = 'schedule/day';
   final DateTime selectedDate;
 
   const DayPage({super.key, required this.selectedDate});
@@ -237,7 +235,8 @@ class DayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schedulesProvider = context.watch<SchedulesProvider>();
-    final currentSchedules = schedulesProvider.getSortedOneDaySchedules(selectedDate);
+    final currentSchedules =
+        schedulesProvider.getSortedOneDaySchedules(selectedDate);
 
     return Scaffold(
         backgroundColor: CustomTheme.background.primary,
@@ -245,24 +244,28 @@ class DayPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FloatingActionButton(
+              heroTag: 'Clear',
               onPressed: () async {
                 await schedulesProvider.deleteAllSchedules();
               },
               child: const Text('C'),
             ),
             FloatingActionButton(
+              heroTag: 'Add2',
               onPressed: () async {
                 await schedulesProvider.generateHoursSchedule(2, selectedDate);
               },
               child: const Text('2'),
             ),
             FloatingActionButton(
+              heroTag: 'Add3',
               onPressed: () async {
                 await schedulesProvider.generateHoursSchedule(3, selectedDate);
               },
               child: const Text('3'),
             ),
             FloatingActionButton(
+              heroTag: 'All',
               onPressed: () async {
                 await schedulesProvider.generateAllDaySchedule(selectedDate);
               },
@@ -276,7 +279,10 @@ class DayPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CustomAppBar(modeType: CustomAppBarModeType.hidden),
+                const CustomAppBar(actions: [
+                  CustomAppBarSearchButton(),
+                  CustomAppBarProfileButton()
+                ]),
                 _createDateCard(date: selectedDate),
                 Flexible(
                     child: Stack(
@@ -310,13 +316,7 @@ class DayPage extends StatelessWidget {
             const ScheduleSheet(minSizeRatio: 0.03),
           ],
         ),
-        bottomNavigationBar: CustomNavigationBar(
-          onPressSchedule: () {
-            CustomRouteUtils.push(context, MonthPage.routeName);
-          },
-          onPressChecklist: () {},
-          onPressMemo: () {},
-          onPressSettings: () {},
-        ));
+        bottomNavigationBar: const CustomNavigationBar(
+            selectedType: CustomNavigationType.schedule));
   }
 }

@@ -55,7 +55,7 @@ class SearchScheduleUseCase {
   const SearchScheduleUseCase(this._scheduleRepository);
 
   Future<List<ScheduleModel>> call(String inputString) async {
-    if(inputString == '') return [];
+    if (inputString == '') return [];
 
     var schedules = await _scheduleRepository.getAllSchedules(inputString);
     var searchedSchedules = schedules

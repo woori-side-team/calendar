@@ -56,12 +56,12 @@ class SheetProvider with ChangeNotifier {
     });
   }
 
-  void setSheetViewMode(int scrollControllerIndex){
+  void setSheetViewMode(int scrollControllerIndex) {
     _sheetModes[scrollControllerIndex] = SheetMode.view;
     notifyListeners();
   }
 
-  void setSheetEditMode(int scrollControllerIndex){
+  void setSheetEditMode(int scrollControllerIndex) {
     _sheetModes[scrollControllerIndex] = SheetMode.edit;
     notifyListeners();
   }
