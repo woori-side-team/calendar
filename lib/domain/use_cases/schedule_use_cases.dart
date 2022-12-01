@@ -47,3 +47,22 @@ class DeleteScheduleUseCase {
     await _scheduleRepository.deleteSchedule(id);
   }
 }
+
+@injectable
+class SearchScheduleUseCase {
+  final ScheduleRepository _scheduleRepository;
+
+  const SearchScheduleUseCase(this._scheduleRepository);
+
+  Future<List<ScheduleModel>> call(String inputString) async {
+    if (inputString == '') return [];
+
+    var schedules = await _scheduleRepository.getAllSchedules(inputString);
+    var searchedSchedules = schedules
+        .where((e) =>
+            e.title.contains(inputString) || e.content.contains(inputString))
+        .toList();
+    searchedSchedules.sort((a, b) => a.start.compareTo(b.start));
+    return searchedSchedules;
+  }
+}

@@ -25,7 +25,7 @@ class DayPage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(14)),
+      BoxDecoration(color: color, borderRadius: BorderRadius.circular(14)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -100,11 +100,11 @@ class DayPage extends StatelessWidget {
 
     return Text(
       '${DateFormat('MM.dd').format(schedule.start)} '
-      '$startDayOfWeek '
-      '${DateFormat('H:mm').format(schedule.start)} '
-      '~ ${DateFormat('MM.dd').format(schedule.end)} '
-      '$endDayOfWeek '
-      '$endHour',
+          '$startDayOfWeek '
+          '${DateFormat('H:mm').format(schedule.start)} '
+          '~ ${DateFormat('MM.dd').format(schedule.end)} '
+          '$endDayOfWeek '
+          '$endHour',
       style: TextStyle(
         fontSize: 15,
         color: CustomTheme.scale.scale8.withOpacity(0.5),
@@ -186,15 +186,15 @@ class DayPage extends StatelessWidget {
                     right: 12),
                 child: schedule.type == ScheduleType.hours
                     ? _createLimitedScheduleTextContainer(
-                        title: title,
-                        content: content,
-                        color: color,
-                      )
+                  title: title,
+                  content: content,
+                  color: color,
+                )
                     : _createAllDayScheduleTextContainer(
-                        title: title,
-                        content: content,
-                        color: color,
-                      ),
+                  title: title,
+                  content: content,
+                  color: color,
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -286,34 +286,34 @@ class DayPage extends StatelessWidget {
                 _createDateCard(date: selectedDate),
                 Flexible(
                     child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 69.0),
-                      child: VerticalDivider(
-                        color: CustomTheme.scale.scale7,
-                        indent: 0,
-                        endIndent: 0,
-                        width: 0,
-                        thickness: 1,
-                      ),
-                    ),
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: currentSchedules.length + 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index != currentSchedules.length) {
-                          return _createScheduleRow(currentSchedules[index]);
-                        }
-                        // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
-                        return const SizedBox(height: 50);
-                      },
-                    ),
-                  ],
-                )),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 69.0),
+                          child: VerticalDivider(
+                            color: CustomTheme.scale.scale7,
+                            indent: 0,
+                            endIndent: 0,
+                            width: 0,
+                            thickness: 1,
+                          ),
+                        ),
+                        ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: currentSchedules.length + 1,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index != currentSchedules.length) {
+                              return _createScheduleRow(currentSchedules[index]);
+                            }
+                            // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
+                            return const SizedBox(height: 50);
+                          },
+                        ),
+                      ],
+                    )),
               ],
             ),
-            const ScheduleSheet(),
+            const ScheduleSheet(minSizeRatio: 0.03),
           ],
         ),
         bottomNavigationBar: const CustomNavigationBar(

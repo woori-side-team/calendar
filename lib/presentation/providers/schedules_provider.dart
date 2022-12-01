@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
@@ -70,6 +72,9 @@ class SchedulesProvider with ChangeNotifier {
         .toList();
   }
 
+  /// [day]의 스케줄 리스트를 시간순으로 오름차순하고
+  /// [ScheduleType]이 [ScheduleType.allDay]인 스케줄을
+  /// 리스트의 앞으로 옮긴 리스트를 반환
   List<ScheduleModel> getSortedOneDaySchedules(DateTime day) {
     List<ScheduleModel> sortedList =
         getOneDaySchedules(day).sorted((a, b) => a.start.compareTo(b.start));

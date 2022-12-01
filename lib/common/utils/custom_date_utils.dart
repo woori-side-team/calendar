@@ -123,6 +123,19 @@ class CustomDateUtils {
     }
   }
 
+  /// DateTime.now()와 target이 며칠 차이나는지 반환
+  static int getDCount(DateTime target) {
+    final startDate = DateTime(target.year, target.month, target.day);
+    final now = getNow();
+    final nowDate = DateTime(now.year, now.month, now.day);
+    return startDate.difference(nowDate).inDays;
+  }
+
+  /// 해당 날짜의 자정 반환
+  static DateTime getMidnightOfThisDay(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  }
+
   /// Route 매개변수 등에 사용하기 위한 문자열.
   /// 빈칸없음 & 정확한 파싱 위해 Unix time 사용.
   static String dateToString(DateTime date) {

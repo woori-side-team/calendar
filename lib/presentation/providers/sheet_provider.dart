@@ -66,14 +66,6 @@ class SheetProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// DateTime.now()와 target이 며칠 차이나는지 반환
-  int getDCount(DateTime target) {
-    final startDate = DateTime(target.year, target.month, target.day);
-    final now = CustomDateUtils.getNow();
-    final nowDate = DateTime(now.year, now.month, now.day);
-    return startDate.difference(nowDate).inDays;
-  }
-
   double getMaxSheetSize(BuildContext context) {
     double safePadding = MediaQuery.of(context).padding.top;
     double totalHeight = MediaQuery.of(context).size.height;
@@ -83,7 +75,7 @@ class SheetProvider with ChangeNotifier {
 
   bool isScheduleToShow(ScheduleModel schedule) {
     bool isDCountZeroOrMoreThanZero(ScheduleModel schedule) {
-      final dCount = getDCount(schedule.start);
+      final dCount = CustomDateUtils.getDCount(schedule.start);
       return dCount >= 0;
     }
 

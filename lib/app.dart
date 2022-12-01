@@ -3,6 +3,7 @@ import 'package:calendar/presentation/widgets/memo/memo_edit_page.dart';
 import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
+import 'package:calendar/presentation/widgets/schedule/schedule_search_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -45,6 +46,11 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
           child: DayPage(
               selectedDate: DateTime.fromMillisecondsSinceEpoch(
                   int.parse(state.params['selectedDate']!))))),
+  GoRoute(
+      name: 'scheduleSearchPage',
+      path: '/schedule/search',
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: ScheduleSearchPage())),
   GoRoute(
       name: 'memoGridViewPage',
       path: '/memo/grid',

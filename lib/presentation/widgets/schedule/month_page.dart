@@ -28,7 +28,7 @@ class MonthPage extends StatelessWidget {
             const MonthSelector(),
             const MonthView()
           ]),
-          const ScheduleSheet()
+          const ScheduleSheet(minSizeRatio: 0.275)
         ]),
         bottomNavigationBar: CustomNavigationBar(
             selectedType: CustomNavigationType.schedule,
