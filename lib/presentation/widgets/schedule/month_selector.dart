@@ -47,11 +47,15 @@ class MonthSelector extends StatelessWidget {
                             width: 1, color: CustomTheme.scale.max))),
                 child: Align(
                     alignment: Alignment.center,
-                    child: Text(text,
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w600,
-                            color: CustomTheme.scale.max))));
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: Text(text,
+                          textScaleFactor: 1,
+                          style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w600,
+                              color: CustomTheme.scale.max)),
+                    )));
           } else {
             return TextButton(
                 onPressed: () {

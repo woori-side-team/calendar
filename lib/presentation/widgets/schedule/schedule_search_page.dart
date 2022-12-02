@@ -5,6 +5,7 @@ import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../common/custom_theme.dart';
@@ -93,6 +94,47 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
     );
   }
 
+  Widget _createTitleText({
+    required ScheduleModel schedule,
+    required Color color,
+  }) {
+    return viewModel.isSearchKeywordInTitle(schedule)
+        ? _createHighlightText(
+            fullText: schedule.title,
+            searchKeyword: viewModel.textEditingController.text,
+            fontSize: 17,
+            textColor: color)
+        : Text(
+            schedule.title,
+            style: TextStyle(
+              color: color,
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
+          );
+  }
+
+  Widget _createContentText({
+    required ScheduleModel schedule,
+    required Color color,
+  }) {
+    return viewModel.isSearchKeywordInContent(schedule)
+        ? _createHighlightText(
+            fullText: schedule.content,
+            searchKeyword: viewModel.textEditingController.text,
+            fontSize: 14,
+            textColor: color,
+          )
+        : Text(
+            schedule.content,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: color,
+            ),
+          );
+  }
+
   Widget _createScheduleRow(
     ScheduleSearchProvider viewModel,
     int index,
@@ -125,106 +167,91 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
     Color? iconColor =
         state == TimeState.todayAndFuture ? null : const Color(0xffdcdfe3);
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(19, 12, 0, 14),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(width: 0.5, color: CustomTheme.gray.gray5))),
-      child: Row(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            width: 60,
-            height: 38,
-            decoration: BoxDecoration(
-              color: dContainerColor,
-              borderRadius: schedule.type == ScheduleType.allDay
-                  ? null
-                  : BorderRadius.circular(39),
-            ),
-            child: Text(
-              dString,
-              style: TextStyle(
-                color: dTextColor,
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
+    return InkWell(
+      onTap: () {
+        context.pushNamed('dayPage', params: {
+          'selectedDate': CustomDateUtils.dateToString(schedule.start)
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(19, 12, 0, 14),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(width: 0.5, color: CustomTheme.gray.gray5))),
+        child: Row(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              width: 60,
+              height: 38,
+              decoration: BoxDecoration(
+                color: dContainerColor,
+                borderRadius: schedule.type == ScheduleType.allDay
+                    ? null
+                    : BorderRadius.circular(39),
+              ),
+              child: Text(
+                dString,
+                style: TextStyle(
+                  color: dTextColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 14),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 20,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: Row(
-                    children: [
-                      Text(
-                        '${DateFormat('M/d, a h:mm').format(schedule.start)}, ',
-                        style: TextStyle(
-                          color: titleColor,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
+            const SizedBox(width: 14),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 20,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Row(
+                      children: [
+                        Text(
+                          '${DateFormat('M/d, a h:mm').format(schedule.start)}, ',
+                          style: TextStyle(
+                            color: titleColor,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      viewModel.isSearchKeywordInTitle(schedule)
-                          ? _createHighlightText(
-                              fullText: schedule.title,
-                              searchKeyword:
-                                  viewModel.textEditingController.text,
-                              fontSize: 17,
-                              textColor: titleColor)
-                          : Text(
-                              schedule.title,
-                              style: TextStyle(
-                                color: titleColor,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                    ],
+                        _createTitleText(
+                          schedule: schedule,
+                          color: titleColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 3),
+                SizedBox(
+                  height: 17,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: _createContentText(
+                      schedule: schedule,
+                      color: contentColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 13),
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: SvgPicture.asset(
+                    'assets/icons/arrow_right_small_mono.svg',
+                    color: iconColor,
                   ),
                 ),
               ),
-              const SizedBox(height: 3),
-              SizedBox(
-                height: 17,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: viewModel.isSearchKeywordInContent(schedule)
-                      ? _createHighlightText(
-                          fullText: schedule.content,
-                          searchKeyword: viewModel.textEditingController.text,
-                          fontSize: 14,
-                          textColor: contentColor,
-                        )
-                      : Text(
-                          schedule.content,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: contentColor,
-                          ),
-                        ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 13),
-              child: Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: SvgPicture.asset(
-                  'assets/icons/arrow_right_small_mono.svg',
-                  color: iconColor,
-                ),
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -235,10 +262,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(actions: [
-            CustomAppBarSearchButton(type: PageType.schedule),
-            CustomAppBarProfileButton()
-          ]),
+          const CustomAppBar(actions: []),
           _createTextField(viewModel),
           Container(
             height: 1,
@@ -268,8 +292,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                   if (index < viewModel.todayAndFutureSchedules.length) {
                     return _createScheduleRow(
                         viewModel, index, TimeState.todayAndFuture);
-                  } else if (index >
-                      viewModel.todayAndFutureSchedules.length) {
+                  } else if (index > viewModel.todayAndFutureSchedules.length) {
                     return _createScheduleRow(
                       viewModel,
                       index - viewModel.todayAndFutureSchedules.length - 1,

@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+const double _buttonSize = 26;
+
+class CustomAppBar extends StatelessWidget {
   final List<Widget> actions;
 
   const CustomAppBar({super.key, required this.actions});
 
   @override
-  final Size preferredSize = const Size.fromHeight(kToolbarHeight);
-
-  @override
   Widget build(BuildContext context) {
-    return AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: actions);
+    return Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).viewPadding.top,
+        ),
+        Container(
+          padding: const EdgeInsets.only(right: 12),
+          height: 56,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: actions,
+          ),
+        ),
+      ],
+    );
   }
 }
 
-enum PageType {
-  schedule, memo
-}
+enum PageType { schedule, memo }
 
 /// 검색 버튼.
 class CustomAppBarSearchButton extends StatelessWidget {
@@ -35,9 +40,9 @@ class CustomAppBarSearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          switch(type){
+    return InkWell(
+        onTap: () {
+          switch (type) {
             case PageType.schedule:
               context.pushNamed(_scheduleSearchPageName);
               break;
@@ -46,7 +51,14 @@ class CustomAppBarSearchButton extends StatelessWidget {
               break;
           }
         },
-        icon: SvgPicture.asset('assets/icons/app_bar_search.svg'));
+        borderRadius: BorderRadius.circular(100),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+              height: _buttonSize,
+              width: _buttonSize,
+              child: SvgPicture.asset('assets/icons/app_bar_search.svg')),
+        ));
   }
 }
 
@@ -64,9 +76,16 @@ class CustomAppBarModeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RotatedBox(
         quarterTurns: type == CustomAppBarModeType.vertical ? 1 : 0,
-        child: IconButton(
-            icon: SvgPicture.asset('assets/icons/app_bar_mode.svg'),
-            onPressed: onPressed));
+        child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(100),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  height: _buttonSize,
+                  width: _buttonSize,
+                  child: SvgPicture.asset('assets/icons/app_bar_mode.svg')),
+            )));
   }
 }
 
