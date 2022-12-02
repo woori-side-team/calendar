@@ -6,6 +6,7 @@ import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_search_page.dart';
 import 'package:calendar/presentation/widgets/schedule/week_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class App extends StatelessWidget {
@@ -22,6 +23,8 @@ class App extends StatelessWidget {
 
     final customThemeData = ThemeData(
         fontFamily: 'Pretendard', navigationBarTheme: customNavigationBarTheme);
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     return MaterialApp.router(
         title: 'Calendar', theme: customThemeData, routerConfig: _router);
@@ -42,16 +45,14 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
   GoRoute(
       name: 'dayPage',
       path: '/schedule/day/:selectedDate',
-      pageBuilder: (context, state) => NoTransitionPage(
-          child: DayPage(
-              selectedDate: DateTime.fromMillisecondsSinceEpoch(
-                  int.parse(state.params['selectedDate']!))))),
+      builder: (context, state) => DayPage(
+          selectedDate: DateTime.fromMillisecondsSinceEpoch(
+              int.parse(state.params['selectedDate']!)))),
   // 검색 창은 뒤로가기가 되게끔
   GoRoute(
       name: 'scheduleSearchPage',
       path: '/schedule/search',
-      builder: (context, state) =>
-          const ScheduleSearchPage()),
+      builder: (context, state) => const ScheduleSearchPage()),
   GoRoute(
       name: 'memoGridViewPage',
       path: '/memo/grid',

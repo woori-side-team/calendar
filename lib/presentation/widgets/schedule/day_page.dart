@@ -281,7 +281,6 @@ class DayPage extends StatelessWidget {
               children: [
                 const CustomAppBar(actions: [
                   CustomAppBarSearchButton(type: PageType.schedule),
-                  CustomAppBarProfileButton()
                 ]),
                 _createDateCard(date: selectedDate),
                 Flexible(

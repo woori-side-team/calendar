@@ -5,8 +5,10 @@ import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'dart:io' show Platform;
 
 void main() async {
   // 필수 작업.
@@ -18,6 +20,12 @@ void main() async {
   // DB 세팅.
   await Hive.initFlutter();
   Hive.registerAdapter(ScheduleEntityAdapter());
+
+  if (Platform.isAndroid) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // status bar color
+    ));
+  }
 
   // 앱 세팅 및 시작.
   runApp(MultiProvider(providers: [

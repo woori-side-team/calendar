@@ -17,13 +17,12 @@ class WeekPage extends StatelessWidget {
         body: Stack(children: [
           Column(children: [
             CustomAppBar(actions: [
-              const CustomAppBarSearchButton(type: PageType.schedule),
               CustomAppBarModeButton(
                   type: CustomAppBarModeType.horizontal,
                   onPressed: () {
                     context.pushNamed('monthPage');
                   }),
-              const CustomAppBarProfileButton()
+              const CustomAppBarSearchButton(type: PageType.schedule),
             ]),
             Expanded(
                 child: SingleChildScrollView(
