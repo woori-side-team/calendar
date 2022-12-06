@@ -66,6 +66,11 @@ class _DayRowState extends State<_DayRow> {
         child: Container(
             margin: const EdgeInsets.only(left: 16, right: 16),
             child: Wrap(spacing: 4, children: [
+              _ChangeButton(
+                  child: RotatedBox(
+                      quarterTurns: 2,
+                      child: SvgPicture.asset(
+                          'assets/icons/week_view_next_week.svg'))),
               ...dayDates.map((dayDate) => _DayCard(dayDate: dayDate)),
               VisibilityDetector(
                   key: const Key("NextWeekMarker"),
@@ -81,17 +86,27 @@ class _DayRowState extends State<_DayRow> {
                       });
                     }
                   },
-                  child: Container(
-                      width: 46,
-                      height: 160,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: CustomTheme.gray.gray5, width: 1),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(12))),
+                  child: _ChangeButton(
                       child: SvgPicture.asset(
                           'assets/icons/week_view_next_week.svg')))
             ])));
+  }
+}
+
+class _ChangeButton extends StatelessWidget {
+  final Widget child;
+
+  const _ChangeButton({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 46,
+        height: 160,
+        decoration: BoxDecoration(
+            border: Border.all(color: CustomTheme.gray.gray5, width: 1),
+            borderRadius: const BorderRadius.all(Radius.circular(12))),
+        child: child);
   }
 }
 
