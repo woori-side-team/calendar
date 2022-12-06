@@ -23,7 +23,7 @@ class MemoGridViewPage extends StatelessWidget {
 
     return Scaffold(
         body: Column(children: [
-          CustomAppBar(actions: [
+          CustomAppBar(rightActions: [
             const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.vertical,
@@ -44,6 +44,9 @@ class MemoGridViewPage extends StatelessWidget {
               ),
               children: dummyMemos
                   .map((memo) => _MemoBox(
+                      onPressed: () {
+                        context.pushNamed('memoEditPage');
+                      },
                       child: Column(children: [const _MemoMarkers(), memo])))
                   .toList())
         ]),
@@ -69,7 +72,7 @@ class MemoListViewPage extends StatelessWidget {
 
     return Scaffold(
         body: Column(children: [
-          CustomAppBar(actions: [
+          CustomAppBar(rightActions: [
             const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.horizontal,
@@ -89,8 +92,14 @@ class MemoListViewPage extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               children: dummyMemos
-                  .map((memo) => Column(
-                      children: [const _MemoMarkers(), _MemoBox(child: memo)]))
+                  .map((memo) => Column(children: [
+                        const _MemoMarkers(),
+                        _MemoBox(
+                            onPressed: () {
+                              context.pushNamed('memoEditPage');
+                            },
+                            child: memo)
+                      ]))
                   .toList())
         ]),
         bottomNavigationBar:
@@ -100,17 +109,20 @@ class MemoListViewPage extends StatelessWidget {
 
 class _MemoBox extends StatelessWidget {
   final Widget child;
+  final void Function() onPressed;
 
-  const _MemoBox({super.key, required this.child});
+  const _MemoBox({super.key, required this.onPressed, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            color: CustomTheme.groupedBackground.primary,
-            borderRadius: BorderRadius.circular(12)),
-        child: child);
+    return GestureDetector(
+        onTap: onPressed,
+        child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: CustomTheme.groupedBackground.primary,
+                borderRadius: BorderRadius.circular(12)),
+            child: child));
   }
 }
 

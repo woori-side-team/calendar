@@ -16,7 +16,7 @@ class WeekPage extends StatelessWidget {
     return Scaffold(
         body: Stack(children: [
           Column(children: [
-            CustomAppBar(actions: [
+            CustomAppBar(rightActions: [
               CustomAppBarModeButton(
                   type: CustomAppBarModeType.horizontal,
                   onPressed: () {
