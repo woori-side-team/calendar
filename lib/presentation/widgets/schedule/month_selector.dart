@@ -16,8 +16,12 @@ class MonthSelector extends StatelessWidget {
         context.watch<SchedulesProvider>().getSelectedMonthDate();
     final Queue<DateTime> initialItems = Queue();
 
-    for (var month = 1; month <= 12; month++) {
-      initialItems.addLast(DateTime(selectedMonthDate.year, month));
+    const dMonthMin = -5;
+    const dMonthMax = 5;
+
+    for (var dMonth = dMonthMin; dMonth <= dMonthMax; dMonth++) {
+      initialItems.addLast(
+          DateTime(selectedMonthDate.year, selectedMonthDate.month + dMonth));
     }
 
     return CustomCarousel<DateTime>(
@@ -28,7 +32,7 @@ class MonthSelector extends StatelessWidget {
           autoPlay: false,
         ),
         initialItems: initialItems,
-        initialSelectedIndex: selectedMonthDate.month - 1,
+        initialSelectedIndex: -dMonthMin,
         createPrevItem: (item) => DateTime(item.year, item.month - 1),
         createNextItem: (item) => DateTime(item.year, item.month + 1),
         onSelectItem: (item) {
