@@ -16,7 +16,7 @@ class MonthPage extends StatelessWidget {
     return Scaffold(
         body: Stack(children: [
           Column(children: [
-            CustomAppBar(actions: [
+            CustomAppBar(rightActions: [
               CustomAppBarModeButton(
                   type: CustomAppBarModeType.vertical,
                   onPressed: () {
