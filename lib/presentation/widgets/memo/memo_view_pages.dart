@@ -89,8 +89,8 @@ class MemoListViewPage extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               children: dummyMemos
-                  .map((memo) => _MemoBox(
-                      child: Column(children: [const _MemoMarkers(), memo])))
+                  .map((memo) => Column(
+                      children: [const _MemoMarkers(), _MemoBox(child: memo)]))
                   .toList())
         ]),
         bottomNavigationBar:
