@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
+import 'package:calendar/common/utils/schedule_command_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
 import 'package:collection/collection.dart';
@@ -130,6 +131,24 @@ class SchedulesProvider with ChangeNotifier {
         end: realRecordedDateTime,
         colorIndex: _nextItemIndex % 4);
 
+    await _addScheduleUseCase(schedule);
+    await _loadData();
+    notifyListeners();
+  }
+
+  Future<void> addSchedule(String command) async {
+    String title = ScheduleCommandUtils.getTitle(command) ?? '';
+    DateTime start = ScheduleCommandUtils.getDateTime(command);
+    _nextItemIndex++;
+    ScheduleModel schedule = ScheduleModel(
+      id: CustomStringUtils.generateID(),
+      title: title,
+      content: '',
+      type: ScheduleType.allDay,
+      start: start,
+      end: DateTime(start.year, start.month, start.day, 23, 59, 59),
+      colorIndex: _nextItemIndex % 4,
+    );
     await _addScheduleUseCase(schedule);
     await _loadData();
     notifyListeners();

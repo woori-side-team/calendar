@@ -183,6 +183,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   }
 
   Widget _createCommandTextField() {
+    var schedulesViewModel = context.read<SchedulesProvider>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
       child: TextField(
@@ -199,6 +200,9 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           fillColor: CustomTheme.background.secondary,
           filled: true,
         ),
+        onSubmitted: (command) {
+          schedulesViewModel.addSchedule(command);
+        },
       ),
     );
   }
