@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 const double _buttonSize = 26;
 
 class CustomAppBar extends StatelessWidget {
-  final List<Widget> actions;
+  final List<Widget> leftActions;
+  final List<Widget> rightActions;
 
-  const CustomAppBar({super.key, required this.actions});
+  const CustomAppBar(
+      {super.key, this.leftActions = const [], this.rightActions = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,11 @@ class CustomAppBar extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(right: 12),
           height: 56,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: actions,
-          ),
+          child: Row(children: [
+            ...leftActions,
+            Expanded(child: Container()),
+            ...rightActions
+          ]),
         ),
       ],
     );
@@ -98,5 +101,47 @@ class CustomAppBarProfileButton extends StatelessWidget {
     return IconButton(
         onPressed: () {},
         icon: SvgPicture.asset('assets/icons/app_bar_profile.svg'));
+  }
+}
+
+/// 뒤로 가기 버튼.
+class CustomAppBarBackButton extends StatelessWidget {
+  const CustomAppBarBackButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          context.pop();
+        },
+        icon: SvgPicture.asset('assets/icons/app_bar_back.svg'));
+  }
+}
+
+/// 메뉴 버튼.
+class CustomAppBarMenuButton extends StatelessWidget {
+  final void Function() onPressed;
+
+  const CustomAppBarMenuButton({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: onPressed,
+        icon: SvgPicture.asset('assets/icons/app_bar_menu.svg'));
+  }
+}
+
+/// 편집 버튼.
+class CustomAppBarEditButton extends StatelessWidget {
+  final void Function() onPressed;
+
+  const CustomAppBarEditButton({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: onPressed,
+        icon: SvgPicture.asset('assets/icons/app_bar_edit.svg'));
   }
 }

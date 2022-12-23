@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../common/custom_theme.dart';
 import '../layout/custom_navigation_bar.dart';
 
@@ -262,7 +263,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(actions: []),
+          const CustomAppBar(rightActions: []),
           _createTextField(viewModel),
           Container(
             height: 1,
