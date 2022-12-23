@@ -1,16 +1,13 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
+import 'dart:io' show Platform;
 
 enum Ampm { am, pm }
 
 class ScheduleCommandUtils {
-  static String trimSpace(String command) {
-    return command.replaceAll(' ', '');
-  }
-
   /// 추출된 날짜 시간 String을 - . / 년 월 일 시 : 로 나뉜 List<String> 반환
   static List<String> _getDateTimeStringList(String dateTimeString) {
     List<String> dateTimeStringList =
-        dateTimeString.split(RegExp(r'부터 ?|~|-|\.|\/|년 ?|월 ?|일 ?|시 ?|:| '));
+        dateTimeString.split(RegExp(r'부터 ?|~|-|\.|\/|년 ?|월 ?|일 ?|시 ?|:| |분'));
     dateTimeStringList.removeWhere((e) => e.isEmpty);
 
     return dateTimeStringList;
@@ -32,7 +29,8 @@ class ScheduleCommandUtils {
   }
 
   static DateTime convertDateTimeStringListToDateTime(
-      List<String> dateTimeStringList, Ampm? ampm, {bool isEndAllDay = false}) {
+      List<String> dateTimeStringList, Ampm? ampm,
+      {bool isEndAllDay = false}) {
     List<int> dateTimeIntList = [];
     for (var item in dateTimeStringList) {
       dateTimeIntList.add(int.parse(item));
@@ -43,13 +41,12 @@ class ScheduleCommandUtils {
     }
 
     DateTime result = DateTime(
-      dateTimeIntList[0],
-      dateTimeIntList[1],
-      dateTimeIntList[2],
-      dateTimeIntList[3],
-      dateTimeIntList[4],
-      isEndAllDay ? 59 : 0
-    );
+        dateTimeIntList[0],
+        dateTimeIntList[1],
+        dateTimeIntList[2],
+        dateTimeIntList[3],
+        dateTimeIntList[4],
+        isEndAllDay ? 59 : 0);
 
     return result;
   }
@@ -60,7 +57,10 @@ class ScheduleCommandUtils {
     startDateTime = getStartDateTimeWithNumberAndBlank(command);
     startDateTime ??= getStartDateTimeWithFullForm(command);
     startDateTime ??= getStartDateTimeWithoutYear(command);
-    startDateTime ??= getStartDateTimeWithoutYearAndMonth(command);
+    if (Platform.isAndroid) {
+      //ios에선 이걸로 2~3번 입력하면 영문도 모른채 앱이 종료되는 버그 발생
+      startDateTime ??= getStartDateTimeWithoutYearAndMonth(command);
+    }
 
     return startDateTime;
   }
@@ -71,26 +71,11 @@ class ScheduleCommandUtils {
     startDateTimeString = getDateTimeStringWithNumberAndBlank(command);
     startDateTimeString ??= getDateTimeStringWithFullForm(command);
     startDateTimeString ??= getDateTimeStringWithoutYear(command);
-    startDateTimeString ??= getDateTimeStringWithoutYearAndMonth(command);
+    if (Platform.isAndroid) {
+      startDateTimeString ??= getDateTimeStringWithoutYearAndMonth(command);
+    }
 
     return startDateTimeString;
-  }
-
-  //TODO 이거 쓰기
-  static bool isEndWithRangeSymbol(String command) {
-    String? rangeForm;
-
-    rangeForm = getStartDateTimeString(command);
-
-    if (rangeForm == null) {
-      return false;
-    }
-    String? rangeSymbol =
-        RegExp(r'(-|~|\.|부터 ?)$').firstMatch(rangeForm)?.group(0);
-    if (rangeSymbol != null && rangeForm.endsWith(rangeSymbol)) {
-      return true;
-    }
-    return false;
   }
 
   static String? getDateTimeStringWithFullForm(String command) {
@@ -128,7 +113,7 @@ class ScheduleCommandUtils {
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -149,8 +134,8 @@ class ScheduleCommandUtils {
             'getStartDateTimeWithFullForm error: dateTime.length must be more than 2 and less than 6.');
     }
 
-    DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm);
+    DateTime result =
+        convertDateTimeStringListToDateTime(dateTimeStringList, ampm);
 
     return result;
   }
@@ -162,7 +147,7 @@ class ScheduleCommandUtils {
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -185,8 +170,8 @@ class ScheduleCommandUtils {
 
     dateTimeStringList.insert(0, CustomDateUtils.getNow().year.toString());
 
-    DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm);
+    DateTime result =
+        convertDateTimeStringListToDateTime(dateTimeStringList, ampm);
 
     if (result.isBefore(CustomDateUtils.getNow())) {
       result = DateTime(result.year + 1, result.month, result.day, result.hour,
@@ -203,7 +188,7 @@ class ScheduleCommandUtils {
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -227,8 +212,8 @@ class ScheduleCommandUtils {
     dateTimeStringList.insert(0, CustomDateUtils.getNow().year.toString());
     dateTimeStringList.insert(1, CustomDateUtils.getNow().month.toString());
 
-    DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm);
+    DateTime result =
+        convertDateTimeStringListToDateTime(dateTimeStringList, ampm);
 
     if (result.isBefore(CustomDateUtils.getNow())) {
       result = DateTime(result.year, result.month + 1, result.day, result.hour,
@@ -247,7 +232,7 @@ class ScheduleCommandUtils {
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -265,17 +250,14 @@ class ScheduleCommandUtils {
         break;
       default:
         assert(false,
-        'getStartDateTimeWithNumberAndBlank error: dateTime.length must be more than 2 and less than 6.');
+            'getStartDateTimeWithNumberAndBlank error: dateTime.length must be more than 2 and less than 6.');
     }
 
-    DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm);
+    DateTime result =
+        convertDateTimeStringListToDateTime(dateTimeStringList, ampm);
 
     return result;
   }
-
-
-
 
   //앞뒤가 같은 시간이면 무시
   static DateTime getEndDateTime(
@@ -288,25 +270,30 @@ class ScheduleCommandUtils {
     endDateTimeString ??= getHourMinuteString(suffixString);
 
     //분리 기호 바로 뒤에 오는지 확인
-    if(endDateTimeString == null || !suffixString.startsWith(endDateTimeString)){
+    if (endDateTimeString == null ||
+        !suffixString.startsWith(endDateTimeString)) {
       return CustomDateUtils.getEndOfThisDay(startDateTime);
     }
 
     //datetime 받기
-    DateTime? end = getEndDateTimeWithNumberAndBlank(suffixString, startDateTime);
+    DateTime? end =
+        getEndDateTimeWithNumberAndBlank(suffixString, startDateTime);
     end ??= getEndDateTimeWithFullForm(suffixString, startDateTime);
     end ??= getEndDateTimeWithoutYear(suffixString, startDateTime);
     end ??= getEndDateTimeWithoutYearAndMonth(suffixString, startDateTime);
     end ??= getEndDateTimeWithHourMinute(suffixString, startDateTime);
 
-    if(end == null || end.isBefore(startDateTime) || end.isAtSameMomentAs(startDateTime)){
+    if (end == null ||
+        end.isBefore(startDateTime) ||
+        end.isAtSameMomentAs(startDateTime)) {
       return CustomDateUtils.getEndOfThisDay(startDateTime);
     }
 
     return end;
   }
 
-  static DateTime? getEndDateTimeWithFullForm(String suffixString, DateTime start){
+  static DateTime? getEndDateTimeWithFullForm(
+      String suffixString, DateTime start) {
     String? dateTimeString = getDateTimeStringWithFullForm(suffixString);
 
     if (dateTimeString == null) {
@@ -314,7 +301,7 @@ class ScheduleCommandUtils {
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -334,27 +321,29 @@ class ScheduleCommandUtils {
         break;
       default:
         assert(false,
-        'getEndDateTimeWithFullForm error: dateTime.length must be more than 2 and less than 6.');
+            'getEndDateTimeWithFullForm error: dateTime.length must be more than 2 and less than 6.');
     }
 
     DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm, isEndAllDay: isEndAllDay);
+        dateTimeStringList, ampm,
+        isEndAllDay: isEndAllDay);
 
-    if(result.isBefore(start)){
+    if (result.isBefore(start)) {
       return null;
     }
 
     return result;
   }
 
-  static DateTime? getEndDateTimeWithoutYear(String suffixString, DateTime start) {
+  static DateTime? getEndDateTimeWithoutYear(
+      String suffixString, DateTime start) {
     String? dateTimeString = getDateTimeStringWithoutYear(suffixString);
     if (dateTimeString == null) {
       return null;
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -374,13 +363,14 @@ class ScheduleCommandUtils {
         break;
       default:
         assert(false,
-        'getEndDateTimeWithoutYear error: dateTime.length must be more than 1 and less than 5.');
+            'getEndDateTimeWithoutYear error: dateTime.length must be more than 1 and less than 5.');
     }
 
     dateTimeStringList.insert(0, start.year.toString());
 
     DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm, isEndAllDay: isEndAllDay);
+        dateTimeStringList, ampm,
+        isEndAllDay: isEndAllDay);
 
     if (result.isBefore(start)) {
       result = DateTime(result.year + 1, result.month, result.day, result.hour,
@@ -390,14 +380,15 @@ class ScheduleCommandUtils {
     return result;
   }
 
-  static DateTime? getEndDateTimeWithoutYearAndMonth(String suffixString, DateTime start) {
+  static DateTime? getEndDateTimeWithoutYearAndMonth(
+      String suffixString, DateTime start) {
     String? dateTimeString = getDateTimeStringWithoutYearAndMonth(suffixString);
     if (dateTimeString == null) {
       return null;
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -417,14 +408,15 @@ class ScheduleCommandUtils {
         break;
       default:
         assert(false,
-        'getEndDateTimeWithoutYearAndMonth error: dateTime.length must be more than 0 and less than 4.');
+            'getEndDateTimeWithoutYearAndMonth error: dateTime.length must be more than 0 and less than 4.');
     }
 
     dateTimeStringList.insert(0, start.year.toString());
     dateTimeStringList.insert(1, start.month.toString());
 
     DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm, isEndAllDay: isEndAllDay);
+        dateTimeStringList, ampm,
+        isEndAllDay: isEndAllDay);
 
     if (result.isBefore(start)) {
       result = DateTime(result.year, result.month + 1, result.day, result.hour,
@@ -434,14 +426,15 @@ class ScheduleCommandUtils {
     return result;
   }
 
-  static DateTime? getEndDateTimeWithHourMinute(String suffixString, DateTime start) {
+  static DateTime? getEndDateTimeWithHourMinute(
+      String suffixString, DateTime start) {
     String? dateTimeString = getHourMinuteString(suffixString);
     if (dateTimeString == null) {
       return null;
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -451,13 +444,12 @@ class ScheduleCommandUtils {
     switch (dateTimeStringList.length) {
       case 1:
         dateTimeStringList.add('0');
-        isEndAllDay = true;
         break;
       case 2:
         break;
       default:
         assert(false,
-        'getEndDateTimeWithHourMinute error: dateTime.length must be more than 0 and less than 3.');
+            'getEndDateTimeWithHourMinute error: dateTime.length must be more than 0 and less than 3.');
     }
 
     dateTimeStringList.insert(0, start.year.toString());
@@ -465,7 +457,8 @@ class ScheduleCommandUtils {
     dateTimeStringList.insert(2, start.day.toString());
 
     DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm, isEndAllDay: isEndAllDay);
+        dateTimeStringList, ampm,
+        isEndAllDay: isEndAllDay);
 
     if (result.isBefore(start)) {
       result = DateTime(result.year, result.month, result.day + 1, result.hour,
@@ -476,7 +469,8 @@ class ScheduleCommandUtils {
   }
 
   /// 년월일 다 갖춰야 한다.
-  static DateTime? getEndDateTimeWithNumberAndBlank(String suffixString, DateTime start) {
+  static DateTime? getEndDateTimeWithNumberAndBlank(
+      String suffixString, DateTime start) {
     String? dateTimeString = getDateTimeStringWithNumberAndBlank(suffixString);
 
     if (dateTimeString == null) {
@@ -484,7 +478,7 @@ class ScheduleCommandUtils {
     }
 
     Ampm? ampm = isContainAmPm(dateTimeString);
-    if(ampm != null){
+    if (ampm != null) {
       dateTimeString = removeAmPm(dateTimeString);
     }
 
@@ -504,13 +498,14 @@ class ScheduleCommandUtils {
         break;
       default:
         assert(false,
-        'getEndDateTimeWithNumberAndBlank error: dateTime.length must be more than 2 and less than 6.');
+            'getEndDateTimeWithNumberAndBlank error: dateTime.length must be more than 2 and less than 6.');
     }
 
     DateTime result = convertDateTimeStringListToDateTime(
-        dateTimeStringList, ampm, isEndAllDay: isEndAllDay);
+        dateTimeStringList, ampm,
+        isEndAllDay: isEndAllDay);
 
-    if(result.isBefore(start)){
+    if (result.isBefore(start)) {
       return null;
     }
 
@@ -518,11 +513,11 @@ class ScheduleCommandUtils {
   }
 
   static String? getHourMinuteString(String command) {
-    return RegExp(r'(오전|오후)? ?[0-2]?[0-9](시|:) ?([0-5]?[0-9]분?)?( ?(am|pm|AM|PM))?')
+    return RegExp(
+            r'(오전|오후)? ?[0-2]?[0-9](시|:) ?([0-5]?[0-9]분?)?( ?(am|pm|AM|PM))?')
         .firstMatch(command)
         ?.group(0);
   }
-
 
   static String? getTitle(String command) {
     String? start = getStartDateTimeString(command);
@@ -531,7 +526,8 @@ class ScheduleCommandUtils {
       result = result.replaceFirst(start, '');
     }
     String? end = getStartDateTimeString(result);
-    if (end != null) {
+    end ??= getHourMinuteString(result);
+    if (end != null && result.startsWith(end)) {
       result = result.replaceFirst(end, '');
     }
     return result;

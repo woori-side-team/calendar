@@ -116,7 +116,6 @@ class SchedulesProvider with ChangeNotifier {
   Future<void> generateAllDaySchedule(DateTime day) async {
     // 테스트용 시작 시간
     int startHour = _nextStartHour;
-    int endHour = 24;
     DateTime realRecordedDateTime = CustomDateUtils.getEndOfThisDay(day);
     _nextStartHour = (startHour + 2) % 24;
     _nextItemIndex++;
@@ -150,7 +149,7 @@ class SchedulesProvider with ChangeNotifier {
       id: CustomStringUtils.generateID(),
       title: title,
       content: '',
-      type: ScheduleType.allDay,
+      type: endDate.second == 59 ? ScheduleType.allDay : ScheduleType.hours,
       start: startDate,
       end: endDate,
       colorIndex: _nextItemIndex % 4,
