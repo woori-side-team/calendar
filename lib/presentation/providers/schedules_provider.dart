@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
+import 'package:calendar/common/utils/schedule_command_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
 import 'package:collection/collection.dart';
@@ -115,9 +116,7 @@ class SchedulesProvider with ChangeNotifier {
   Future<void> generateAllDaySchedule(DateTime day) async {
     // 테스트용 시작 시간
     int startHour = _nextStartHour;
-    int endHour = 24;
-    DateTime realRecordedDateTime =
-        DateTime(day.year, day.month, day.day, 23, 59, 59);
+    DateTime realRecordedDateTime = CustomDateUtils.getEndOfThisDay(day);
     _nextStartHour = (startHour + 2) % 24;
     _nextItemIndex++;
 
@@ -130,6 +129,31 @@ class SchedulesProvider with ChangeNotifier {
         end: realRecordedDateTime,
         colorIndex: _nextItemIndex % 4);
 
+    await _addScheduleUseCase(schedule);
+    await _loadData();
+    notifyListeners();
+  }
+
+  Future<void> addSchedule(String command) async {
+    DateTime? startDate = ScheduleCommandUtils.getStartDateTime(command);
+    if (startDate == null) {
+      return;
+    }
+    DateTime endDate = ScheduleCommandUtils.getEndDateTime(command, startDate,
+        ScheduleCommandUtils.getStartDateTimeString(command)!);
+    print(startDate);
+    print(endDate);
+    String title = ScheduleCommandUtils.getTitle(command) ?? '';
+    _nextItemIndex++;
+    ScheduleModel schedule = ScheduleModel(
+      id: CustomStringUtils.generateID(),
+      title: title,
+      content: '',
+      type: endDate.second == 59 ? ScheduleType.allDay : ScheduleType.hours,
+      start: startDate,
+      end: endDate,
+      colorIndex: _nextItemIndex % 4,
+    );
     await _addScheduleUseCase(schedule);
     await _loadData();
     notifyListeners();
