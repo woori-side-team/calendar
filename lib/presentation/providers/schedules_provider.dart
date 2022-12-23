@@ -117,8 +117,7 @@ class SchedulesProvider with ChangeNotifier {
     // 테스트용 시작 시간
     int startHour = _nextStartHour;
     int endHour = 24;
-    DateTime realRecordedDateTime =
-        DateTime(day.year, day.month, day.day, 23, 59, 59);
+    DateTime realRecordedDateTime = CustomDateUtils.getEndOfThisDay(day);
     _nextStartHour = (startHour + 2) % 24;
     _nextItemIndex++;
 
@@ -137,16 +136,23 @@ class SchedulesProvider with ChangeNotifier {
   }
 
   Future<void> addSchedule(String command) async {
+    DateTime? startDate = ScheduleCommandUtils.getStartDateTime(command);
+    if (startDate == null) {
+      return;
+    }
+    DateTime endDate = ScheduleCommandUtils.getEndDateTime(command, startDate,
+        ScheduleCommandUtils.getStartDateTimeString(command)!);
+    print(startDate);
+    print(endDate);
     String title = ScheduleCommandUtils.getTitle(command) ?? '';
-    DateTime start = ScheduleCommandUtils.getDateTime(command);
     _nextItemIndex++;
     ScheduleModel schedule = ScheduleModel(
       id: CustomStringUtils.generateID(),
       title: title,
       content: '',
       type: ScheduleType.allDay,
-      start: start,
-      end: DateTime(start.year, start.month, start.day, 23, 59, 59),
+      start: startDate,
+      end: endDate,
       colorIndex: _nextItemIndex % 4,
     );
     await _addScheduleUseCase(schedule);

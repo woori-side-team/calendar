@@ -146,4 +146,11 @@ class CustomDateUtils {
   static DateTime stringToDate(String value) {
     return DateTime.fromMillisecondsSinceEpoch(int.parse(value));
   }
+
+  // 24시를 저장하려고 하면 다음 날 0시로 저장된다.
+  // 24시 저장 대신에 23시 59분 59초로 저장하게 했다.(SchedulesProvider에서)
+  // 59초를 저장할린 없지 않겠는가? 그래서 59초인지 아닌지로 판단하게 했다.
+  static DateTime getEndOfThisDay(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59);
+  }
 }
