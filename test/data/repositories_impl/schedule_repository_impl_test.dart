@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 
 void main() {
-  test('impl test', () async {
+  test('schedule repo impl test', () async {
     Hive.init('Test');
     Hive.registerAdapter(ScheduleEntityAdapter());
     final repository = ScheduleRepositoryImpl();
