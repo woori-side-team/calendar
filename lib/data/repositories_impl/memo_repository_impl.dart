@@ -10,6 +10,12 @@ class MemoRepositoryImpl implements MemoRepository {
   final _tableName = 'memos';
 
   @override
+  Future<MemoModel?> getMemoByID(String id) async {
+    final box = await Hive.openBox<MemoEntity>(_tableName);
+    return box.get(id)?.toMemoModel();
+  }
+
+  @override
   Future<void> addMemo(MemoModel memoModel) async {
     final box = await Hive.openBox<MemoEntity>(_tableName);
     await box.put(memoModel.id, memoModel.toMemoEntity());
@@ -36,5 +42,11 @@ class MemoRepositoryImpl implements MemoRepository {
       models.add(item.toMemoModel());
     }
     return models;
+  }
+
+  @override
+  Future<void> deleteAllMemos() async {
+    final box = await Hive.openBox<MemoEntity>(_tableName);
+    await box.clear();
   }
 }

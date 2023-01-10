@@ -7,6 +7,7 @@ part 'memo_model.g.dart';
 class MemoModel with _$MemoModel {
   const factory MemoModel(
       {required String id,
+      required String title,
       required String content,
       required List<int> selectedColorIndices}) = _MemoModel;
 

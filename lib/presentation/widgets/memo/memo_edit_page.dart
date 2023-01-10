@@ -1,3 +1,4 @@
+import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/common/section.dart';
@@ -9,7 +10,9 @@ import 'package:flutter/material.dart';
 class MemoEditPage extends StatefulWidget {
   static const routeName = 'memo/edit';
 
-  const MemoEditPage({super.key});
+  final MemoModel memoModel;
+
+  const MemoEditPage({super.key, required this.memoModel});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,11 +31,10 @@ class _MemoEditPageState extends State<MemoEditPage> {
     super.initState();
 
     _titleEditingController = TextEditingController();
-    _titleEditingController.text = '하나에 가득 우는 어머니, 듯합니다 안녕하세요 반갑습니다';
+    _titleEditingController.text = widget.memoModel.title;
 
     _contentEditingController = TextEditingController();
-    _contentEditingController.text =
-        '하나에 가득 우는 어머니, 듯합니다. 밤을 나는 별들을 까닭입니다. 나는 노루, 가을로 이름을 패, 내 거외다. 책상을 우는 나의 별 릴케 것은 까닭입니다. 아직 내린 하나에 아침이 나의 이국 그리고 까닭입니다. 시인의 지나가는 부끄러운 슬퍼하는 있습니다. 하나에 하늘에는 않은 내 불러 무덤 자랑처럼 아이들의 있습니다.';
+    _contentEditingController.text = widget.memoModel.content;
 
     _selectedTags = markerColors.sublist(0, 3);
     _candidateTags = markerColors.sublist(3);

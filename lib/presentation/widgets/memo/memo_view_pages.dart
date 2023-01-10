@@ -1,3 +1,4 @@
+import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/common/section.dart';
@@ -5,6 +6,7 @@ import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class MemoGridViewPage extends StatelessWidget {
   static const routeName = 'memo/grid';
@@ -13,17 +15,13 @@ class MemoGridViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> dummyMemos = [];
-
-    for (var i = 0; i < 10; i++) {
-      dummyMemos.add(const Text(
-          '하나에 가득 우는 어머니, 듯합니다. 밤을 나는 별들을 까닭입니다. 나는 노루, 가을로 이름을 패, 내 거외다. 책상을 우는 나의 별 릴케 것은 까닭입니다. 아직 내린 하나에 아침이 나의 이국 그리고 까닭입니다. 시인의 지나가는 부끄러운 슬퍼하는 있습니다. 하나에 하늘에는 않은 내 불러 무덤 자랑처럼 아이들의 있습니다.',
-          overflow: TextOverflow.ellipsis));
-    }
+    final memosProvider = context.watch<MemosProvider>();
 
     return Scaffold(
         body: Column(children: [
-          CustomAppBar(rightActions: [
+          CustomAppBar(leftActions: const [
+            _MemoAddButton()
+          ], rightActions: [
             const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.vertical,
@@ -42,12 +40,15 @@ class MemoGridViewPage extends StatelessWidget {
                 mainAxisSpacing: 24,
                 crossAxisSpacing: 16,
               ),
-              children: dummyMemos
-                  .map((memo) => _MemoBox(
+              children: memosProvider.allMemos
+                  .map((memoModel) => _MemoBox(
                       onPressed: () {
-                        context.pushNamed('memoEditPage');
+                        context.pushNamed('memoEditPage', extra: memoModel);
                       },
-                      child: Column(children: [const _MemoMarkers(), memo])))
+                      child: Column(children: [
+                        const _MemoMarkers(),
+                        Text(memoModel.content, overflow: TextOverflow.ellipsis)
+                      ])))
                   .toList())
         ]),
         bottomNavigationBar:
@@ -62,17 +63,13 @@ class MemoListViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> dummyMemos = [];
-
-    for (var i = 0; i < 10; i++) {
-      dummyMemos.add(const Text(
-          '하나에 가득 우는 어머니, 듯합니다. 밤을 나는 별들을 까닭입니다. 나는 노루, 가을로 이름을 패, 내 거외다. 책상을 우는 나의 별 릴케 것은 까닭입니다. 아직 내린 하나에 아침이 나의 이국 그리고 까닭입니다. 시인의 지나가는 부끄러운 슬퍼하는 있습니다. 하나에 하늘에는 않은 내 불러 무덤 자랑처럼 아이들의 있습니다.',
-          overflow: TextOverflow.ellipsis));
-    }
+    final memosProvider = context.watch<MemosProvider>();
 
     return Scaffold(
         body: Column(children: [
-          CustomAppBar(rightActions: [
+          CustomAppBar(leftActions: const [
+            _MemoAddButton()
+          ], rightActions: [
             const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.horizontal,
@@ -91,19 +88,40 @@ class MemoListViewPage extends StatelessWidget {
                 mainAxisSpacing: 28,
                 crossAxisSpacing: 16,
               ),
-              children: dummyMemos
-                  .map((memo) => Column(children: [
+              children: memosProvider.allMemos
+                  .map((memoModel) => Column(children: [
                         const _MemoMarkers(),
                         _MemoBox(
                             onPressed: () {
-                              context.pushNamed('memoEditPage');
+                              context.pushNamed('memoEditPage',
+                                  extra: memoModel);
                             },
-                            child: memo)
+                            child: Text(memoModel.content,
+                                overflow: TextOverflow.ellipsis))
                       ]))
                   .toList())
         ]),
         bottomNavigationBar:
             const CustomNavigationBar(selectedType: CustomNavigationType.memo));
+  }
+}
+
+class _MemoAddButton extends StatelessWidget {
+  const _MemoAddButton();
+
+  void _handlePress(MemosProvider memosProvider) async {
+    await memosProvider.generateNewMemo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final memosProvider = context.watch<MemosProvider>();
+
+    return CustomAppBarAddButton(
+        onPressed: () {
+          _handlePress(memosProvider);
+        },
+        label: '메모 추가');
   }
 }
 

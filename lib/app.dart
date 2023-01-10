@@ -1,3 +1,4 @@
+import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/memo/memo_edit_page.dart';
 import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
@@ -66,6 +67,6 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
   GoRoute(
       name: 'memoEditPage',
       path: '/memo/edit',
-      pageBuilder: (context, state) =>
-          const NoTransitionPage(child: MemoEditPage())),
+      pageBuilder: (context, state) => NoTransitionPage(
+          child: MemoEditPage(memoModel: state.extra as MemoModel))),
 ]);
