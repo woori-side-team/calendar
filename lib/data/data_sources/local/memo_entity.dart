@@ -8,13 +8,17 @@ class MemoEntity extends HiveObject {
   final String id;
 
   @HiveField(1)
-  String content;
+  String title;
 
   @HiveField(2)
+  String content;
+
+  @HiveField(3)
   List<int> selectedColorIndices;
 
   MemoEntity(
       {required this.id,
+      required this.title,
       required this.content,
       required this.selectedColorIndices});
 }

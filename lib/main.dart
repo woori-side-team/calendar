@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:calendar/app.dart';
 import 'package:calendar/common/di/di.dart';
+import 'package:calendar/data/data_sources/local/memo_entity.dart';
 import 'package:calendar/data/data_sources/local/schedule_entity.dart';
 import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/providers/schedule_search_provider.dart';
@@ -22,6 +23,7 @@ void main() async {
   // DB 세팅.
   await Hive.initFlutter();
   Hive.registerAdapter(ScheduleEntityAdapter());
+  Hive.registerAdapter(MemoEntityAdapter());
 
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

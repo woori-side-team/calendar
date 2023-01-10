@@ -1,3 +1,4 @@
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +20,7 @@ class CustomAppBar extends StatelessWidget {
           height: MediaQuery.of(context).viewPadding.top,
         ),
         Container(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.only(left: 12, right: 12),
           height: 56,
           child: Row(children: [
             ...leftActions,
@@ -143,5 +144,45 @@ class CustomAppBarEditButton extends StatelessWidget {
     return IconButton(
         onPressed: onPressed,
         icon: SvgPicture.asset('assets/icons/app_bar_edit.svg'));
+  }
+}
+
+/// 일정, 메모 추가 등에 쓰이는 버튼.
+class CustomAppBarAddButton extends StatelessWidget {
+  final void Function() onPressed;
+  final String label;
+
+  const CustomAppBarAddButton(
+      {super.key, required this.onPressed, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(10);
+
+    return Ink(
+        height: 32,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: borderRadius,
+            boxShadow: const [
+              BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.19),
+                  offset: Offset(0, 1),
+                  blurRadius: 1)
+            ]),
+        child: InkWell(
+            customBorder: RoundedRectangleBorder(borderRadius: borderRadius),
+            onTap: onPressed,
+            child: Row(children: [
+              const SizedBox(width: 9),
+              SvgPicture.asset('assets/icons/app_bar_add.svg'),
+              const SizedBox(width: 5),
+              Text(label,
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: CustomTheme.scale.scale7)),
+              const SizedBox(width: 6),
+            ])));
   }
 }

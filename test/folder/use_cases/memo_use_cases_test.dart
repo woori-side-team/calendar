@@ -20,8 +20,11 @@ void main() async {
     final updateMemoUseCase = getIt<UpdateMemoUseCase>();
     final deleteMemoUseCase = getIt<DeleteMemoUseCase>();
 
-    const model1 =
-        MemoModel(id: '1', content: '안녕하세요', selectedColorIndices: [0, 1, 2]);
+    const model1 = MemoModel(
+        id: '1',
+        title: '메모',
+        content: '안녕하세요',
+        selectedColorIndices: [0, 1, 2]);
 
     // Test insert.
     await addMemoUseCase(model1);
