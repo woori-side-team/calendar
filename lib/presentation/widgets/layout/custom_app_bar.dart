@@ -1,3 +1,4 @@
+import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -7,9 +8,20 @@ const double _buttonSize = 26;
 class CustomAppBar extends StatelessWidget {
   final List<Widget> leftActions;
   final List<Widget> rightActions;
+  final bool? isScheduleAppBar;
 
   const CustomAppBar(
-      {super.key, this.leftActions = const [], this.rightActions = const []});
+      {super.key,
+      this.leftActions = const [],
+      this.rightActions = const [],
+      this.isScheduleAppBar});
+
+  Widget _createLeftAction() {
+    if (isScheduleAppBar == true) {
+      return AddScheduleButton();
+    }
+    return Row(children: [...leftActions]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +34,56 @@ class CustomAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 12),
           height: 56,
           child: Row(children: [
-            ...leftActions,
+            _createLeftAction(),
             Expanded(child: Container()),
             ...rightActions
           ]),
         ),
       ],
     );
+  }
+}
+
+class AddScheduleButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      const SizedBox(
+        width: 19,
+      ),
+      SizedBox(
+        height: 32,
+        width: 83,
+        child: ElevatedButton(
+          onPressed: () {
+            context.pushNamed('addSchedulePage');
+          },
+          style: ElevatedButton.styleFrom(
+            elevation: 1.5,
+            minimumSize: Size.zero,
+            padding: EdgeInsets.zero,
+            backgroundColor: CustomTheme.background.primary,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.add_rounded,
+                color: CustomTheme.scale.scale7,
+              ),
+              Text(
+                '일정 추가',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: CustomTheme.scale.scale7,
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
+    ]);
   }
 }
 

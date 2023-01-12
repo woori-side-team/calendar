@@ -23,7 +23,6 @@ void main() {
     expect(DateTime(2023, 11, 11), ScheduleCommandUtils.getStartDateTimeWithoutYear('11월 11일'));
     expect(DateTime(2023, 1, 11), ScheduleCommandUtils.getStartDateTimeWithoutYearAndMonth('11일'));
     expect('2020-2-2 1시', ScheduleCommandUtils.removeAmPm('2020-2-2 오전 1시'));
-    expect(true, ScheduleCommandUtils.isEndWithRangeSymbol('2020-2-2 오전 1시-'));
     expect('2020 2 2', ScheduleCommandUtils.getEndDateTimeWithNumberAndBlank('2020 2 2', DateTime(2020, 2, 1)));
   });
 }

@@ -1,6 +1,7 @@
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/memo/memo_edit_page.dart';
 import 'package:calendar/presentation/widgets/memo/memo_view_pages.dart';
+import 'package:calendar/presentation/widgets/schedule/add_schedule_page.dart';
 import 'package:calendar/presentation/widgets/schedule/day_page.dart';
 import 'package:calendar/presentation/widgets/schedule/month_page.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_search_page.dart';
@@ -53,6 +54,10 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
       name: 'scheduleSearchPage',
       path: '/schedule/search',
       builder: (context, state) => const ScheduleSearchPage()),
+  GoRoute(
+      name: 'addSchedulePage',
+      path: '/schedule/add',
+      builder: (context, state) => const AddSchedulePage()),
   GoRoute(
       name: 'memoGridViewPage',
       path: '/memo/grid',
