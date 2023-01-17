@@ -5,6 +5,7 @@ import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/common/utils/schedule_command_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
+import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -144,7 +145,6 @@ class SchedulesProvider with ChangeNotifier {
     print(startDate);
     print(endDate);
     String title = ScheduleCommandUtils.getTitle(command) ?? '';
-    _nextItemIndex++;
     ScheduleModel schedule = ScheduleModel(
       id: CustomStringUtils.generateID(),
       title: title,
@@ -152,8 +152,14 @@ class SchedulesProvider with ChangeNotifier {
       type: endDate.second == 59 ? ScheduleType.allDay : ScheduleType.hours,
       start: startDate,
       end: endDate,
-      colorIndex: _nextItemIndex % 4,
+      colorIndex: _selectedMonthSchedulesCache.length % markerColors.length,
     );
+    await _addScheduleUseCase(schedule);
+    await _loadData();
+    notifyListeners();
+  }
+
+  Future<void> addScheduleBySaveButton(ScheduleModel schedule) async {
     await _addScheduleUseCase(schedule);
     await _loadData();
     notifyListeners();

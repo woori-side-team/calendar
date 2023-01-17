@@ -1,31 +1,47 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
-import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:flutter/widgets.dart';
-import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 
 import '../../common/utils/custom_string_utils.dart';
 import '../../domain/models/schedule_model.dart';
-import '../../domain/use_cases/schedule_use_cases.dart';
 
-enum NotificationTime { tenMinute, thirtyMinute, oneHour, twoHour, oneDay }
+enum NotificationTime {
+  tenMinute('10분 전'),
+  thirtyMinute('30분 전'),
+  oneHour('1시간 전'),
+  twoHour('2시간 전'),
+  oneDay('1일 전');
 
-@injectable
+  final String name;
+
+  const NotificationTime(this.name);
+}
+
 class AddSchedulePageProvider with ChangeNotifier {
-  final AddScheduleUseCase _addScheduleUseCase;
-
   final _titleTextEditingController = TextEditingController();
   final _contentTextEditingController = TextEditingController();
 
-  double _startTimeSpinnerScale = 0;
-  double _endTimeSpinnerScale = 0;
+  double _startTimeSpinnerScale = 0.001;
+  double _endTimeSpinnerScale = 0.001;
   DateTime _startDateTime = CustomDateUtils.getNow();
-  DateTime _endDateTime = CustomDateUtils.getNow().add(Duration(hours: 1));
+
+  // only hour and minute
+  DateTime _startTime = CustomDateUtils.getNow();
+  String _startDateString = CustomDateUtils.formatDateStringExceptHourMinute(
+      CustomDateUtils.getNow());
+  String _startTimeString = DateFormat('H:mm').format(CustomDateUtils.getNow());
+  DateTime _endDateTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+
+  // only hour and minute
+  DateTime _endTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+  String _endDateString = CustomDateUtils.formatDateStringExceptHourMinute(
+      CustomDateUtils.getNow().add(const Duration(hours: 1)));
+  String _endTimeString = DateFormat('H:mm')
+      .format(CustomDateUtils.getNow().add(const Duration(hours: 1)));
+
   bool _isAllDay = false;
   NotificationTime _notificationTime = NotificationTime.oneDay;
-
-  Color _tagColor = markerColors[0];
-
-  AddSchedulePageProvider(this._addScheduleUseCase);
+  int _tagColorIndex = 0;
 
   get titleTextEditingController => _titleTextEditingController;
 
@@ -33,48 +49,140 @@ class AddSchedulePageProvider with ChangeNotifier {
 
   double get startTimeSpinnerScale => _startTimeSpinnerScale;
 
+  double get endTimeSpinnerScale => _endTimeSpinnerScale;
+
+  bool get isAllDay => _isAllDay;
+
+  NotificationTime get notificationTime => _notificationTime;
+
+  int get tagColorIndex => _tagColorIndex;
+
+  String get startDateString => _startDateString;
+
+  String get startTimeString => _startTimeString;
+
+  String get endDateString => _endDateString;
+
+  String get endTimeString => _endTimeString;
+
+  DateTime get startDateTime => _startDateTime;
+
+  DateTime get endDateTime => _endDateTime;
+
+  DateTime get endTime => _endTime;
+
   set startTimeSpinnerScale(double value) {
     _startTimeSpinnerScale = value;
     notifyListeners();
   }
-
-  double get endTimeSpinnerScale => _endTimeSpinnerScale;
 
   set endTimeSpinnerScale(double value) {
     _endTimeSpinnerScale = value;
     notifyListeners();
   }
 
-  bool get isAllDay => _isAllDay;
-
   set isAllDay(bool value) {
     _isAllDay = value;
+    _endTime = CustomDateUtils.getEndOfThisDay(_endTime);
+    _endTimeString = '24:00';
     notifyListeners();
   }
-
-  NotificationTime get notificationTime => _notificationTime;
 
   set notificationTime(NotificationTime value) {
     _notificationTime = value;
     notifyListeners();
   }
 
-  Color get tagColor => _tagColor;
-
-  set tagColor(Color value) {
-    _tagColor = value;
+  set tagColorIndex(int value) {
+    _tagColorIndex = value;
     notifyListeners();
   }
 
-  // Future<void> addSchedule() async {
-  //   ScheduleModel schedule = ScheduleModel(
-  //     id: CustomStringUtils.generateID(),
-  //     title: _titleTextEditingController.text,
-  //     content: _contentTextEditingController.text,
-  //     type: _isAllDay ? ScheduleType.allDay : ScheduleType.hours,
-  //     start: startDate,
-  //     end: endDate,
-  //     colorIndex: _nextItemIndex % 4,
-  //   );
-  // }
+  set startTime(DateTime value) {
+    _startTime = value;
+    notifyListeners();
+  }
+
+  set startDateTime(DateTime value) {
+    _startDateTime = value;
+
+    if (_startDateTime.isAfter(_endDateTime) ||
+        _startDateTime.isAtSameMomentAs(_endDateTime)) {
+      _endDateTime = _startDateTime;
+      _endDateString =
+          CustomDateUtils.formatDateStringExceptHourMinute(_endDateTime);
+    }
+
+    _startDateString =
+        CustomDateUtils.formatDateStringExceptHourMinute(_startDateTime);
+    notifyListeners();
+  }
+
+  set endTime(DateTime value) {
+    _endTime = value;
+    notifyListeners();
+  }
+
+  set endDateTime(DateTime value) {
+    _endDateTime = value;
+    _endDateString =
+        CustomDateUtils.formatDateStringExceptHourMinute(_endDateTime);
+    notifyListeners();
+  }
+
+  void changeStartTimeSpinnerScale() {
+    _startTimeSpinnerScale = _startTimeSpinnerScale == 0.001 ? 0.99 : 0.001;
+    _startTimeString = DateFormat('H:mm').format(_startTime);
+
+    if (_startTime.isAfter(_endTime) || _startTime.isAtSameMomentAs(_endTime)) {
+      _endTime = _startTime.add(const Duration(hours: 1));
+      _endTimeString = DateFormat('H:mm').format(_endTime);
+    }
+
+    notifyListeners();
+  }
+
+  void changeEndTimeSpinnerScale() {
+    _endTimeSpinnerScale = _endTimeSpinnerScale == 0.001 ? 0.99 : 0.001;
+    _endTimeString = DateFormat('H:mm').format(_endTime);
+
+    if (CustomDateUtils.combineYearMonthDayAndHourMinute(_endDateTime, _endTime)
+            .isBefore(CustomDateUtils.combineYearMonthDayAndHourMinute(
+                _startDateTime, _startTime)) ||
+        CustomDateUtils.combineYearMonthDayAndHourMinute(_endDateTime, _endTime)
+            .isAtSameMomentAs(CustomDateUtils.combineYearMonthDayAndHourMinute(
+                _startDateTime, _startTime))) {
+      _endDateTime = _endDateTime.add(const Duration(days: 1));
+    }
+    _endDateString =
+        CustomDateUtils.formatDateStringExceptHourMinute(_endDateTime);
+
+    notifyListeners();
+  }
+
+  ScheduleModel getSchedule() {
+    DateTime start = CustomDateUtils.combineYearMonthDayAndHourMinute(
+        _startDateTime, _startTime);
+    DateTime end = CustomDateUtils.combineYearMonthDayAndHourMinute(
+        _endDateTime, _endTime);
+
+    assert(!start.isAfter(end) && !start.isAtSameMomentAs(end),
+        'AddSchedulePageProvider: addSchedule error. start must be before end');
+
+    if (!CustomDateUtils.areSameDays(start, end)) {
+      _isAllDay = true;
+    }
+
+    ScheduleModel schedule = ScheduleModel(
+      id: CustomStringUtils.generateID(),
+      title: _titleTextEditingController.text,
+      content: _contentTextEditingController.text,
+      type: _isAllDay ? ScheduleType.allDay : ScheduleType.hours,
+      start: start,
+      end: end,
+      colorIndex: _tagColorIndex,
+    );
+
+    return schedule;
+  }
 }

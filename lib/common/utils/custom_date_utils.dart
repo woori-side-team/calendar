@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class CustomDateUtils {
   /// 현재 날짜를 반환합니다.
   /// (만약 앱 전체에서 동일 값을 써야 할 시 수정이 쉽도록 이 함수를 제작하였습니다.)
@@ -152,5 +154,27 @@ class CustomDateUtils {
   // 59초를 저장할린 없지 않겠는가? 그래서 59초인지 아닌지로 판단하게 했다.
   static DateTime getEndOfThisDay(DateTime dateTime) {
     return DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59);
+  }
+
+  /// (년) 월 일 요일 String 반환
+  /// 올해가 2020년이고 매개변수로 들어온 DateTime의 year이
+  /// 2020이면 년은 생략
+  static String formatDateStringExceptHourMinute(DateTime dateTime) {
+    String dayOfWeek = getKoreanDayOfWeek(DateFormat('E').format(dateTime));
+    dayOfWeek += '요일';
+
+    String year = dateTime.year == getNow().year ? '' : '${dateTime.year}년 ';
+
+    return '$year${dateTime.month}월 ${dateTime.day}일 $dayOfWeek';
+  }
+
+  /// [yearMonthDay]는 년 월 일을 추출할 매개변수.
+  /// [hourMinute]은 시 분을 추출할 매개변수.
+  /// DateTime(yearMonthDay.year, yearMonthDay.month, yearMonthDay.day, hourMinute.hour, hourMinute.minute)
+  /// 를 반환한다.
+  static DateTime combineYearMonthDayAndHourMinute(
+      DateTime yearMonthDay, DateTime hourMinute) {
+    return DateTime(yearMonthDay.year, yearMonthDay.month, yearMonthDay.day,
+        hourMinute.hour, hourMinute.minute);
   }
 }
