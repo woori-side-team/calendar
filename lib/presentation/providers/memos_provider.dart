@@ -45,7 +45,7 @@ class MemosProvider with ChangeNotifier {
         id: CustomStringUtils.generateID(),
         title: title,
         content: content,
-        selectedColorIndices: []);
+        selectedColorIndices: [0]);
 
     await _addMemoUseCase(memoModel);
     await _loadData();

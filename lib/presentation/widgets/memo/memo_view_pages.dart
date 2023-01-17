@@ -1,3 +1,4 @@
+import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
@@ -46,7 +47,7 @@ class MemoGridViewPage extends StatelessWidget {
                         context.pushNamed('memoEditPage', extra: memoModel);
                       },
                       child: Column(children: [
-                        const _MemoMarkers(),
+                        _MemoMarkers(memoModel: memoModel),
                         Text(memoModel.content, overflow: TextOverflow.ellipsis)
                       ])))
                   .toList())
@@ -90,7 +91,7 @@ class MemoListViewPage extends StatelessWidget {
               ),
               children: memosProvider.allMemos
                   .map((memoModel) => Column(children: [
-                        const _MemoMarkers(),
+                        _MemoMarkers(memoModel: memoModel),
                         _MemoBox(
                             onPressed: () {
                               context.pushNamed('memoEditPage',
@@ -146,11 +147,14 @@ class _MemoBox extends StatelessWidget {
 }
 
 class _MemoMarkers extends StatelessWidget {
-  const _MemoMarkers({super.key});
+  final MemoModel memoModel;
+
+  const _MemoMarkers({super.key, required this.memoModel});
 
   @override
   Widget build(BuildContext context) {
-    final colors = markerColors.sublist(0, 4);
+    final colors =
+        memoModel.selectedColorIndices.map((index) => markerColors[index]);
 
     return Container(
         alignment: Alignment.topLeft,
