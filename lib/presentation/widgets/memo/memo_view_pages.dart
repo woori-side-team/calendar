@@ -136,6 +136,7 @@ class _MemoBox extends StatelessWidget {
     return GestureDetector(
         onTap: onPressed,
         child: Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
                 color: CustomTheme.groupedBackground.primary,

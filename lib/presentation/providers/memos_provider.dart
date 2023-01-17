@@ -21,7 +21,12 @@ class MemosProvider with ChangeNotifier {
       this._updateMemoUseCase,
       this._deleteMemoUseCase,
       this._getAllMemosUseCase,
-      this._deleteAllMemosUseCase);
+      this._deleteAllMemosUseCase) {
+    (() async {
+      await _loadData();
+      notifyListeners();
+    })();
+  }
 
   List<MemoModel> get allMemos => _memosCache;
 
