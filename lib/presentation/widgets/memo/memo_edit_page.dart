@@ -1,4 +1,5 @@
 import 'package:calendar/domain/models/memo_model.dart';
+import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/common/section.dart';
@@ -6,6 +7,8 @@ import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class MemoEditPage extends StatefulWidget {
   static const routeName = 'memo/edit';
@@ -66,15 +69,56 @@ class _MemoEditPageState extends State<MemoEditPage> {
     });
   }
 
+  void _handlePressDelete(BuildContext context, MemosProvider memosProvider) {
+    memosProvider.deleteMemo(widget.memoModel.id);
+    Navigator.pop(context);
+  }
+
+  void _handlePressMenu(BuildContext context, MemosProvider memosProvider) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    const top = 60.0;
+    const right = 60.0;
+    const bottom = 40.0;
+    const width = 120.0;
+
+    showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(
+            screenWidth - width - right, top, right, bottom),
+        items: [
+          PopupMenuItem<int>(
+              value: 1,
+              onTap: () {
+                _handlePressDelete(context, memosProvider);
+              },
+              child: SizedBox(
+                  width: width,
+                  child: Row(children: [
+                    SvgPicture.asset('assets/icons/memo_edit_page_delete.svg'),
+                    const SizedBox(width: 8),
+                    Text('Delete',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: CustomTheme.scale.scale7))
+                  ]))),
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final memosProvider = context.watch<MemosProvider>();
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Column(children: [
           CustomAppBar(leftActions: const [
             CustomAppBarBackButton()
           ], rightActions: [
-            CustomAppBarMenuButton(onPressed: () {}),
+            CustomAppBarMenuButton(onPressed: () {
+              _handlePressMenu(context, memosProvider);
+            }),
             CustomAppBarEditButton(onPressed: () {})
           ]),
           SectionTitleEditor(textEditingController: _titleEditingController),
