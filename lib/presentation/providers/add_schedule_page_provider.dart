@@ -30,7 +30,8 @@ class AddSchedulePageProvider with ChangeNotifier {
   String _startDateString = CustomDateUtils.formatDateStringExceptHourMinute(
       CustomDateUtils.getNow());
   String _startTimeString = DateFormat('H:mm').format(CustomDateUtils.getNow());
-  DateTime _endDateTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+  DateTime _endDateTime =
+      CustomDateUtils.getNow().add(const Duration(hours: 1));
 
   // only hour and minute
   DateTime _endTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
@@ -42,6 +43,8 @@ class AddSchedulePageProvider with ChangeNotifier {
   bool _isAllDay = false;
   NotificationTime _notificationTime = NotificationTime.oneDay;
   int _tagColorIndex = 0;
+  bool _isEditMode = false;
+  String? _scheduleId;
 
   get titleTextEditingController => _titleTextEditingController;
 
@@ -70,6 +73,8 @@ class AddSchedulePageProvider with ChangeNotifier {
   DateTime get endDateTime => _endDateTime;
 
   DateTime get endTime => _endTime;
+
+  bool get isEditMode => _isEditMode;
 
   set startTimeSpinnerScale(double value) {
     _startTimeSpinnerScale = value;
@@ -130,6 +135,86 @@ class AddSchedulePageProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void customDispose() {
+    _titleTextEditingController.text = '';
+    _contentTextEditingController.text = '';
+
+    _startTimeSpinnerScale = 0.001;
+    _endTimeSpinnerScale = 0.001;
+    _startDateTime = CustomDateUtils.getNow();
+
+    _startTime = CustomDateUtils.getNow();
+    _startDateString = CustomDateUtils.formatDateStringExceptHourMinute(
+        CustomDateUtils.getNow());
+    _startTimeString = DateFormat('H:mm').format(CustomDateUtils.getNow());
+    _endDateTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+
+    _endTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+    _endDateString = CustomDateUtils.formatDateStringExceptHourMinute(
+        CustomDateUtils.getNow().add(const Duration(hours: 1)));
+    _endTimeString = DateFormat('H:mm')
+        .format(CustomDateUtils.getNow().add(const Duration(hours: 1)));
+
+    _isAllDay = false;
+    _notificationTime = NotificationTime.oneDay;
+    _tagColorIndex = 0;
+  }
+
+  void init() {
+    _isEditMode = false;
+
+    _titleTextEditingController.text = '';
+    _contentTextEditingController.text = '';
+
+    _startTimeSpinnerScale = 0.001;
+    _endTimeSpinnerScale = 0.001;
+    _startDateTime = CustomDateUtils.getNow();
+
+    _startTime = CustomDateUtils.getNow();
+    _startDateString = CustomDateUtils.formatDateStringExceptHourMinute(
+        CustomDateUtils.getNow());
+    _startTimeString = DateFormat('H:mm').format(CustomDateUtils.getNow());
+    _endDateTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+
+    _endTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+    _endDateString = CustomDateUtils.formatDateStringExceptHourMinute(
+        CustomDateUtils.getNow().add(const Duration(hours: 1)));
+    _endTimeString = DateFormat('H:mm')
+        .format(CustomDateUtils.getNow().add(const Duration(hours: 1)));
+
+    _isAllDay = false;
+    _notificationTime = NotificationTime.oneDay;
+    _tagColorIndex = 0;
+  }
+
+  void initWithSchedule(ScheduleModel schedule) {
+    _isEditMode = true;
+    _scheduleId = schedule.id;
+
+    _titleTextEditingController.text = schedule.title;
+    _contentTextEditingController.text = schedule.content;
+
+    _startTimeSpinnerScale = 0.001;
+    _endTimeSpinnerScale = 0.001;
+    _startDateTime = schedule.start;
+
+    _startTime = schedule.start;
+    _startDateString =
+        CustomDateUtils.formatDateStringExceptHourMinute(schedule.start);
+    _startTimeString = DateFormat('H:mm').format(schedule.start);
+    _endDateTime = schedule.end;
+
+    _endTime = schedule.end;
+    _endDateString =
+        CustomDateUtils.formatDateStringExceptHourMinute(schedule.end);
+    _endTimeString = DateFormat('H:mm').format(schedule.end);
+
+    _isAllDay = schedule.type == ScheduleType.allDay ? true : false;
+    //TODO: model에 noti 변수 추가하고 다시 수정하기
+    _notificationTime = NotificationTime.oneDay;
+    _tagColorIndex = schedule.colorIndex;
+  }
+
   void changeStartTimeSpinnerScale() {
     _startTimeSpinnerScale = _startTimeSpinnerScale == 0.001 ? 0.99 : 0.001;
     _startTimeString = DateFormat('H:mm').format(_startTime);
@@ -173,8 +258,8 @@ class AddSchedulePageProvider with ChangeNotifier {
       _isAllDay = true;
     }
 
-    ScheduleModel schedule = ScheduleModel(
-      id: CustomStringUtils.generateID(),
+    ScheduleModel result = ScheduleModel(
+      id: !_isEditMode ? CustomStringUtils.generateID() : _scheduleId!,
       title: _titleTextEditingController.text,
       content: _contentTextEditingController.text,
       type: _isAllDay ? ScheduleType.allDay : ScheduleType.hours,
@@ -183,6 +268,6 @@ class AddSchedulePageProvider with ChangeNotifier {
       colorIndex: _tagColorIndex,
     );
 
-    return schedule;
+    return result;
   }
 }

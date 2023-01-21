@@ -1,7 +1,9 @@
+import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 const double _buttonSize = 26;
 
@@ -56,6 +58,7 @@ class AddScheduleButton extends StatelessWidget {
         width: 83,
         child: ElevatedButton(
           onPressed: () {
+            context.read<AddSchedulePageProvider>().init();
             context.pushNamed('addSchedulePage');
           },
           style: ElevatedButton.styleFrom(

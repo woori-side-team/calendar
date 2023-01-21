@@ -7,8 +7,11 @@ import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/add_schedule_page_provider.dart';
 
 class DayPage extends StatelessWidget {
   static const routeName = 'schedule/day';
@@ -112,7 +115,7 @@ class DayPage extends StatelessWidget {
     );
   }
 
-  Widget _createScheduleRow(ScheduleModel schedule) {
+  Widget _createScheduleRow(BuildContext context, ScheduleModel schedule) {
     final int time = schedule.start.hour;
     final String amPm = time < 12 ? 'AM' : 'PM';
     final String title = schedule.title;
@@ -121,92 +124,98 @@ class DayPage extends StatelessWidget {
     int progressTime = schedule.end.hour - schedule.start.hour;
     if (progressTime < 0) progressTime = 1;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 29, top: 24),
-              child: Container(
+    return GestureDetector(
+      onTap: () {
+        context.read<AddSchedulePageProvider>().initWithSchedule(schedule);
+        context.pushNamed('addSchedulePage');
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 29, top: 24),
+                child: Container(
+                  width: 21,
+                  height: 22,
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: FittedBox(
+                    fit: BoxFit.none,
+                    child: Text(
+                      '${time % 12 == 0 ? 12 : time % 12}',
+                      style: TextStyle(
+                          height: 11 / 12,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w400,
+                          color: markerColors[schedule.colorIndex]),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 28, right: 1),
                 width: 21,
-                height: 22,
+                height: 12,
                 alignment: AlignmentDirectional.centerEnd,
                 child: FittedBox(
                   fit: BoxFit.none,
                   child: Text(
-                    '${time % 12 == 0 ? 12 : time % 12}',
+                    amPm,
                     style: TextStyle(
-                        height: 11 / 12,
-                        fontSize: 24,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: markerColors[schedule.colorIndex]),
+                        color: CustomTheme.gray.gray1),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 28, right: 1),
-              width: 21,
-              height: 12,
-              alignment: AlignmentDirectional.centerEnd,
-              child: FittedBox(
-                fit: BoxFit.none,
-                child: Text(
-                  amPm,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: CustomTheme.gray.gray1),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 12, top: 30),
-          child: Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: schedule.type == ScheduleType.hours ? 14 : 21,
-                    top: 24,
-                    right: 12),
-                child: schedule.type == ScheduleType.hours
-                    ? _createLimitedScheduleTextContainer(
-                        title: title,
-                        content: content,
-                        color: color,
-                      )
-                    : _createAllDayScheduleTextContainer(
-                        title: title,
-                        content: content,
-                        color: color,
-                      ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 4,
-                  left: schedule.type == ScheduleType.hours ? 14 : 21,
-                ),
-                child: _createDateRangeText(schedule),
-              ),
             ],
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 30),
+            child: Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: schedule.type == ScheduleType.hours ? 14 : 21,
+                      top: 24,
+                      right: 12),
+                  child: schedule.type == ScheduleType.hours
+                      ? _createLimitedScheduleTextContainer(
+                          title: title,
+                          content: content,
+                          color: color,
+                        )
+                      : _createAllDayScheduleTextContainer(
+                          title: title,
+                          content: content,
+                          color: color,
+                        ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 4,
+                    left: schedule.type == ScheduleType.hours ? 14 : 21,
+                  ),
+                  child: _createDateRangeText(schedule),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -240,39 +249,6 @@ class DayPage extends StatelessWidget {
 
     return Scaffold(
         backgroundColor: CustomTheme.background.primary,
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FloatingActionButton(
-              heroTag: 'Clear',
-              onPressed: () async {
-                await schedulesProvider.deleteAllSchedules();
-              },
-              child: const Text('C'),
-            ),
-            FloatingActionButton(
-              heroTag: 'Add2',
-              onPressed: () async {
-                await schedulesProvider.generateHoursSchedule(2, selectedDate);
-              },
-              child: const Text('2'),
-            ),
-            FloatingActionButton(
-              heroTag: 'Add3',
-              onPressed: () async {
-                await schedulesProvider.generateHoursSchedule(3, selectedDate);
-              },
-              child: const Text('3'),
-            ),
-            FloatingActionButton(
-              heroTag: 'All',
-              onPressed: () async {
-                await schedulesProvider.generateAllDaySchedule(selectedDate);
-              },
-              child: const Text('All'),
-            ),
-          ],
-        ),
         body: Stack(
           children: [
             Column(
@@ -302,7 +278,7 @@ class DayPage extends StatelessWidget {
                       itemCount: currentSchedules.length + 1,
                       itemBuilder: (BuildContext context, int index) {
                         if (index != currentSchedules.length) {
-                          return _createScheduleRow(currentSchedules[index]);
+                          return _createScheduleRow(context, currentSchedules[index]);
                         }
                         // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
                         return const SizedBox(height: 50);

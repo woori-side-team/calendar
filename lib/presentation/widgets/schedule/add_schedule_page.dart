@@ -11,8 +11,16 @@ import 'package:provider/provider.dart';
 
 import '../../providers/schedules_provider.dart';
 
-class AddSchedulePage extends StatelessWidget {
+class AddSchedulePage extends StatefulWidget {
   const AddSchedulePage({Key? key}) : super(key: key);
+
+  @override
+  State<AddSchedulePage> createState() => _AddSchedulePageState();
+}
+
+class _AddSchedulePageState extends State<AddSchedulePage> {
+  late AddSchedulePageProvider viewModel;
+
 
   Widget _createAppBar(BuildContext context) {
     return Container(
@@ -48,7 +56,8 @@ class AddSchedulePage extends StatelessWidget {
     );
   }
 
-  Widget _createTextFieldsContainer(BuildContext context, AddSchedulePageProvider viewModel) {
+  Widget _createTextFieldsContainer(
+      BuildContext context, AddSchedulePageProvider viewModel) {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 28, 20, 14),
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -340,7 +349,8 @@ class AddSchedulePage extends StatelessWidget {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: markerColors[viewModel.tagColorIndex]),
+                      shape: BoxShape.circle,
+                      color: markerColors[viewModel.tagColorIndex]),
                 ),
               ),
               Padding(
@@ -358,8 +368,8 @@ class AddSchedulePage extends StatelessWidget {
                   color: CustomTheme.gray.gray6,
                 ),
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(left: 10),
-                  scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 10),
+                    scrollDirection: Axis.horizontal,
                     itemCount: markerColors.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
@@ -399,93 +409,92 @@ class AddSchedulePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => AddSchedulePageProvider(),
-        builder: (context, __) {
-          final viewModel = context.watch<AddSchedulePageProvider>();
-          return Scaffold(
-            backgroundColor: CustomTheme.background.primary,
-            floatingActionButton: FloatingActionButton.extended(onPressed: () async {
-              final schedulesProvider = context.read<SchedulesProvider>();
-              schedulesProvider.addScheduleBySaveButton(viewModel.getSchedule());
-              context.pop();
-            }, label: const Text('저장'), icon: const Icon(Icons.save),),
-            body: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _createAppBar(context),
-                _createTextFieldsContainer(context, viewModel),
-                Container(
-                  height: 0.5,
+    viewModel = context.watch<AddSchedulePageProvider>();
+    return Scaffold(
+      backgroundColor: CustomTheme.background.primary,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final schedulesProvider = context.read<SchedulesProvider>();
+          schedulesProvider.addScheduleBySaveButton(viewModel.getSchedule());
+          context.pop();
+        },
+        label: const Text('저장'),
+        icon: const Icon(Icons.save),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _createAppBar(context),
+          _createTextFieldsContainer(context, viewModel),
+          Container(
+            height: 0.5,
+            color: CustomTheme.gray.gray2,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 8, 0),
+                child: SvgPicture.asset(
+                  'assets/icons/clock_mono.svg',
+                  height: 24,
+                  width: 24,
                   color: CustomTheme.gray.gray2,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 16, 8, 0),
-                      child: SvgPicture.asset(
-                        'assets/icons/clock_mono.svg',
-                        height: 24,
-                        width: 24,
-                        color: CustomTheme.gray.gray2,
-                      ),
-                    ),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: _createDateStartTimeTable(context, viewModel),
-                    )),
-                  ],
-                ),
-                _createTimeSpinner(context, viewModel.startTimeSpinnerScale,
-                    (value) {
-                  viewModel.startTime = value;
-                }),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 52),
-                      child: _createDateEndTimeTable(context, viewModel),
-                    ),
-                    _createTimeSpinner(context, viewModel.endTimeSpinnerScale,
-                        (value) {
-                      viewModel.endTime = value;
-                    }, initialDateTime: viewModel.endTime),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 52),
-                      child: _createAllDaySwitchRow(context, viewModel),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14 - 6),
-                Container(
-                  height: 0.5,
-                  color: CustomTheme.gray.gray2,
-                ),
-                _createNotificationRow(context, viewModel),
-                const SizedBox(height: 14),
-                Container(
-                  height: 0.5,
-                  color: CustomTheme.gray.gray2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 14),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '색깔 Tag를 추가해서, 이벤트를 식별하세요 (중복선택 X)',
-                      style: TextStyle(
-                          color: CustomTheme.gray.gray1,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12),
-                    ),
-                  ),
-                ),
-                _createColorRow(context, viewModel),
-              ],
+              ),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: _createDateStartTimeTable(context, viewModel),
+              )),
+            ],
+          ),
+          _createTimeSpinner(context, viewModel.startTimeSpinnerScale, (value) {
+            viewModel.startTime = value;
+          }),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 52),
+                child: _createDateEndTimeTable(context, viewModel),
+              ),
+              _createTimeSpinner(context, viewModel.endTimeSpinnerScale,
+                  (value) {
+                viewModel.endTime = value;
+              }, initialDateTime: viewModel.endTime),
+              Padding(
+                padding: const EdgeInsets.only(left: 52),
+                child: _createAllDaySwitchRow(context, viewModel),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14 - 6),
+          Container(
+            height: 0.5,
+            color: CustomTheme.gray.gray2,
+          ),
+          _createNotificationRow(context, viewModel),
+          const SizedBox(height: 14),
+          Container(
+            height: 0.5,
+            color: CustomTheme.gray.gray2,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 14),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '색깔 Tag를 추가해서, 이벤트를 식별하세요 (중복선택 X)',
+                style: TextStyle(
+                    color: CustomTheme.gray.gray1,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12),
+              ),
             ),
-          );
-        });
+          ),
+          _createColorRow(context, viewModel),
+        ],
+      ),
+    );
   }
 }

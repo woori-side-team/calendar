@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/add_schedule_page_provider.dart';
 import '../common/marker_colors.dart';
 
 class ScheduleSheet extends StatefulWidget {
@@ -99,12 +100,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           Expanded(
               child: TextButton(
                   onPressed: () {
-                    // TODO 여러 날 스케줄은 어떻게?
-                    schedulesProvider.getOneDaySchedules(schedule.start);
-                    context.pushNamed('dayPage', params: {
-                      'selectedDate':
-                          CustomDateUtils.dateToString(schedule.start)
-                    });
+                    context.read<AddSchedulePageProvider>().initWithSchedule(schedule);
+                    context.pushNamed('addSchedulePage');
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),

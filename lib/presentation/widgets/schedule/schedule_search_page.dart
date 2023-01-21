@@ -1,5 +1,6 @@
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
+import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
 import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
@@ -170,9 +171,10 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
 
     return InkWell(
       onTap: () {
-        context.pushNamed('dayPage', params: {
-          'selectedDate': CustomDateUtils.dateToString(schedule.start)
-        });
+        context.read<AddSchedulePageProvider>().initWithSchedule(schedule);
+        viewModel.textEditingController.text = '';
+        viewModel.searchSchedules('');
+        context.pushNamed('addSchedulePage');
       },
       child: Container(
         padding: const EdgeInsets.fromLTRB(19, 12, 0, 14),
