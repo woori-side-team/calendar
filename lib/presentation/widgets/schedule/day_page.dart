@@ -223,6 +223,7 @@ class DayPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 48,
+      alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
         boxShadow: const [
           BoxShadow(
@@ -255,9 +256,12 @@ class DayPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CustomAppBar(rightActions: [
-                  CustomAppBarSearchButton(type: PageType.schedule),
-                ]),
+                CustomAppBar(
+                    isScheduleAppBar: true,
+                    dateTimeInDayPage: selectedDate,
+                    rightActions: const [
+                      CustomAppBarSearchButton(type: PageType.schedule),
+                    ]),
                 _createDateCard(date: selectedDate),
                 Flexible(
                     child: Stack(
@@ -278,7 +282,8 @@ class DayPage extends StatelessWidget {
                       itemCount: currentSchedules.length + 1,
                       itemBuilder: (BuildContext context, int index) {
                         if (index != currentSchedules.length) {
-                          return _createScheduleRow(context, currentSchedules[index]);
+                          return _createScheduleRow(
+                              context, currentSchedules[index]);
                         }
                         // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
                         return const SizedBox(height: 50);

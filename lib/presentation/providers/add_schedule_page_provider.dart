@@ -160,7 +160,7 @@ class AddSchedulePageProvider with ChangeNotifier {
     _tagColorIndex = 0;
   }
 
-  void init() {
+  void init({DateTime? dateTimeInDayPage}) {
     _isEditMode = false;
 
     _titleTextEditingController.text = '';
@@ -168,19 +168,22 @@ class AddSchedulePageProvider with ChangeNotifier {
 
     _startTimeSpinnerScale = 0.001;
     _endTimeSpinnerScale = 0.001;
-    _startDateTime = CustomDateUtils.getNow();
+    _startDateTime = dateTimeInDayPage ?? CustomDateUtils.getNow();
 
-    _startTime = CustomDateUtils.getNow();
-    _startDateString = CustomDateUtils.formatDateStringExceptHourMinute(
-        CustomDateUtils.getNow());
-    _startTimeString = DateFormat('H:mm').format(CustomDateUtils.getNow());
-    _endDateTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+    _startTime = dateTimeInDayPage == null
+        ? CustomDateUtils.getNow()
+        : CustomDateUtils.getMidnightOfThisDay(dateTimeInDayPage)
+            .add(const Duration(hours: 8));
+    _startDateString =
+        CustomDateUtils.formatDateStringExceptHourMinute(_startTime);
+    _startTimeString = DateFormat('H:mm').format(_startTime);
+    _endDateTime = _startTime.add(const Duration(hours: 1));
 
-    _endTime = CustomDateUtils.getNow().add(const Duration(hours: 1));
+    _endTime = _startTime.add(const Duration(hours: 1));
     _endDateString = CustomDateUtils.formatDateStringExceptHourMinute(
-        CustomDateUtils.getNow().add(const Duration(hours: 1)));
-    _endTimeString = DateFormat('H:mm')
-        .format(CustomDateUtils.getNow().add(const Duration(hours: 1)));
+        _startTime.add(const Duration(hours: 1)));
+    _endTimeString =
+        DateFormat('H:mm').format(_startTime.add(const Duration(hours: 1)));
 
     _isAllDay = false;
     _notificationTime = NotificationTime.oneDay;

@@ -11,16 +11,20 @@ class CustomAppBar extends StatelessWidget {
   final List<Widget> leftActions;
   final List<Widget> rightActions;
   final bool? isScheduleAppBar;
+  final DateTime? dateTimeInDayPage;
 
   const CustomAppBar(
       {super.key,
       this.leftActions = const [],
       this.rightActions = const [],
-      this.isScheduleAppBar});
+      this.isScheduleAppBar,
+      this.dateTimeInDayPage});
 
   Widget _createLeftAction() {
     if (isScheduleAppBar == true) {
-      return AddScheduleButton();
+      return AddScheduleButton(
+        dateTimeInDayPage: dateTimeInDayPage,
+      );
     }
     return Row(children: [...leftActions]);
   }
@@ -47,18 +51,24 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class AddScheduleButton extends StatelessWidget {
+  final DateTime? dateTimeInDayPage;
+
+  const AddScheduleButton({super.key, this.dateTimeInDayPage});
+
   @override
   Widget build(BuildContext context) {
     return Row(children: [
       const SizedBox(
-        width: 19,
+        width: 7,
       ),
       SizedBox(
         height: 32,
         width: 83,
         child: ElevatedButton(
           onPressed: () {
-            context.read<AddSchedulePageProvider>().init();
+            context
+                .read<AddSchedulePageProvider>()
+                .init(dateTimeInDayPage: dateTimeInDayPage);
             context.pushNamed('addSchedulePage');
           },
           style: ElevatedButton.styleFrom(
@@ -243,4 +253,3 @@ class CustomAppBarAddButton extends StatelessWidget {
             ])));
   }
 }
-
