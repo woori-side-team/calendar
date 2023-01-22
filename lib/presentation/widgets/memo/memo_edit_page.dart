@@ -1,15 +1,20 @@
+import 'package:calendar/domain/models/memo_model.dart';
+import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/common/section.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class MemoEditPage extends StatefulWidget {
   static const routeName = 'memo/edit';
 
-  const MemoEditPage({super.key});
+  final MemoModel memoModel;
+
+  const MemoEditPage({super.key, required this.memoModel});
 
   @override
   State<StatefulWidget> createState() {
@@ -18,24 +23,21 @@ class MemoEditPage extends StatefulWidget {
 }
 
 class _MemoEditPageState extends State<MemoEditPage> {
+  late MemoModel _currentMemoModel;
   late TextEditingController _titleEditingController;
   late TextEditingController _contentEditingController;
-  late List<Color> _selectedTags;
-  late List<Color> _candidateTags;
 
   @override
   void initState() {
     super.initState();
 
+    _currentMemoModel = widget.memoModel;
+
     _titleEditingController = TextEditingController();
-    _titleEditingController.text = '하나에 가득 우는 어머니, 듯합니다 안녕하세요 반갑습니다';
+    _titleEditingController.text = _currentMemoModel.title;
 
     _contentEditingController = TextEditingController();
-    _contentEditingController.text =
-        '하나에 가득 우는 어머니, 듯합니다. 밤을 나는 별들을 까닭입니다. 나는 노루, 가을로 이름을 패, 내 거외다. 책상을 우는 나의 별 릴케 것은 까닭입니다. 아직 내린 하나에 아침이 나의 이국 그리고 까닭입니다. 시인의 지나가는 부끄러운 슬퍼하는 있습니다. 하나에 하늘에는 않은 내 불러 무덤 자랑처럼 아이들의 있습니다.';
-
-    _selectedTags = markerColors.sublist(0, 3);
-    _candidateTags = markerColors.sublist(3);
+    _contentEditingController.text = _currentMemoModel.content;
   }
 
   @override
@@ -46,33 +48,96 @@ class _MemoEditPageState extends State<MemoEditPage> {
     super.dispose();
   }
 
-  void _handleUnselectTag(int index) {
-    final color = _selectedTags[index];
+  void _handleUnselectTag(MemosProvider memosProvider, int index) {
+    final newSelectedColorIndices = [..._currentMemoModel.selectedColorIndices];
+    newSelectedColorIndices.remove(index);
 
-    setState(() {
-      _selectedTags.removeAt(index);
-      _candidateTags.insert(0, color);
-    });
+    memosProvider.updateMemo(_currentMemoModel.copyWith(
+        selectedColorIndices: newSelectedColorIndices));
   }
 
-  void _handleSelectTag(int index) {
-    final color = _candidateTags[index];
+  void _handleSelectTag(MemosProvider memosProvider, int index) {
+    final newSelectedColorIndices = [..._currentMemoModel.selectedColorIndices];
+    newSelectedColorIndices.add(index);
 
-    setState(() {
-      _candidateTags.removeAt(index);
-      _selectedTags.add(color);
-    });
+    memosProvider.updateMemo(_currentMemoModel.copyWith(
+        selectedColorIndices: newSelectedColorIndices));
+  }
+
+  void _handlePressDelete(BuildContext context, MemosProvider memosProvider) {
+    memosProvider.deleteMemo(_currentMemoModel.id);
+    Navigator.pop(context);
+  }
+
+  void _handlePressMenu(BuildContext context, MemosProvider memosProvider) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    const top = 60.0;
+    const right = 60.0;
+    const bottom = 40.0;
+    const width = 120.0;
+
+    showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(
+            screenWidth - width - right, top, right, bottom),
+        items: [
+          PopupMenuItem<int>(
+              value: 1,
+              onTap: () {
+                _handlePressDelete(context, memosProvider);
+              },
+              child: SizedBox(
+                  width: width,
+                  child: Row(children: [
+                    SvgPicture.asset('assets/icons/memo_edit_page_delete.svg'),
+                    const SizedBox(width: 8),
+                    Text('Delete',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: CustomTheme.scale.scale7))
+                  ]))),
+        ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final memosProvider = context.watch<MemosProvider>();
+
+    final List<int> selectedColorIndices = [
+      ..._currentMemoModel.selectedColorIndices
+    ];
+
+    final List<int> unselectedColorIndices = [];
+
+    // TODO: 이거 더 효율적으로 바꾸기.
+    for (var i = 0; i < markerColors.length; i++) {
+      if (!_currentMemoModel.selectedColorIndices.contains(i)) {
+        unselectedColorIndices.add(i);
+      }
+    }
+
+    (() async {
+      final newMemoModel =
+          await memosProvider.getMemoByID(_currentMemoModel.id);
+
+      if (newMemoModel != null) {
+        setState(() {
+          _currentMemoModel = newMemoModel;
+        });
+      }
+    })();
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Column(children: [
           CustomAppBar(leftActions: const [
             CustomAppBarBackButton()
           ], rightActions: [
-            CustomAppBarMenuButton(onPressed: () {}),
+            CustomAppBarMenuButton(onPressed: () {
+              _handlePressMenu(context, memosProvider);
+            }),
             CustomAppBarEditButton(onPressed: () {})
           ]),
           SectionTitleEditor(textEditingController: _titleEditingController),
@@ -89,10 +154,14 @@ class _MemoEditPageState extends State<MemoEditPage> {
                   style: const TextStyle(
                       fontWeight: FontWeight.w400, fontSize: 16))),
           _TagSelector(
-              selectedTags: _selectedTags,
-              candidateTags: _candidateTags,
-              onUnselect: _handleUnselectTag,
-              onSelect: _handleSelectTag)
+              selectedColorIndices: selectedColorIndices,
+              candidateColorIndices: unselectedColorIndices,
+              onUnselect: (index) {
+                _handleUnselectTag(memosProvider, index);
+              },
+              onSelect: (index) {
+                _handleSelectTag(memosProvider, index);
+              })
         ]),
         bottomNavigationBar:
             const CustomNavigationBar(selectedType: CustomNavigationType.memo));
@@ -100,15 +169,15 @@ class _MemoEditPageState extends State<MemoEditPage> {
 }
 
 class _TagSelector extends StatelessWidget {
-  final List<Color> selectedTags;
-  final List<Color> candidateTags;
+  final List<int> selectedColorIndices;
+  final List<int> candidateColorIndices;
   final void Function(int) onUnselect;
   final void Function(int) onSelect;
 
   const _TagSelector(
       {super.key,
-      required this.selectedTags,
-      required this.candidateTags,
+      required this.selectedColorIndices,
+      required this.candidateColorIndices,
       required this.onUnselect,
       required this.onSelect});
 
@@ -135,8 +204,8 @@ class _TagSelector extends StatelessWidget {
           const SizedBox(height: 8),
           Row(children: [
             const SizedBox(width: 4),
-            ...selectedTags.mapIndexed((index, color) => _MarkerButton(
-                color: color,
+            ...selectedColorIndices.map((index) => _MarkerButton(
+                color: markerColors[index],
                 onPressed: () {
                   onUnselect(index);
                 })),
@@ -155,9 +224,9 @@ class _TagSelector extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12)),
                     child: SingleChildScrollView(
                         child: Row(
-                            children: candidateTags
-                                .mapIndexed((index, color) => _MarkerButton(
-                                    color: color,
+                            children: candidateColorIndices
+                                .map((index) => _MarkerButton(
+                                    color: markerColors[index],
                                     onPressed: () {
                                       onSelect(index);
                                     }))
