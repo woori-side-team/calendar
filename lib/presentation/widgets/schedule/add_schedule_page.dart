@@ -404,6 +404,21 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       initialDate: initialDate,
       firstDate: DateTime(2023),
       lastDate: DateTime(2035),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: CustomTheme.gray.gray2
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: CustomTheme.tint.blue
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
   }
 
