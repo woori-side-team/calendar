@@ -4,6 +4,7 @@ import 'package:calendar/presentation/providers/add_schedule_page_provider.dart'
 import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
+import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -262,52 +263,55 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
   @override
   Widget build(BuildContext context) {
     viewModel = context.watch<ScheduleSearchProvider>();
-    return Scaffold(
-      body: Column(
-        children: [
-          const CustomAppBar(rightActions: []),
-          _createTextField(viewModel),
-          Container(
-            height: 1,
-            color: CustomTheme.gray.gray4,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 14, left: 20),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                '일정',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: CustomTheme.gray.gray2,
+    return ScaffoldOverlayBottomNavigationBar(
+      scaffold: Scaffold(
+        body: Column(
+          children: [
+            const CustomAppBar(rightActions: []),
+            _createTextField(viewModel),
+            Container(
+              height: 1,
+              color: CustomTheme.gray.gray4,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 14, left: 20),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  '일정',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: CustomTheme.gray.gray2,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          Flexible(
-            child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: viewModel.searched.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < viewModel.todayAndFutureSchedules.length) {
-                    return _createScheduleRow(
-                        viewModel, index, TimeState.todayAndFuture);
-                  } else if (index > viewModel.todayAndFutureSchedules.length) {
-                    return _createScheduleRow(
-                      viewModel,
-                      index - viewModel.todayAndFutureSchedules.length - 1,
-                      TimeState.past,
-                    );
-                  } else {
-                    return const SizedBox(height: 28);
-                  }
-                }),
-          ),
-          const SizedBox(height: 28),
-        ],
+            const SizedBox(
+              height: 4,
+            ),
+            Flexible(
+              child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: viewModel.searched.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index < viewModel.todayAndFutureSchedules.length) {
+                      return _createScheduleRow(
+                          viewModel, index, TimeState.todayAndFuture);
+                    } else if (index >
+                        viewModel.todayAndFutureSchedules.length) {
+                      return _createScheduleRow(
+                        viewModel,
+                        index - viewModel.todayAndFutureSchedules.length - 1,
+                        TimeState.past,
+                      );
+                    } else {
+                      return const SizedBox(height: 28);
+                    }
+                  }),
+            ),
+            const SizedBox(height: 28),
+          ],
+        ),
       ),
       bottomNavigationBar: const CustomNavigationBar(
           selectedType: CustomNavigationType.schedule),

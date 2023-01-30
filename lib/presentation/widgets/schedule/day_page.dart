@@ -5,7 +5,7 @@ import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
-import 'package:calendar/presentation/widgets/schedule/schedule_sheet.dart';
+import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -248,53 +248,54 @@ class DayPage extends StatelessWidget {
     final currentSchedules =
         schedulesProvider.getSortedOneDaySchedules(selectedDate);
 
-    return Scaffold(
-        backgroundColor: CustomTheme.background.primary,
-        body: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomAppBar(
-                    isScheduleAppBar: true,
-                    dateTimeInDayPage: selectedDate,
-                    rightActions: const [
-                      CustomAppBarSearchButton(type: PageType.schedule),
-                    ]),
-                _createDateCard(date: selectedDate),
-                Flexible(
-                    child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 69.0),
-                      child: VerticalDivider(
-                        color: CustomTheme.scale.scale7,
-                        indent: 0,
-                        endIndent: 0,
-                        width: 0,
-                        thickness: 1,
+    return ScaffoldOverlayBottomNavigationBar(
+        scaffold: Scaffold(
+          backgroundColor: CustomTheme.background.primary,
+          body: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomAppBar(
+                      isScheduleAppBar: true,
+                      dateTimeInDayPage: selectedDate,
+                      rightActions: const [
+                        CustomAppBarSearchButton(type: PageType.schedule),
+                      ]),
+                  _createDateCard(date: selectedDate),
+                  Flexible(
+                      child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 69.0),
+                        child: VerticalDivider(
+                          color: CustomTheme.scale.scale7,
+                          indent: 0,
+                          endIndent: 0,
+                          width: 0,
+                          thickness: 1,
+                        ),
                       ),
-                    ),
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: currentSchedules.length + 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index != currentSchedules.length) {
-                          return _createScheduleRow(
-                              context, currentSchedules[index]);
-                        }
-                        // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
-                        return const SizedBox(height: 50);
-                      },
-                    ),
-                  ],
-                )),
-              ],
-            ),
-            const ScheduleSheet(minSizeRatio: 0.03),
-          ],
+                      ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: const ClampingScrollPhysics(),
+                        itemCount: currentSchedules.length + 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index != currentSchedules.length) {
+                            return _createScheduleRow(
+                                context, currentSchedules[index]);
+                          }
+                          // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
+                          return const SizedBox(height: 50);
+                        },
+                      ),
+                    ],
+                  )),
+                ],
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: const CustomNavigationBar(
             selectedType: CustomNavigationType.schedule));

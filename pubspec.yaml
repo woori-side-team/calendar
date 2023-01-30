@@ -51,6 +51,9 @@ dependencies:
   # Routing
   go_router: ^5.2.0
 
+  # BottomSheet 패키지
+  sliding_up_panel: ^2.0.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

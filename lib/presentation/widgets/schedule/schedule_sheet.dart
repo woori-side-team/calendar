@@ -2,7 +2,6 @@ import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/providers/sheet_provider.dart';
-import 'package:calendar/presentation/widgets/common/custom_bottom_sheet.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,7 +39,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   void initState() {
     super.initState();
     final viewModel = context.read<SheetProvider>();
-    sheetIndex = viewModel.sheetScrollControllers.length;
+    sheetIndex = viewModel.sheetScrollControllers.length - 1;
   }
 
   Widget _createHeader(SheetProvider viewModel) {
@@ -48,7 +47,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(top: 14, left: 20, right: 18),
         child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text('다가오는 일정',
               style: TextStyle(
                   fontSize: 17,
@@ -56,18 +55,15 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   color: CustomTheme.scale.scale10)),
           viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? TextButton(
-                  onPressed:
-                      viewModel.editColors[sheetIndex] != viewModel.disableColor
-                          ? _handlePressEdit
-                          : null,
-                  child: Text('편집',
-                      style: TextStyle(
-                          fontSize: 17,
-                          color: viewModel.editColors[sheetIndex])))
+              onPressed: _handlePressEdit,
+              child: Text('편집',
+                  style: TextStyle(
+                      fontSize: 17,
+                      color: CustomTheme.tint.blue)))
               : IconButton(
-                  onPressed: _handlePressView,
-                  icon:
-                      SvgPicture.asset('assets/icons/schedule_sheet_close.svg'))
+              onPressed: _handlePressView,
+              icon:
+              SvgPicture.asset('assets/icons/schedule_sheet_close.svg'))
         ]));
   }
 
@@ -116,31 +112,31 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? Container()
               : Row(children: [
-                  SizedBox(
-                      width: controlWidth,
-                      height: controlHeight,
-                      child: IconButton(
-                          onPressed: () {
-                            // TODO.
-                          },
-                          padding: const EdgeInsets.all(0),
-                          icon: SvgPicture.asset(
-                              'assets/icons/schedule_sheet_schedule_edit.svg'))),
-                  SizedBox(
-                      width: controlWidth,
-                      height: controlHeight,
-                      child: IconButton(
-                          onPressed: () async {
-                            await schedulesProvider.deleteSchedule(schedule.id);
-                            if (schedulesProvider
-                                .selectedMonthSchedules.isEmpty) {
-                              viewModel.setSheetViewMode(sheetIndex);
-                            }
-                          },
-                          padding: const EdgeInsets.all(0),
-                          icon: SvgPicture.asset(
-                              'assets/icons/schedule_sheet_schedule_close.svg')))
-                ])
+            SizedBox(
+                width: controlWidth,
+                height: controlHeight,
+                child: IconButton(
+                    onPressed: () {
+                      // TODO.
+                    },
+                    padding: const EdgeInsets.all(0),
+                    icon: SvgPicture.asset(
+                        'assets/icons/schedule_sheet_schedule_edit.svg'))),
+            SizedBox(
+                width: controlWidth,
+                height: controlHeight,
+                child: IconButton(
+                    onPressed: () async {
+                      await schedulesProvider.deleteSchedule(schedule.id);
+                      if (schedulesProvider
+                          .selectedMonthSchedules.isEmpty) {
+                        viewModel.setSheetViewMode(sheetIndex);
+                      }
+                    },
+                    padding: const EdgeInsets.all(0),
+                    icon: SvgPicture.asset(
+                        'assets/icons/schedule_sheet_schedule_close.svg')))
+          ])
         ]));
   }
 
@@ -157,7 +153,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     final schedules =
         context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
     final schedulesToShow =
-        schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
+    schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
 
     // 최대 몇개까지만 보여줄지.
     const maxShowCount = 7;
@@ -168,7 +164,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           ...schedulesToShow
               .take(maxShowCount)
               .map((schedule) =>
-                  _createScheduleView(viewModel, context, schedule))
+              _createScheduleView(viewModel, context, schedule))
               .toList(),
           Container(
               margin: const EdgeInsets.only(top: 4),
@@ -184,7 +180,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
       child: TextField(
-        //cursorHeight: 15,
+        cursorHeight: 15,
         style: const TextStyle(fontSize: 15),
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(left: 14),
@@ -207,22 +203,15 @@ class _ScheduleSheet extends State<ScheduleSheet> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SheetProvider>();
-    final double minSize = widget.minSizeRatio ?? 0.1;
-    final double maxSize = viewModel.getMaxSheetSize(context);
 
-    return CustomBottomSheet(
-        sheetIndex: sheetIndex,
-        minSize: minSize,
-        maxSize: maxSize,
-        snapSizes: [minSize, 0.5, maxSize],
-        child: Column(children: [
-          _createCommandTextField(),
-          Container(
-            color: CustomTheme.gray.gray4,
-            height: 1,
-          ),
-          _createHeader(viewModel),
-          _createContent(viewModel, context)
-        ]));
+    return Column(children: [
+      _createCommandTextField(),
+      Container(
+        color: CustomTheme.gray.gray4,
+        height: 1,
+      ),
+      _createHeader(viewModel),
+      _createContent(viewModel, context)
+    ]);
   }
 }

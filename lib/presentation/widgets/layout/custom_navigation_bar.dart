@@ -1,7 +1,9 @@
+import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 enum CustomNavigationType { schedule, checklist, memo, settings }
 
@@ -11,6 +13,7 @@ class CustomNavigationBar extends StatelessWidget {
   final void Function()? onPressChecklist;
   final void Function()? onPressMemo;
   final void Function()? onPressSettings;
+  final int? sheetIndex;
 
   const CustomNavigationBar(
       {super.key,
@@ -18,7 +21,8 @@ class CustomNavigationBar extends StatelessWidget {
       this.onPressSchedule,
       this.onPressChecklist,
       this.onPressMemo,
-      this.onPressSettings});
+      this.onPressSettings,
+      this.sheetIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class CustomNavigationBar extends StatelessWidget {
                 onPressChecklist!();
               } else {
                 // TODO.
+                context.read<SheetProvider>().moveSheetWithButton(sheetIndex!);
               }
 
               break;
@@ -69,7 +74,7 @@ class CustomNavigationBar extends StatelessWidget {
               icon:
                   SvgPicture.asset('assets/icons/navigation_bar_schedule.svg')),
           NavigationDestination(
-              label: '체크리스트',
+              label: '다가올 일정',
               icon: SvgPicture.asset(
                   'assets/icons/navigation_bar_checklist.svg')),
           NavigationDestination(
@@ -80,5 +85,23 @@ class CustomNavigationBar extends StatelessWidget {
               icon:
                   SvgPicture.asset('assets/icons/navigation_bar_settings.svg'))
         ]);
+  }
+
+  CustomNavigationBar copyWith({
+    CustomNavigationType? selectedType,
+    Function()? onPressSchedule,
+    Function()? onPressChecklist,
+    Function()? onPressMemo,
+    Function()? onPressSettings,
+    int? sheetIndex,
+  }) {
+    return CustomNavigationBar(
+      selectedType: selectedType ?? this.selectedType,
+      onPressSchedule: onPressSchedule ?? this.onPressSchedule,
+      onPressChecklist: onPressChecklist ?? this.onPressChecklist,
+      onPressMemo: onPressMemo ?? this.onPressMemo,
+      onPressSettings: onPressSettings ?? this.onPressSettings,
+      sheetIndex: sheetIndex ?? this.sheetIndex,
+    );
   }
 }
