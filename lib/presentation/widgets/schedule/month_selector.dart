@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_carousel.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -12,17 +10,8 @@ class MonthSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedMonthDate =
-        context.watch<SchedulesProvider>().getSelectedMonthDate();
-    final Queue<DateTime> initialItems = Queue();
-
-    const dMonthMin = -5;
-    const dMonthMax = 5;
-
-    for (var dMonth = dMonthMin; dMonth <= dMonthMax; dMonth++) {
-      initialItems.addLast(
-          DateTime(selectedMonthDate.year, selectedMonthDate.month + dMonth));
-    }
+    final schedulesProvider = context.watch<SchedulesProvider>();
+    final selectedMonthDate = schedulesProvider.getSelectedMonthDate();
 
     return CustomCarousel<DateTime>(
         options: CarouselOptions(
@@ -31,12 +20,10 @@ class MonthSelector extends StatelessWidget {
           enableInfiniteScroll: false,
           autoPlay: false,
         ),
-        initialItems: initialItems,
-        initialSelectedIndex: -dMonthMin,
-        createPrevItem: (item) => DateTime(item.year, item.month - 1),
-        createNextItem: (item) => DateTime(item.year, item.month + 1),
-        onSelectItem: (item) {
-          context.read<SchedulesProvider>().setSelectedMonthDate(item);
+        items: schedulesProvider.neighborMonthDates,
+        selectedIndex: schedulesProvider.selectedNeighborMonthDateIndex,
+        onPageChanged: (index) {
+          schedulesProvider.selectNeighborMonthDate(index);
         },
         renderItem: (item, isActive, index, controller) {
           final text = '${item.year}.${'${item.month}'.padLeft(2, '0')}';
@@ -63,7 +50,7 @@ class MonthSelector extends StatelessWidget {
           } else {
             return TextButton(
                 onPressed: () {
-                  controller.animateToPage(index);
+                  schedulesProvider.selectNeighborMonthDate(index);
                 },
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
