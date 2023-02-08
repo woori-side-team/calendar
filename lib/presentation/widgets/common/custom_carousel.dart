@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -10,20 +11,14 @@ class CustomCarousel<Item> extends StatefulWidget {
   /// 캐러셀 옵션. (https://pub.dev/packages/carousel_slider 참고)
   final CarouselOptions options;
 
-  /// 초기 아이템 목록.
-  final Queue<Item> initialItems;
+  /// 아이템 목록.
+  final Queue<Item> items;
 
-  /// 처음에 무슨 아이템을 선택할지.
-  final int initialSelectedIndex;
+  /// 무슨 아이템을 선택할지.
+  final int selectedIndex;
 
-  /// 첫부분으로 이동했을 때 아이템을 새롭게 생성.
-  final Item Function(Item) createPrevItem;
-
-  /// 마지막 부분으로 이동했을 때 아이템을 새롭게 생성.
-  final Item Function(Item) createNextItem;
-
-  /// 아이템이 선택될 때 불림.
-  final void Function(Item) onSelectItem;
+  /// 아이템 변경 시.
+  final void Function(int index) onPageChanged;
 
   /// 각 아이템을 어떻게 렌더할지.
   final Widget Function(Item, bool, int, CarouselController) renderItem;
@@ -31,11 +26,9 @@ class CustomCarousel<Item> extends StatefulWidget {
   const CustomCarousel(
       {super.key,
       required this.options,
-      required this.initialItems,
-      required this.initialSelectedIndex,
-      required this.createPrevItem,
-      required this.createNextItem,
-      required this.onSelectItem,
+      required this.items,
+      required this.selectedIndex,
+      required this.onPageChanged,
       required this.renderItem});
 
   @override
@@ -47,28 +40,14 @@ class CustomCarousel<Item> extends StatefulWidget {
 class _CustomCarouselState<Item> extends State<CustomCarousel<Item>> {
   // Rebuild 이후에도 새로 만들지 않고 재사용해야 하므로 state로 들고 있음.
   late final CarouselController _carouselController;
-
-  late Queue<Item> _items;
-  late int _selectedIndex;
+  late int _carouselIndex;
 
   void _handlePageChange(int index, CarouselPageChangedReason reason) {
-    if (index == 0) {
-      setState(() {
-        _items.addFirst(widget.createPrevItem(_items.first));
-        _selectedIndex = 1;
-      });
-    } else if (index == _items.length - 1) {
-      setState(() {
-        _items.addLast(widget.createNextItem(_items.last));
-        _selectedIndex = _items.length - 2;
-      });
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+    widget.onPageChanged(index);
 
-    widget.onSelectItem(_items.elementAt(_selectedIndex));
+    setState(() {
+      _carouselIndex = index;
+    });
   }
 
   @override
@@ -76,22 +55,28 @@ class _CustomCarouselState<Item> extends State<CustomCarousel<Item>> {
     super.initState();
 
     _carouselController = CarouselController();
-    _items = widget.initialItems;
-    _selectedIndex = widget.initialSelectedIndex;
+    _carouselIndex = widget.selectedIndex;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.selectedIndex != _carouselIndex) {
+      Timer.run(() {
+        _carouselController.animateToPage(widget.selectedIndex);
+      });
+    }
+
     return CarouselSlider(
         carouselController: _carouselController,
-        items: _items
+        items: widget.items
             .mapIndexed((index, item) => widget.renderItem(
-                _items.elementAt(index),
-                _selectedIndex == index,
+                widget.items.elementAt(index),
+                widget.selectedIndex == index,
                 index,
                 _carouselController))
             .toList(),
         options: widget.options.copyWith(
-            initialPage: _selectedIndex, onPageChanged: _handlePageChange));
+            initialPage: widget.selectedIndex,
+            onPageChanged: _handlePageChange));
   }
 }
