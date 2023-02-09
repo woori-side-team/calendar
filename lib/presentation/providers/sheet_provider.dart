@@ -92,10 +92,7 @@ class SheetProvider with ChangeNotifier {
       return dCount >= 0;
     }
 
-    final now = CustomDateUtils.getNow();
-
-    return schedule.start.month == now.month &&
-        isDCountZeroOrMoreThanZero(schedule);
+    return isDCountZeroOrMoreThanZero(schedule);
   }
 
   void moveSheetWithButton(int scrollControllerIndex) {

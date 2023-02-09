@@ -96,8 +96,10 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           Expanded(
               child: TextButton(
                   onPressed: () {
-                    context.read<AddSchedulePageProvider>().initWithSchedule(schedule);
-                    context.pushNamed('addSchedulePage');
+                    final schedulesProvider = context.read<SchedulesProvider>();
+                    schedulesProvider.getOneDaySchedules(schedule.start);
+                    context.pushNamed('dayPage',
+                        params: {'selectedDate': CustomDateUtils.dateToString(schedule.start)});
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
@@ -117,7 +119,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                 height: controlHeight,
                 child: IconButton(
                     onPressed: () {
-                      // TODO.
+                      context.read<AddSchedulePageProvider>().initWithSchedule(schedule);
+                      context.pushNamed('addSchedulePage');
                     },
                     padding: const EdgeInsets.all(0),
                     icon: SvgPicture.asset(
