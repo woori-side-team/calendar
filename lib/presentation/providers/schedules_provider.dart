@@ -71,6 +71,7 @@ class SchedulesProvider with ChangeNotifier {
     _selectedMonthDate =
         _neighborMonthDates.elementAt(_selectedNeighborMonthDateIndex);
 
+    _loadData();
     notifyListeners();
   }
 
