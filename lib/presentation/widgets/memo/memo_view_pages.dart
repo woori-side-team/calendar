@@ -6,8 +6,14 @@ import 'package:calendar/presentation/widgets/common/section.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+const _gridHorizontalPadding = 24.0;
+const _markerSize = 14.0;
+const _markersMargin = 6.0;
 
 class MemoGridViewPage extends StatelessWidget {
   static const routeName = 'memo/grid';
@@ -65,6 +71,10 @@ class MemoListViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final memosProvider = context.watch<MemosProvider>();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final itemWidth = screenWidth - _gridHorizontalPadding * 2;
+    const actionsWidth = 106.0;
+    final actionsExtent = actionsWidth / itemWidth;
 
     return Scaffold(
         body: Column(children: [
@@ -82,28 +92,78 @@ class MemoListViewPage extends StatelessWidget {
           SectionTitle(
               icon: Image.asset('assets/icons/week_view_memo.png'),
               title: '메모'),
-          _MemoGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 312.0 / 64.0,
-                mainAxisSpacing: 28,
-                crossAxisSpacing: 16,
-              ),
+          _MemoList(
               children: memosProvider.allMemos
-                  .map((memoModel) => Column(children: [
+                  .map((memoModel) => Slidable(
+                      key: Key(memoModel.id),
+                      endActionPane: ActionPane(
+                          extentRatio: actionsExtent,
+                          motion: const ScrollMotion(),
+                          children: const [_MemoSlideActions()]),
+                      child: Column(children: [
                         _MemoMarkers(memoModel: memoModel),
-                        _MemoBox(
-                            onPressed: () {
-                              context.pushNamed('memoEditPage',
-                                  extra: memoModel);
-                            },
-                            child: Text(memoModel.content,
-                                overflow: TextOverflow.ellipsis))
-                      ]))
+                        ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 64),
+                            child: _MemoBox(
+                                onPressed: () {
+                                  context.pushNamed('memoEditPage',
+                                      extra: memoModel);
+                                },
+                                child: Text(memoModel.content,
+                                    overflow: TextOverflow.ellipsis)))
+                      ])))
                   .toList())
         ]),
         bottomNavigationBar:
             const CustomNavigationBar(selectedType: CustomNavigationType.memo));
+  }
+}
+
+class _MemoSlideActions extends StatelessWidget {
+  const _MemoSlideActions();
+
+  @override
+  Widget build(BuildContext context) {
+    const iconSize = 16.0;
+    const actionSize = 40.0;
+
+    return Expanded(
+        child: Container(
+            margin: const EdgeInsets.only(top: _markersMargin + _markerSize),
+            alignment: Alignment.center,
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Container(
+                  width: actionSize,
+                  height: actionSize,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      color: CustomTheme.tint.green, shape: BoxShape.circle),
+                  child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          customBorder: const CircleBorder(),
+                          child: SvgPicture.asset(
+                              'assets/icons/memo_edit_page_slide_share.svg',
+                              width: iconSize,
+                              fit: BoxFit.scaleDown),
+                          onTap: () {}))),
+              const SizedBox(width: 6),
+              Container(
+                  width: actionSize,
+                  height: actionSize,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      color: CustomTheme.tint.red, shape: BoxShape.circle),
+                  child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          customBorder: const CircleBorder(),
+                          child: SvgPicture.asset(
+                              'assets/icons/memo_edit_page_slide_delete.svg',
+                              width: iconSize,
+                              fit: BoxFit.scaleDown),
+                          onTap: () {})))
+            ])));
   }
 }
 
@@ -158,13 +218,13 @@ class _MemoMarkers extends StatelessWidget {
 
     return Container(
         alignment: Alignment.topLeft,
-        margin: const EdgeInsets.only(bottom: 6),
+        margin: const EdgeInsets.only(bottom: _markersMargin),
         child: Wrap(
             spacing: 4,
             children: colors
                 .map((color) => Container(
-                    width: 14,
-                    height: 14,
+                    width: _markerSize,
+                    height: _markerSize,
                     decoration:
                         BoxDecoration(shape: BoxShape.circle, color: color)))
                 .toList()));
@@ -184,13 +244,41 @@ class _MemoGrid extends StatelessWidget {
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Container(
-                padding:
-                    const EdgeInsets.only(left: 24, right: 24, bottom: 146),
+                padding: const EdgeInsets.only(
+                    left: _gridHorizontalPadding,
+                    right: _gridHorizontalPadding,
+                    bottom: 146),
                 child: GridView.builder(
                     shrinkWrap: true,
                     physics: const ScrollPhysics(),
                     gridDelegate: gridDelegate,
                     itemCount: children.length,
                     itemBuilder: (gridContext, index) => children[index]))));
+  }
+}
+
+class _MemoList extends StatelessWidget {
+  final List<Widget> children;
+
+  const _MemoList({super.key, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
+                padding: const EdgeInsets.only(
+                    left: _gridHorizontalPadding,
+                    right: _gridHorizontalPadding,
+                    bottom: 146),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: children.length,
+                    itemBuilder: (gridContext, index) => Column(children: [
+                          children[index],
+                          const SizedBox(height: 24)
+                        ])))));
   }
 }

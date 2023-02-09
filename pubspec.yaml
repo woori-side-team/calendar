@@ -20,6 +20,9 @@ dependencies:
   # Swiper 사용 위해...
   carousel_slider: ^4.1.1
 
+  # Slide 시 메뉴 보이기.
+  flutter_slidable: ^2.0.0
+
   # mapIndexed() 등의 도구들 사용 위해...
   collection: ^1.16.0
 
