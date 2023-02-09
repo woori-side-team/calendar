@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
@@ -27,13 +28,50 @@ class SchedulesProvider with ChangeNotifier {
   int _nextStartHour = 9;
   int _nextItemIndex = 0;
 
+  /// Month page 안의 캐러셀들용.
+  final _neighborMonthDates = Queue<DateTime>();
+  var _selectedNeighborMonthDateIndex = 0;
+
   SchedulesProvider(this._addScheduleUseCase, this._getSchedulesAtMonthUseCase,
       this._deleteAllSchedulesUseCase, this._deleteScheduleUseCase) {
+    const dMonthMin = -5;
+    const dMonthMax = 5;
+
+    for (var dMonth = dMonthMin; dMonth <= dMonthMax; dMonth++) {
+      _neighborMonthDates.addLast(
+          DateTime(_selectedMonthDate.year, _selectedMonthDate.month + dMonth));
+    }
+
+    _selectedNeighborMonthDateIndex = -dMonthMin;
+
     // 시작 때 필요 데이터 로딩.
     (() async {
       await _loadData();
       notifyListeners();
     })();
+  }
+
+  Queue<DateTime> get neighborMonthDates => _neighborMonthDates;
+
+  get selectedNeighborMonthDateIndex => _selectedNeighborMonthDateIndex;
+
+  void selectNeighborMonthDate(int index) {
+    if (index == 0) {
+      _neighborMonthDates.addFirst(DateTime(
+          _neighborMonthDates.first.year, _neighborMonthDates.first.month - 1));
+      _selectedNeighborMonthDateIndex = 1;
+    } else if (index == _neighborMonthDates.length - 1) {
+      _neighborMonthDates.addLast(DateTime(
+          _neighborMonthDates.last.year, _neighborMonthDates.last.month + 1));
+      _selectedNeighborMonthDateIndex = _neighborMonthDates.length - 2;
+    } else {
+      _selectedNeighborMonthDateIndex = index;
+    }
+
+    _selectedMonthDate =
+        _neighborMonthDates.elementAt(_selectedNeighborMonthDateIndex);
+
+    notifyListeners();
   }
 
   DateTime getSelectedMonthDate() {
