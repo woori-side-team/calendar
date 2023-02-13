@@ -99,7 +99,16 @@ class MemoListViewPage extends StatelessWidget {
                       endActionPane: ActionPane(
                           extentRatio: actionsExtent,
                           motion: const ScrollMotion(),
-                          children: const [_MemoSlideActions()]),
+                          children: [
+                            _MemoSlideActions(
+                              onPressShare: () {
+                                memosProvider.shareMemo(memoModel);
+                              },
+                              onPressDelete: () {
+                                memosProvider.deleteMemo(memoModel.id);
+                              },
+                            )
+                          ]),
                       child: Column(children: [
                         _MemoMarkers(memoModel: memoModel),
                         ConstrainedBox(
@@ -120,10 +129,16 @@ class MemoListViewPage extends StatelessWidget {
 }
 
 class _MemoSlideActions extends StatelessWidget {
-  const _MemoSlideActions();
+  final void Function() onPressShare;
+  final void Function() onPressDelete;
+
+  const _MemoSlideActions(
+      {required this.onPressShare, required this.onPressDelete});
 
   @override
   Widget build(BuildContext context) {
+    final memosProvider = context.watch<MemosProvider>();
+
     const iconSize = 16.0;
 
     return Expanded(
@@ -137,7 +152,7 @@ class _MemoSlideActions extends StatelessWidget {
                       width: iconSize,
                       fit: BoxFit.scaleDown),
                   color: CustomTheme.tint.green,
-                  onPressed: () {}),
+                  onPressed: onPressShare),
               const SizedBox(width: 6),
               _MemoAction(
                   icon: SvgPicture.asset(
@@ -145,7 +160,7 @@ class _MemoSlideActions extends StatelessWidget {
                       width: iconSize,
                       fit: BoxFit.scaleDown),
                   color: CustomTheme.tint.red,
-                  onPressed: () {})
+                  onPressed: onPressDelete)
             ])));
   }
 }

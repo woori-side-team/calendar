@@ -3,6 +3,7 @@ import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/domain/use_cases/memo_use_cases.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:share_plus/share_plus.dart';
 
 @injectable
 class MemosProvider with ChangeNotifier {
@@ -68,6 +69,10 @@ class MemosProvider with ChangeNotifier {
     await _deleteAllMemosUseCase();
     await _loadData();
     notifyListeners();
+  }
+
+  Future<void> shareMemo(MemoModel memoModel) async {
+    await Share.share(memoModel.content, subject: memoModel.title);
   }
 
   Future<void> _loadData() async {
