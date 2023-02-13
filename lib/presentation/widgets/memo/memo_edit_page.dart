@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/async_utils.dart';
 import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -5,6 +6,7 @@ import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/common/section.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +31,9 @@ class _MemoEditPageState extends State<MemoEditPage> {
   late TextEditingController _titleEditingController;
   late TextEditingController _contentEditingController;
 
+  final _titleEditingDebouncer = Debouncer();
+  final _contentEditingDebouncer = Debouncer();
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +45,57 @@ class _MemoEditPageState extends State<MemoEditPage> {
 
     _contentEditingController = TextEditingController();
     _contentEditingController.text = _currentMemoModel.content;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (kDebugMode) {
+        print('[MemoEditPage] Registering the listeners...');
+      }
+
+      final memosProvider = context.read<MemosProvider>();
+
+      _titleEditingController.addListener(() {
+        _titleEditingDebouncer.run(const Duration(milliseconds: 300), () {
+          memosProvider.updateMemo(
+              _currentMemoModel.copyWith(title: _titleEditingController.text));
+
+          if (kDebugMode) {
+            print('[MemoEditPage] Saved title!');
+          }
+        });
+      });
+
+      _contentEditingController.addListener(() {
+        _contentEditingDebouncer.run(const Duration(milliseconds: 300), () {
+          memosProvider.updateMemo(_currentMemoModel.copyWith(
+              content: _contentEditingController.text));
+
+          if (kDebugMode) {
+            print('[MemoEditPage] Saved content!');
+          }
+        });
+      });
+    });
+  }
+
+  @override
+  void deactivate() {
+    final memosProvider = context.read<MemosProvider>();
+
+    memosProvider.updateMemo(
+        _currentMemoModel.copyWith(title: _titleEditingController.text));
+
+    if (kDebugMode) {
+      print('[MemoEditPage] Saved title!');
+    }
+
+    memosProvider.updateMemo(
+        _currentMemoModel.copyWith(content: _contentEditingController.text));
+
+    if (kDebugMode) {
+      print('[MemoEditPage] Saved content!');
+    }
+
+    super.deactivate();
   }
 
   @override
