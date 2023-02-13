@@ -54,7 +54,8 @@ class MemoGridViewPage extends StatelessWidget {
                       },
                       child: Column(children: [
                         _MemoMarkers(memoModel: memoModel),
-                        Text(memoModel.content, overflow: TextOverflow.ellipsis)
+                        Text(memoModel.content,
+                            maxLines: 4, overflow: TextOverflow.ellipsis)
                       ])))
                   .toList())
         ]),
