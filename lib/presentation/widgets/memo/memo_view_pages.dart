@@ -125,45 +125,54 @@ class _MemoSlideActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const iconSize = 16.0;
-    const actionSize = 40.0;
 
     return Expanded(
         child: Container(
             margin: const EdgeInsets.only(top: _markersMargin + _markerSize),
             alignment: Alignment.center,
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              Container(
-                  width: actionSize,
-                  height: actionSize,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                      color: CustomTheme.tint.green, shape: BoxShape.circle),
-                  child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                          customBorder: const CircleBorder(),
-                          child: SvgPicture.asset(
-                              'assets/icons/memo_edit_page_slide_share.svg',
-                              width: iconSize,
-                              fit: BoxFit.scaleDown),
-                          onTap: () {}))),
+              _MemoAction(
+                  icon: SvgPicture.asset(
+                      'assets/icons/memo_edit_page_slide_share.svg',
+                      width: iconSize,
+                      fit: BoxFit.scaleDown),
+                  color: CustomTheme.tint.green,
+                  onPressed: () {}),
               const SizedBox(width: 6),
-              Container(
-                  width: actionSize,
-                  height: actionSize,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                      color: CustomTheme.tint.red, shape: BoxShape.circle),
-                  child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                          customBorder: const CircleBorder(),
-                          child: SvgPicture.asset(
-                              'assets/icons/memo_edit_page_slide_delete.svg',
-                              width: iconSize,
-                              fit: BoxFit.scaleDown),
-                          onTap: () {})))
+              _MemoAction(
+                  icon: SvgPicture.asset(
+                      'assets/icons/memo_edit_page_slide_delete.svg',
+                      width: iconSize,
+                      fit: BoxFit.scaleDown),
+                  color: CustomTheme.tint.red,
+                  onPressed: () {})
             ])));
+  }
+}
+
+class _MemoAction extends StatelessWidget {
+  final Widget icon;
+  final Color color;
+  final void Function() onPressed;
+
+  const _MemoAction(
+      {required this.icon, required this.color, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    const actionSize = 40.0;
+
+    return Container(
+        width: actionSize,
+        height: actionSize,
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onPressed,
+                child: icon)));
   }
 }
 

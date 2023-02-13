@@ -23,6 +23,9 @@ dependencies:
   # Slide 시 메뉴 보이기.
   flutter_slidable: ^2.0.0
 
+  # 공유 기능.
+  share_plus: ^6.3.1
+
   # mapIndexed() 등의 도구들 사용 위해...
   collection: ^1.16.0
 
