@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.woorisideteam.calendar">
    <application
-        android:label="calendar"
+        android:label="이지 스케쥴러"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
