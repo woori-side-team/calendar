@@ -2,6 +2,7 @@ import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/domain/use_cases/memo_use_cases.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -73,6 +74,11 @@ class MemosProvider with ChangeNotifier {
 
   Future<void> shareMemo(MemoModel memoModel) async {
     await Share.share(memoModel.content, subject: memoModel.title);
+  }
+
+  Future<void> copyMemo(MemoModel memoModel) async {
+    await Clipboard.setData(
+        ClipboardData(text: '[${memoModel.title}] ${memoModel.content}'));
   }
 
   Future<void> _loadData() async {

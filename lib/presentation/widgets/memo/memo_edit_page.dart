@@ -22,6 +22,8 @@ class MemoEditPage extends StatefulWidget {
   }
 }
 
+const _menuWidth = 120.0;
+
 class _MemoEditPageState extends State<MemoEditPage> {
   late MemoModel _currentMemoModel;
   late TextEditingController _titleEditingController;
@@ -64,40 +66,46 @@ class _MemoEditPageState extends State<MemoEditPage> {
         selectedColorIndices: newSelectedColorIndices));
   }
 
-  void _handlePressDelete(BuildContext context, MemosProvider memosProvider) {
-    memosProvider.deleteMemo(_currentMemoModel.id);
-    Navigator.pop(context);
-  }
-
   void _handlePressMenu(BuildContext context, MemosProvider memosProvider) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     const top = 60.0;
     const right = 60.0;
     const bottom = 40.0;
-    const width = 120.0;
 
     showMenu(
         context: context,
         position: RelativeRect.fromLTRB(
-            screenWidth - width - right, top, right, bottom),
+            screenWidth - _menuWidth - right, top, right, bottom),
         items: [
-          PopupMenuItem<int>(
+          PopupMenuItem(
               value: 1,
               onTap: () {
-                _handlePressDelete(context, memosProvider);
+                memosProvider.shareMemo(_currentMemoModel);
               },
-              child: SizedBox(
-                  width: width,
-                  child: Row(children: [
-                    SvgPicture.asset('assets/icons/memo_edit_page_delete.svg'),
-                    const SizedBox(width: 8),
-                    Text('Delete',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: CustomTheme.scale.scale7))
-                  ]))),
+              child: _MenuItem(
+                  icon:
+                      SvgPicture.asset('assets/icons/memo_edit_page_share.svg'),
+                  label: 'Share')),
+          PopupMenuItem(
+              value: 2,
+              onTap: () {
+                memosProvider.copyMemo(_currentMemoModel);
+              },
+              child: _MenuItem(
+                  icon:
+                      SvgPicture.asset('assets/icons/memo_edit_page_copy.svg'),
+                  label: 'Copy')),
+          PopupMenuItem(
+              value: 3,
+              onTap: () {
+                memosProvider.deleteMemo(_currentMemoModel.id);
+                Navigator.pop(context);
+              },
+              child: _MenuItem(
+                  icon: SvgPicture.asset(
+                      'assets/icons/memo_edit_page_delete.svg'),
+                  label: 'Delete'))
         ]);
   }
 
@@ -165,6 +173,28 @@ class _MemoEditPageState extends State<MemoEditPage> {
         ]),
         bottomNavigationBar:
             const CustomNavigationBar(selectedType: CustomNavigationType.memo));
+  }
+}
+
+class _MenuItem extends StatelessWidget {
+  final Widget icon;
+  final String label;
+
+  const _MenuItem({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: _menuWidth,
+        child: Row(children: [
+          icon,
+          const SizedBox(width: 8),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: CustomTheme.scale.scale7))
+        ]));
   }
 }
 
