@@ -8,7 +8,7 @@ class NotificationUtils {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   AndroidInitializationSettings initializationSettingsAndroid =
-      const AndroidInitializationSettings('ic_launcher');
+      const AndroidInitializationSettings('@mipmap/ic_launcher');
   DarwinInitializationSettings initializationSettingsDarwin =
       const DarwinInitializationSettings(
     requestAlertPermission: true,
@@ -42,7 +42,10 @@ class NotificationUtils {
     );
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    final bool? result = await flutterLocalNotificationsPlugin
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+
+    await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
