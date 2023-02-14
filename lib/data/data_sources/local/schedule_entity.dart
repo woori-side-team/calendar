@@ -25,6 +25,9 @@ class ScheduleEntity extends HiveObject {
   @HiveField(6)
   int colorIndex;
 
+  @HiveField(7)
+  int notificationMinute;
+
   ScheduleEntity(
       {required this.id,
       required this.title,
@@ -32,5 +35,6 @@ class ScheduleEntity extends HiveObject {
       required this.type,
       required this.start,
       required this.end,
-      required this.colorIndex});
+      required this.colorIndex,
+      required this.notificationMinute});
 }

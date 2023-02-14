@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/schedule_model.dart';
 import '../../providers/schedules_provider.dart';
 
 class AddSchedulePage extends StatefulWidget {
@@ -430,7 +431,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final schedulesProvider = context.read<SchedulesProvider>();
-          schedulesProvider.addScheduleBySaveButton(viewModel.getSchedule(), viewModel.notificationTime.toDuration());
+          schedulesProvider.addScheduleBySaveButton(viewModel.getSchedule());
           context.pop();
         },
         label: const Text('저장'),

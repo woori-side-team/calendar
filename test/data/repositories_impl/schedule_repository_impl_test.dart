@@ -17,7 +17,8 @@ void main() {
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 11),
         end: DateTime(2022, 11, 13),
-        colorIndex: 0);
+        colorIndex: 0,
+        notificationInterval: NotificationTime.oneDay);
 
     final model2 = ScheduleModel(
         id: '2',
@@ -26,7 +27,8 @@ void main() {
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 12),
         end: DateTime(2022, 11, 13),
-        colorIndex: 0);
+        colorIndex: 0,
+        notificationInterval: NotificationTime.oneDay);
 
     // Test insert.
     await repository.addSchedule(model1);

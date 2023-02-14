@@ -5,40 +5,6 @@ import 'package:intl/intl.dart';
 import '../../common/utils/custom_string_utils.dart';
 import '../../domain/models/schedule_model.dart';
 
-enum NotificationTime {
-  tenMinute('10분 전'),
-  thirtyMinute('30분 전'),
-  oneHour('1시간 전'),
-  twoHour('2시간 전'),
-  oneDay('1일 전');
-
-  final String name;
-
-  Duration toDuration() {
-    late Duration result;
-    switch(this) {
-      case NotificationTime.tenMinute:
-        result = const Duration(minutes: 10);
-        break;
-      case NotificationTime.thirtyMinute:
-        result = const Duration(minutes: 30);
-        break;
-      case NotificationTime.oneHour:
-        result = const Duration(hours: 1);
-        break;
-      case NotificationTime.twoHour:
-        result = const Duration(hours: 2);
-        break;
-      case NotificationTime.oneDay:
-        result = const Duration(days: 1);
-        break;
-    }
-    return result;
-  }
-
-  const NotificationTime(this.name);
-}
-
 class AddSchedulePageProvider with ChangeNotifier {
   final _titleTextEditingController = TextEditingController();
   final _contentTextEditingController = TextEditingController();
@@ -235,8 +201,7 @@ class AddSchedulePageProvider with ChangeNotifier {
     _endTimeString = DateFormat('H:mm').format(schedule.end);
 
     _isAllDay = schedule.type == ScheduleType.allDay ? true : false;
-    //TODO: model에 noti 변수 추가하고 다시 수정하기
-    _notificationTime = NotificationTime.oneDay;
+    _notificationTime = schedule.notificationInterval;
     _tagColorIndex = schedule.colorIndex;
   }
 
@@ -291,6 +256,7 @@ class AddSchedulePageProvider with ChangeNotifier {
       start: start,
       end: end,
       colorIndex: _tagColorIndex,
+      notificationInterval: _notificationTime,
     );
 
     return result;

@@ -27,7 +27,8 @@ void main() async {
         type: ScheduleType.allDay,
         start: DateTime(2022, 11, 11),
         end: DateTime(2022, 11, 13),
-        colorIndex: 0);
+        colorIndex: 0,
+        notificationInterval: NotificationTime.oneDay);
 
     await addScheduleUseCase(model1);
     var models = await getSchedulesAtMonthUseCase(model1.start);
