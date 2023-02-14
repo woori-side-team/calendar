@@ -60,6 +60,8 @@ class AddSchedulePageProvider with ChangeNotifier {
 
   DateTime get endDateTime => _endDateTime;
 
+  DateTime get startTime => _startTime;
+
   DateTime get endTime => _endTime;
 
   bool get isEditMode => _isEditMode;

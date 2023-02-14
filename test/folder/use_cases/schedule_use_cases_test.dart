@@ -31,11 +31,11 @@ void main() async {
         notificationInterval: NotificationTime.oneDay);
 
     await addScheduleUseCase(model1);
-    var models = await getSchedulesAtMonthUseCase(model1.start);
+    var models = await getSchedulesAtMonthUseCase();
     expect(models[0].start.month, model1.start.month);
 
     await deleteAllSchedulesUseCase();
-    models = await getSchedulesAtMonthUseCase(model1.start);
+    models = await getSchedulesAtMonthUseCase();
     expect(models.length, 0);
 
     await addScheduleUseCase(model1);

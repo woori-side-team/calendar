@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/repositories/schedule_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -19,10 +20,11 @@ class GetSchedulesAtMonthUseCase {
 
   const GetSchedulesAtMonthUseCase(this._scheduleRepository);
 
-  Future<List<ScheduleModel>> call(DateTime monthDate) async {
+  Future<List<ScheduleModel>> call() async {
+    DateTime now = CustomDateUtils.getNow();
     return await _scheduleRepository.getSchedulesBetweenDays(
-        DateTime(monthDate.year, monthDate.month, monthDate.day),
-        DateTime(monthDate.year, monthDate.month, monthDate.day).add(const Duration(days: 30)));
+        DateTime(now.year, now.month, now.day),
+        DateTime(now.year, now.month, now.day).add(const Duration(days: 30)));
   }
 }
 

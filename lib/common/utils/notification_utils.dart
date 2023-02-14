@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -72,6 +73,11 @@ class NotificationUtils {
 
   Future<void> setNotification(ScheduleModel schedule) async {
     DateTime start = schedule.start;
+
+    if(start.subtract(const Duration(minutes: 10)).isBefore(CustomDateUtils.getNow())){
+      return;
+    }
+
     var time = tz.TZDateTime.from(
       schedule.start.subtract(schedule.notificationInterval.toDuration()),
       tz.local,

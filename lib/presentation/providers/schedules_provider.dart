@@ -174,6 +174,6 @@ class SchedulesProvider with ChangeNotifier {
   /// DB에서 캐싱할 것들 로딩.
   Future<void> _loadData() async {
     _selectedMonthSchedulesCache =
-        await _getSchedulesAtMonthUseCase(_selectedMonthDate);
+        await _getSchedulesAtMonthUseCase();
   }
 }

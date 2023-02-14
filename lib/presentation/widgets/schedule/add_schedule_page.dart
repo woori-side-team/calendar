@@ -467,7 +467,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
           ),
           _createTimeSpinner(context, viewModel.startTimeSpinnerScale, (value) {
             viewModel.startTime = value;
-          }),
+          }, initialDateTime: viewModel.startTime),
           Column(
             children: [
               Padding(
