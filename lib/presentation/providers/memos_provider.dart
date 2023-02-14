@@ -37,11 +37,8 @@ class MemosProvider with ChangeNotifier {
   }
 
   Future<void> generateNewMemo() async {
-    final now = DateTime.now();
-
     const title = '새 메모';
-    final content =
-        '${now.year}.${now.month}.${now.day} ${now.hour}:${now.minute}:${now.second}에 만든 새 메모입니다.';
+    const content = '';
 
     final memoModel = MemoModel(
         id: CustomStringUtils.generateID(),
