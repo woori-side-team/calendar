@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:calendar/app.dart';
 import 'package:calendar/common/di/di.dart';
+import 'package:calendar/common/utils/notification_utils.dart';
 import 'package:calendar/data/data_sources/local/memo_entity.dart';
 import 'package:calendar/data/data_sources/local/schedule_entity.dart';
 import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
@@ -31,6 +32,11 @@ void main() async {
       statusBarColor: Colors.transparent, // status bar color
     ));
   }
+
+  NotificationUtils notificationUtils = NotificationUtils();
+  await notificationUtils.init();
+  //await notificationUtils.showNotification(id: 0, title: 'title', body: 'body');
+  //await notificationUtils.setNotification();
 
   // 앱 세팅 및 시작.
   runApp(MultiProvider(providers: [

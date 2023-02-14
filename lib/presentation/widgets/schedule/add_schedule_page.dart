@@ -430,7 +430,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final schedulesProvider = context.read<SchedulesProvider>();
-          schedulesProvider.addScheduleBySaveButton(viewModel.getSchedule());
+          schedulesProvider.addScheduleBySaveButton(viewModel.getSchedule(), viewModel.notificationTime.toDuration());
           context.pop();
         },
         label: const Text('저장'),

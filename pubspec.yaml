@@ -60,6 +60,9 @@ dependencies:
   # BottomSheet 패키지
   sliding_up_panel: ^2.0.0+1
 
+  # Notification 패키지
+  flutter_local_notifications: ^13.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

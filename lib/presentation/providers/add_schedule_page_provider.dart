@@ -14,6 +14,28 @@ enum NotificationTime {
 
   final String name;
 
+  Duration toDuration() {
+    late Duration result;
+    switch(this) {
+      case NotificationTime.tenMinute:
+        result = const Duration(minutes: 10);
+        break;
+      case NotificationTime.thirtyMinute:
+        result = const Duration(minutes: 30);
+        break;
+      case NotificationTime.oneHour:
+        result = const Duration(hours: 1);
+        break;
+      case NotificationTime.twoHour:
+        result = const Duration(hours: 2);
+        break;
+      case NotificationTime.oneDay:
+        result = const Duration(days: 1);
+        break;
+    }
+    return result;
+  }
+
   const NotificationTime(this.name);
 }
 
