@@ -29,3 +29,11 @@ lib
 |  +- widgets: View (및 ViewModel)
 |  +- providers: 여러 view들 간의 공통 상태
 ```
+
+## 기타
+
+스플래시 이미지 업데이트
+
+```
+flutter pub run flutter_native_splash:create
+```
