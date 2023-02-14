@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
 import 'package:calendar/common/utils/debug_utils.dart';
+import 'package:calendar/common/utils/notification_utils.dart';
 import 'package:calendar/common/utils/schedule_command_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
@@ -199,9 +200,10 @@ class SchedulesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addScheduleBySaveButton(ScheduleModel schedule) async {
+  Future<void> addScheduleBySaveButton(ScheduleModel schedule, Duration interval) async {
     await _addScheduleUseCase(schedule);
     await _loadData();
+    await NotificationUtils().setNotification(schedule, interval);
     notifyListeners();
   }
 
@@ -215,6 +217,7 @@ class SchedulesProvider with ChangeNotifier {
   Future<void> deleteSchedule(String id) async {
     await _deleteScheduleUseCase(id);
     await _loadData();
+    await NotificationUtils().removeNotification(id);
     notifyListeners();
   }
 
