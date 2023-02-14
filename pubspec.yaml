@@ -54,6 +54,9 @@ dependencies:
   get_it: ^7.2.0
   injectable: ^1.5.4
 
+  # Splash screen
+  flutter_native_splash: ^2.2.17
+
   # Routing
   go_router: ^5.2.0
 

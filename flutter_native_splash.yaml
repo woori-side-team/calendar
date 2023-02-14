@@ -1,0 +1,9 @@
+flutter_native_splash:
+  color: '#282828'
+  image: assets/icons/app_splash_icon.png
+
+  # Splash screen works differently in Android >= 12.
+  # So we need this part!
+  android_12:
+    color: '#282828'
+    image: assets/icons/app_splash_icon.png
