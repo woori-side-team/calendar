@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/debug_utils.dart';
 import 'package:calendar/data/data_sources/local/memo_entity.dart';
 import 'package:calendar/data/mappers/memo_mapper.dart';
 import 'package:calendar/domain/models/memo_model.dart';
@@ -30,6 +31,12 @@ class MemoRepositoryImpl implements MemoRepository {
   @override
   Future<void> deleteMemo(String id) async {
     final box = await Hive.openBox<MemoEntity>(_tableName);
+
+    if (box.get(id) == null) {
+      DebugUtils.print(
+          '[MemoRepositoryImpl] Got a deletion request but the item doesn\'t exist!');
+    }
+
     await box.delete(id);
   }
 

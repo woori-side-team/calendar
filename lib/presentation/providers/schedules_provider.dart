@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/common/utils/custom_string_utils.dart';
+import 'package:calendar/common/utils/debug_utils.dart';
 import 'package:calendar/common/utils/schedule_command_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/domain/use_cases/schedule_use_cases.dart';
@@ -181,8 +182,8 @@ class SchedulesProvider with ChangeNotifier {
     }
     DateTime endDate = ScheduleCommandUtils.getEndDateTime(command, startDate,
         ScheduleCommandUtils.getStartDateTimeString(command)!);
-    print(startDate);
-    print(endDate);
+    DebugUtils.print(startDate, alwaysPrint: true);
+    DebugUtils.print(endDate, alwaysPrint: true);
     String title = ScheduleCommandUtils.getTitle(command) ?? '';
     ScheduleModel schedule = ScheduleModel(
       id: CustomStringUtils.generateID(),

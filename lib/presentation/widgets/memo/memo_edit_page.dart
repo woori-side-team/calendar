@@ -1,4 +1,5 @@
 import 'package:calendar/common/utils/async_utils.dart';
+import 'package:calendar/common/utils/debug_utils.dart';
 import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -6,7 +7,6 @@ import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/common/section.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +34,8 @@ class _MemoEditPageState extends State<MemoEditPage> {
   final _titleEditingDebouncer = Debouncer();
   final _contentEditingDebouncer = Debouncer();
 
+  bool _updateMemoWhenQuit = true;
+
   @override
   void initState() {
     super.initState();
@@ -47,20 +49,14 @@ class _MemoEditPageState extends State<MemoEditPage> {
     _contentEditingController.text = _currentMemoModel.content;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (kDebugMode) {
-        print('[MemoEditPage] Registering the listeners...');
-      }
-
+      DebugUtils.print('[MemoEditPage] Registering the listeners...');
       final memosProvider = context.read<MemosProvider>();
 
       _titleEditingController.addListener(() {
         _titleEditingDebouncer.run(const Duration(milliseconds: 300), () {
           memosProvider.updateMemo(
               _currentMemoModel.copyWith(title: _titleEditingController.text));
-
-          if (kDebugMode) {
-            print('[MemoEditPage] Saved title!');
-          }
+          DebugUtils.print('[MemoEditPage] Saved title!');
         });
       });
 
@@ -68,10 +64,7 @@ class _MemoEditPageState extends State<MemoEditPage> {
         _contentEditingDebouncer.run(const Duration(milliseconds: 300), () {
           memosProvider.updateMemo(_currentMemoModel.copyWith(
               content: _contentEditingController.text));
-
-          if (kDebugMode) {
-            print('[MemoEditPage] Saved content!');
-          }
+          DebugUtils.print('[MemoEditPage] Saved content!');
         });
       });
     });
@@ -79,21 +72,21 @@ class _MemoEditPageState extends State<MemoEditPage> {
 
   @override
   void deactivate() {
+    if (!_updateMemoWhenQuit) {
+      return;
+    }
+
+    // 페이지 어떤 이유로든 나갈 때 메모 무조건 저장하도록 함.
+    // context 접근 때문에 dispose 대신 deactivate에서 호출.
     final memosProvider = context.read<MemosProvider>();
 
     memosProvider.updateMemo(
         _currentMemoModel.copyWith(title: _titleEditingController.text));
-
-    if (kDebugMode) {
-      print('[MemoEditPage] Saved title!');
-    }
+    DebugUtils.print('[MemoEditPage] Saved title!');
 
     memosProvider.updateMemo(
         _currentMemoModel.copyWith(content: _contentEditingController.text));
-
-    if (kDebugMode) {
-      print('[MemoEditPage] Saved content!');
-    }
+    DebugUtils.print('[MemoEditPage] Saved content!');
 
     super.deactivate();
   }
@@ -154,9 +147,10 @@ class _MemoEditPageState extends State<MemoEditPage> {
                   label: 'Copy')),
           PopupMenuItem(
               value: 3,
-              onTap: () {
-                memosProvider.deleteMemo(_currentMemoModel.id);
+              onTap: () async {
                 Navigator.pop(context);
+                await memosProvider.deleteMemo(_currentMemoModel.id);
+                _updateMemoWhenQuit = false;
               },
               child: _MenuItem(
                   icon: SvgPicture.asset(

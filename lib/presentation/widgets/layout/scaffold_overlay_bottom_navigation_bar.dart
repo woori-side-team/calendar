@@ -1,3 +1,4 @@
+import 'package:calendar/common/utils/debug_utils.dart';
 import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,12 @@ class ScaffoldOverlayBottomNavigationBar extends StatefulWidget {
   final CustomNavigationBar bottomNavigationBar;
 
   @override
-  State<ScaffoldOverlayBottomNavigationBar> createState() => _ScaffoldOverlayBottomNavigationBarState();
+  State<ScaffoldOverlayBottomNavigationBar> createState() =>
+      _ScaffoldOverlayBottomNavigationBarState();
 }
 
-class _ScaffoldOverlayBottomNavigationBarState extends State<ScaffoldOverlayBottomNavigationBar> {
+class _ScaffoldOverlayBottomNavigationBarState
+    extends State<ScaffoldOverlayBottomNavigationBar> {
   late final int _sheetIndex;
 
   @override
@@ -30,16 +33,17 @@ class _ScaffoldOverlayBottomNavigationBarState extends State<ScaffoldOverlayBott
     var viewModel = context.read<SheetProvider>();
     viewModel.addScrollController();
     _sheetIndex = viewModel.sheetScrollControllers.length - 1;
-    print('ScaffoldOverlayBottomNavigationBar initialize $_sheetIndex time.');
+    DebugUtils.print(
+        'ScaffoldOverlayBottomNavigationBar initialize $_sheetIndex time.',
+        alwaysPrint: true);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: CustomBottomSheet(
-          sheetIndex: _sheetIndex,
-          child: widget.scaffold
-        ),
-        bottomNavigationBar: widget.bottomNavigationBar.copyWith(sheetIndex: _sheetIndex));
+        body:
+            CustomBottomSheet(sheetIndex: _sheetIndex, child: widget.scaffold),
+        bottomNavigationBar:
+            widget.bottomNavigationBar.copyWith(sheetIndex: _sheetIndex));
   }
 }
