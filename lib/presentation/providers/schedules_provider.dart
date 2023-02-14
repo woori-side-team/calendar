@@ -26,10 +26,6 @@ class SchedulesProvider with ChangeNotifier {
   /// 현재 선택한 달.
   var _selectedMonthDate = CustomDateUtils.toDay(CustomDateUtils.getNow());
 
-  /// 일정 생성 테스트용.
-  int _nextStartHour = 9;
-  int _nextItemIndex = 0;
-
   /// Month page 안의 캐러셀들용.
   final _neighborMonthDates = Queue<DateTime>();
   var _selectedNeighborMonthDateIndex = 0;
@@ -128,54 +124,6 @@ class SchedulesProvider with ChangeNotifier {
     return sortedList;
   }
 
-  /// 테스트용.
-  Future<void> generateHoursSchedule(int progressHours, DateTime day) async {
-    if (progressHours == 24) {
-      return;
-    }
-
-    // 테스트용 시작 시간
-    int startHour = _nextStartHour;
-    int endHour = (startHour + progressHours) % 24;
-    _nextStartHour = endHour;
-    _nextItemIndex++;
-
-    final schedule = ScheduleModel(
-        id: CustomStringUtils.generateID(),
-        title: '$_nextItemIndex번 요소',
-        content: '공부하기',
-        type: ScheduleType.hours,
-        start: DateTime(day.year, day.month, day.day, startHour),
-        end: DateTime(day.year, day.month, day.day, endHour),
-        colorIndex: _nextItemIndex % 4);
-
-    await _addScheduleUseCase(schedule);
-    await _loadData();
-    notifyListeners();
-  }
-
-  /// 테스트용.
-  Future<void> generateAllDaySchedule(DateTime day) async {
-    // 테스트용 시작 시간
-    int startHour = _nextStartHour;
-    DateTime realRecordedDateTime = CustomDateUtils.getEndOfThisDay(day);
-    _nextStartHour = (startHour + 2) % 24;
-    _nextItemIndex++;
-
-    final schedule = ScheduleModel(
-        id: CustomStringUtils.generateID(),
-        title: '$_nextItemIndex번 요소',
-        content: '공부하기',
-        type: ScheduleType.allDay,
-        start: DateTime(day.year, day.month, day.day, startHour),
-        end: realRecordedDateTime,
-        colorIndex: _nextItemIndex % 4);
-
-    await _addScheduleUseCase(schedule);
-    await _loadData();
-    notifyListeners();
-  }
-
   Future<void> addSchedule(String command) async {
     DateTime? startDate = ScheduleCommandUtils.getStartDateTime(command);
     if (startDate == null) {
@@ -187,23 +135,25 @@ class SchedulesProvider with ChangeNotifier {
     DebugUtils.print(endDate, alwaysPrint: true);
     String title = ScheduleCommandUtils.getTitle(command) ?? '';
     ScheduleModel schedule = ScheduleModel(
-      id: CustomStringUtils.generateID(),
-      title: title,
-      content: '',
-      type: endDate.second == 59 ? ScheduleType.allDay : ScheduleType.hours,
-      start: startDate,
-      end: endDate,
-      colorIndex: _selectedMonthSchedulesCache.length % markerColors.length,
-    );
+        id: CustomStringUtils.generateID(),
+        title: title,
+        content: '',
+        type: endDate.second == 59 ? ScheduleType.allDay : ScheduleType.hours,
+        start: startDate,
+        end: endDate,
+        colorIndex: _selectedMonthSchedulesCache.length % markerColors.length,
+        notificationInterval: NotificationTime.oneDay);
     await _addScheduleUseCase(schedule);
     await _loadData();
+    await NotificationUtils().setNotification(schedule);
     notifyListeners();
   }
 
-  Future<void> addScheduleBySaveButton(ScheduleModel schedule, Duration interval) async {
+  Future<void> addScheduleBySaveButton(
+      ScheduleModel schedule) async {
     await _addScheduleUseCase(schedule);
     await _loadData();
-    await NotificationUtils().setNotification(schedule, interval);
+    await NotificationUtils().setNotification(schedule);
     notifyListeners();
   }
 

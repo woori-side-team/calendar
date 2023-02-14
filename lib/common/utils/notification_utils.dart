@@ -56,22 +56,32 @@ class NotificationUtils {
   }
 
   Future<void> showNotification({required int id, required String title, required String body}) async {
-    await flutterLocalNotificationsPlugin.show(
-        id, title, body, notificationDetails,
-        payload: 'item x');
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
   }
 
-  /// [interval]이 30분이면 스케줄 30분 전에 푸쉬알림이 뜬다.
-  Future<void> setNotification(ScheduleModel schedule, Duration interval) async {
+  Future<void> setNotification(ScheduleModel schedule) async {
+    DateTime start = schedule.start;
     var time = tz.TZDateTime.from(
-      schedule.start.subtract(interval),
+      schedule.start.subtract(schedule.notificationInterval.toDuration()),
       tz.local,
     );
+    print(time);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         _getNotificationId(schedule.id),
         schedule.title,
-        schedule.content,
+        '${start.year}.${start.month}.${start.day} ${start.hour}:${start.minute}',
         time,
         const NotificationDetails(
             android: AndroidNotificationDetails(
