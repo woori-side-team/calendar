@@ -29,13 +29,12 @@ class MemoGridViewPage extends StatelessWidget {
           CustomAppBar(leftActions: const [
             _MemoAddButton()
           ], rightActions: [
-            const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.vertical,
                 onPressed: () {
                   context.pushNamed('memoListViewPage');
                 }),
-            const CustomAppBarProfileButton()
+            const CustomAppBarSearchButton(type: PageType.memo),
           ]),
           SectionTitle(
               icon: Image.asset('assets/icons/week_view_memo.png'),
@@ -82,13 +81,12 @@ class MemoListViewPage extends StatelessWidget {
           CustomAppBar(leftActions: const [
             _MemoAddButton()
           ], rightActions: [
-            const CustomAppBarSearchButton(type: PageType.memo),
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.horizontal,
                 onPressed: () {
                   context.pushNamed('memoGridViewPage');
                 }),
-            const CustomAppBarProfileButton()
+            const CustomAppBarSearchButton(type: PageType.memo),
           ]),
           SectionTitle(
               icon: Image.asset('assets/icons/week_view_memo.png'),

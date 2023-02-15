@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget {
           height: MediaQuery.of(context).viewPadding.top,
         ),
         Container(
-          padding: const EdgeInsets.only(left: 12, right: 12),
+          padding: const EdgeInsets.only(left: 20, right: 12),
           height: 56,
           child: Row(children: [
             _createLeftAction(),
@@ -57,46 +57,43 @@ class AddScheduleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      const SizedBox(
-        width: 7,
-      ),
-      SizedBox(
-        height: 32,
-        width: 83,
-        child: ElevatedButton(
-          onPressed: () {
-            context
-                .read<AddSchedulePageProvider>()
-                .init(dateTimeInDayPage: dateTimeInDayPage);
-            context.pushNamed('addSchedulePage');
-          },
-          style: ElevatedButton.styleFrom(
-            elevation: 1.5,
-            minimumSize: Size.zero,
-            padding: EdgeInsets.zero,
-            backgroundColor: CustomTheme.background.primary,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.add_rounded,
+    return Ink(
+      height: 40,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: const [
+            BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.19),
+                offset: Offset(0, 1),
+                blurRadius: 1)
+          ]),
+      child: InkWell(
+        onTap: () {
+          context
+              .read<AddSchedulePageProvider>()
+              .init(dateTimeInDayPage: dateTimeInDayPage);
+          context.pushNamed('addSchedulePage');
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(width: 9),
+            SvgPicture.asset('assets/icons/app_bar_add.svg'),
+            const SizedBox(width: 5),
+            Text(
+              '일정 추가',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
                 color: CustomTheme.scale.scale7,
               ),
-              Text(
-                '일정 추가',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: CustomTheme.scale.scale7,
-                ),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 6),
+          ],
         ),
-      )
-    ]);
+      ),
+    );
   }
 }
 
@@ -224,10 +221,10 @@ class CustomAppBarAddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(10);
+    final borderRadius = BorderRadius.circular(6);
 
     return Ink(
-        height: 32,
+        height: 40,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: borderRadius,
