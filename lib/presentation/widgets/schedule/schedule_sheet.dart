@@ -183,7 +183,6 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
       child: TextField(
-        cursorHeight: 15,
         style: const TextStyle(fontSize: 15),
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(left: 14),
