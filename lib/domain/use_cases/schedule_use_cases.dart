@@ -23,7 +23,7 @@ class GetSchedulesAtMonthUseCase {
   Future<List<ScheduleModel>> call() async {
     DateTime now = CustomDateUtils.getNow();
     return await _scheduleRepository.getSchedulesBetweenDays(
-        DateTime(now.year, now.month, now.day),
+        DateTime(now.year, now.month, now.day).subtract(const Duration(days: 30)),
         DateTime(now.year, now.month, now.day).add(const Duration(days: 30)));
   }
 }

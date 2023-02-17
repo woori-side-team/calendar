@@ -1,8 +1,10 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/schedule/month_selector.dart';
 import 'package:calendar/presentation/widgets/schedule/month_view.dart';
+import 'package:calendar/secert/admob_id.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +19,8 @@ class MonthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return ScaffoldOverlayBottomNavigationBar(
         scaffold: Scaffold(
           body: Stack(children: [
@@ -30,7 +34,14 @@ class MonthPage extends StatelessWidget {
                 const CustomAppBarSearchButton(type: PageType.schedule),
               ]),
               const MonthSelector(),
-              const _MonthViewCarousel()
+              const _MonthViewCarousel(),
+              Padding(
+                padding: EdgeInsets.only(bottom: 112+bottomPadding),
+                child: AdmobBanner(
+                  adUnitId: AdmobId.bannerId,
+                  adSize: AdmobBannerSize.LARGE_BANNER,
+                ),
+              )
             ]),
           ]),
         ),

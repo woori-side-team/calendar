@@ -5,7 +5,7 @@ description: Calendar app
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -68,6 +68,9 @@ dependencies:
 
   #홈 위젯 패키지
   home_widget: ^0.2.0+1
+
+  #Admob 패키지
+  admob_flutter: ^3.0.0
 
 dev_dependencies:
   flutter_test:

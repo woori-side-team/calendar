@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_popup_menu.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -10,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/schedule_model.dart';
+import '../../../secert/admob_id.dart';
 import '../../providers/schedules_provider.dart';
 
 class AddSchedulePage extends StatefulWidget {
@@ -509,6 +511,11 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
             ),
           ),
           _createColorRow(context, viewModel),
+          const SizedBox(height: 40),
+          AdmobBanner(
+            adUnitId: AdmobId.bannerId,
+            adSize: AdmobBannerSize.MEDIUM_RECTANGLE,
+          ),
         ],
       ),
     );

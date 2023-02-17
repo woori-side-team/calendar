@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../secert/admob_id.dart';
 import '../../providers/add_schedule_page_provider.dart';
 import '../common/marker_colors.dart';
 
@@ -213,7 +215,11 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         height: 1,
       ),
       _createHeader(viewModel),
-      _createContent(viewModel, context)
+      _createContent(viewModel, context),
+      AdmobBanner(
+        adUnitId: AdmobId.bannerId,
+        adSize: AdmobBannerSize.LARGE_BANNER,
+      ),
     ]);
   }
 }
