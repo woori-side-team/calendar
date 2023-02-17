@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../secert/admob_id.dart';
+
 const _gridHorizontalPadding = 24.0;
 const _markerSize = 14.0;
 const _markersMargin = 6.0;
@@ -23,6 +26,7 @@ class MemoGridViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final memosProvider = context.watch<MemosProvider>();
+    double bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
         body: Column(children: [
@@ -56,7 +60,14 @@ class MemoGridViewPage extends StatelessWidget {
                         Text(memoModel.content,
                             maxLines: 4, overflow: TextOverflow.ellipsis)
                       ])))
-                  .toList())
+                  .toList()),
+          Padding(
+            padding: EdgeInsets.only(bottom: 12+bottomPadding),
+            child: AdmobBanner(
+              adUnitId: AdmobId.bannerId,
+              adSize: AdmobBannerSize.LARGE_BANNER,
+            ),
+          )
         ]),
         bottomNavigationBar:
             const CustomNavigationBar(selectedType: CustomNavigationType.memo));
@@ -75,6 +86,7 @@ class MemoListViewPage extends StatelessWidget {
     final itemWidth = screenWidth - _gridHorizontalPadding * 2;
     const actionsWidth = 106.0;
     final actionsExtent = actionsWidth / itemWidth;
+    double bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
         body: Column(children: [
@@ -120,7 +132,14 @@ class MemoListViewPage extends StatelessWidget {
                                 child: Text(memoModel.content,
                                     overflow: TextOverflow.ellipsis)))
                       ])))
-                  .toList())
+                  .toList()),
+          Padding(
+            padding: EdgeInsets.only(bottom: 12+bottomPadding),
+            child: AdmobBanner(
+              adUnitId: AdmobId.bannerId,
+              adSize: AdmobBannerSize.LARGE_BANNER,
+            ),
+          )
         ]),
         bottomNavigationBar:
             const CustomNavigationBar(selectedType: CustomNavigationType.memo));

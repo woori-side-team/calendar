@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
@@ -11,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../secert/admob_id.dart';
 import '../common/custom_theme.dart';
 import '../layout/custom_navigation_bar.dart';
 
@@ -46,7 +48,6 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
       child: TextField(
         controller: viewModel.textEditingController,
         onChanged: _onChanged,
-        cursorHeight: 18,
         style: const TextStyle(fontSize: 18),
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(left: 14),
@@ -262,6 +263,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    double bottomPadding = MediaQuery.of(context).padding.bottom;
     viewModel = context.watch<ScheduleSearchProvider>();
     return ScaffoldOverlayBottomNavigationBar(
       scaffold: Scaffold(
@@ -310,6 +312,13 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                   }),
             ),
             const SizedBox(height: 28),
+            viewModel.textEditingController.text.isEmpty ? Padding(
+              padding: EdgeInsets.only(bottom: 112+bottomPadding),
+              child: AdmobBanner(
+                adUnitId: AdmobId.bannerId,
+                adSize: AdmobBannerSize.MEDIUM_RECTANGLE,
+              ),
+            ): const SizedBox.shrink(),
           ],
         ),
       ),
