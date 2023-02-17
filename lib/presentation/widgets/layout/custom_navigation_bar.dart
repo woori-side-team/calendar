@@ -36,7 +36,7 @@ class CustomNavigationBar extends StatelessWidget {
               if (onPressSchedule != null) {
                 //onPressSchedule!();
               } else {
-                //context.pushNamed('monthPage');
+                context.pushNamed('monthPage');
               }
 
               break;

@@ -11,6 +11,7 @@ import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
 import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/secert/admob_id.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -23,8 +24,11 @@ void main() async {
 
   // Admob 초기화
   MobileAds.instance.initialize();
-  AdmobTestId();
-  // AdmobRealId();
+  if (kDebugMode) {
+    AdmobTestId();
+  } else {
+    AdmobRealId();
+  }
 
   // DI 세팅.
   configureDependencies();
