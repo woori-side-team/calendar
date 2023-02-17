@@ -32,10 +32,11 @@ class CustomNavigationBar extends StatelessWidget {
         onDestinationSelected: (value) {
           switch (value) {
             case 0:
+              // TODO: weekView 완성되면 주석 해제
               if (onPressSchedule != null) {
-                onPressSchedule!();
+                //onPressSchedule!();
               } else {
-                context.pushNamed('monthPage');
+                //context.pushNamed('monthPage');
               }
 
               break;

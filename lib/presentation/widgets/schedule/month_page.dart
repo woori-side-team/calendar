@@ -37,7 +37,8 @@ class MonthPage extends StatelessWidget {
                 CustomAppBarModeButton(
                     type: CustomAppBarModeType.vertical,
                     onPressed: () {
-                      context.pushNamed('weekPage');
+                      // TODO: weekView 완성되면 주석 해제
+                      //context.pushNamed('weekPage');
                     }),
                 const CustomAppBarSearchButton(type: PageType.schedule),
               ]),
