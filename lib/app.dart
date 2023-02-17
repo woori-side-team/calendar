@@ -38,7 +38,7 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
       name: 'monthPage',
       path: '/schedule/month',
       pageBuilder: (context, state) =>
-          const NoTransitionPage(child: MonthPage())),
+          NoTransitionPage(child: MonthPage())),
   GoRoute(
       name: 'weekPage',
       path: '/schedule/week',
@@ -63,12 +63,12 @@ final _router = GoRouter(initialLocation: '/schedule/month', routes: [
       name: 'memoGridViewPage',
       path: '/memo/grid',
       pageBuilder: (context, state) =>
-          const NoTransitionPage(child: MemoGridViewPage())),
+          NoTransitionPage(child: MemoGridViewPage())),
   GoRoute(
       name: 'memoListViewPage',
       path: '/memo/list',
       pageBuilder: (context, state) =>
-          const NoTransitionPage(child: MemoListViewPage())),
+          NoTransitionPage(child: MemoListViewPage())),
   GoRoute(
       name: 'memoEditPage',
       path: '/memo/edit',

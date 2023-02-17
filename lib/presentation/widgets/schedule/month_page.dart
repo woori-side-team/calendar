@@ -1,4 +1,3 @@
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
 import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart';
 import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_navigation_bar.dart';
@@ -8,14 +7,23 @@ import 'package:calendar/secert/admob_id.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import '../../providers/schedules_provider.dart';
 import '../common/custom_carousel.dart';
 
 class MonthPage extends StatelessWidget {
   static const routeName = 'schedule/month';
+  late final BannerAd banner;
 
-  const MonthPage({super.key});
+  MonthPage({super.key}) {
+    banner = BannerAd(
+      size: AdSize.largeBanner,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +44,10 @@ class MonthPage extends StatelessWidget {
               const MonthSelector(),
               const _MonthViewCarousel(),
               Padding(
-                padding: EdgeInsets.only(bottom: 112+bottomPadding),
-                child: AdmobBanner(
-                  adUnitId: AdmobId.bannerId,
-                  adSize: AdmobBannerSize.LARGE_BANNER,
-                ),
+                padding: EdgeInsets.only(bottom: 112 + bottomPadding),
+                child: SizedBox(
+                    height: AdSize.largeBanner.height.toDouble(),
+                    child: AdWidget(ad: banner)),
               )
             ]),
           ]),

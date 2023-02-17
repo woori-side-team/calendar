@@ -1,4 +1,3 @@
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/domain/models/memo_model.dart';
 import 'package:calendar/presentation/providers/memos_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../../../secert/admob_id.dart';
@@ -20,8 +20,16 @@ const _markersMargin = 6.0;
 
 class MemoGridViewPage extends StatelessWidget {
   static const routeName = 'memo/grid';
+  late BannerAd banner;
 
-  const MemoGridViewPage({super.key});
+  MemoGridViewPage({super.key}) {
+    banner = BannerAd(
+      size: AdSize.largeBanner,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +71,9 @@ class MemoGridViewPage extends StatelessWidget {
                   .toList()),
           Padding(
             padding: EdgeInsets.only(bottom: 12+bottomPadding),
-            child: AdmobBanner(
-              adUnitId: AdmobId.bannerId,
-              adSize: AdmobBannerSize.LARGE_BANNER,
-            ),
+            child: SizedBox(
+                height: AdSize.largeBanner.height.toDouble(),
+                child: AdWidget(ad: banner)),
           )
         ]),
         bottomNavigationBar:
@@ -76,8 +83,16 @@ class MemoGridViewPage extends StatelessWidget {
 
 class MemoListViewPage extends StatelessWidget {
   static const routeName = 'memo/list';
+  late BannerAd banner;
 
-  const MemoListViewPage({super.key});
+  MemoListViewPage({super.key}) {
+    banner = BannerAd(
+      size: AdSize.largeBanner,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +150,9 @@ class MemoListViewPage extends StatelessWidget {
                   .toList()),
           Padding(
             padding: EdgeInsets.only(bottom: 12+bottomPadding),
-            child: AdmobBanner(
-              adUnitId: AdmobId.bannerId,
-              adSize: AdmobBannerSize.LARGE_BANNER,
-            ),
+            child: SizedBox(
+                height: AdSize.largeBanner.height.toDouble(),
+                child: AdWidget(ad: banner)),
           )
         ]),
         bottomNavigationBar:

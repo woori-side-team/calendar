@@ -1,4 +1,3 @@
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_popup_menu.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/cupertino.dart' hide CupertinoDatePickerMode;
 import 'package:flutter/material.dart' hide PopupMenuItem;
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/schedule_model.dart';
@@ -23,7 +23,18 @@ class AddSchedulePage extends StatefulWidget {
 
 class _AddSchedulePageState extends State<AddSchedulePage> {
   late AddSchedulePageProvider viewModel;
+  late BannerAd banner;
 
+  @override
+  void initState() {
+    super.initState();
+    banner = BannerAd(
+      size: AdSize.mediumRectangle,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
+  }
 
   Widget _createAppBar(BuildContext context) {
     return Container(
@@ -512,10 +523,9 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
           ),
           _createColorRow(context, viewModel),
           const SizedBox(height: 40),
-          AdmobBanner(
-            adUnitId: AdmobId.bannerId,
-            adSize: AdmobBannerSize.MEDIUM_RECTANGLE,
-          ),
+          SizedBox(
+              height: AdSize.mediumRectangle.height.toDouble(),
+              child: AdWidget(ad: banner)),
         ],
       ),
     );

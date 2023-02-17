@@ -1,4 +1,3 @@
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/schedules_provider.dart';
@@ -7,6 +6,7 @@ import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../../../secert/admob_id.dart';
@@ -26,6 +26,7 @@ class ScheduleSheet extends StatefulWidget {
 
 class _ScheduleSheet extends State<ScheduleSheet> {
   late int sheetIndex;
+  late BannerAd banner;
 
   void _handlePressEdit() {
     final viewModel = context.read<SheetProvider>();
@@ -42,6 +43,13 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     super.initState();
     final viewModel = context.read<SheetProvider>();
     sheetIndex = viewModel.sheetScrollControllers.length - 1;
+
+    banner = BannerAd(
+      size: AdSize.largeBanner,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
   }
 
   Widget _createHeader(SheetProvider viewModel) {
@@ -49,7 +57,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(top: 14, left: 20, right: 18),
         child:
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text('다가오는 일정',
               style: TextStyle(
                   fontSize: 17,
@@ -57,15 +65,14 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   color: CustomTheme.scale.scale10)),
           viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? TextButton(
-              onPressed: _handlePressEdit,
-              child: Text('편집',
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: CustomTheme.tint.blue)))
+                  onPressed: _handlePressEdit,
+                  child: Text('편집',
+                      style: TextStyle(
+                          fontSize: 17, color: CustomTheme.tint.blue)))
               : IconButton(
-              onPressed: _handlePressView,
-              icon:
-              SvgPicture.asset('assets/icons/schedule_sheet_close.svg'))
+                  onPressed: _handlePressView,
+                  icon:
+                      SvgPicture.asset('assets/icons/schedule_sheet_close.svg'))
         ]));
   }
 
@@ -100,8 +107,10 @@ class _ScheduleSheet extends State<ScheduleSheet> {
                   onPressed: () {
                     final schedulesProvider = context.read<SchedulesProvider>();
                     schedulesProvider.getOneDaySchedules(schedule.start);
-                    context.pushNamed('dayPage',
-                        params: {'selectedDate': CustomDateUtils.dateToString(schedule.start)});
+                    context.pushNamed('dayPage', params: {
+                      'selectedDate':
+                          CustomDateUtils.dateToString(schedule.start)
+                    });
                   },
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(0),
@@ -116,32 +125,34 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           viewModel.sheetModes[sheetIndex] == SheetMode.view
               ? Container()
               : Row(children: [
-            SizedBox(
-                width: controlWidth,
-                height: controlHeight,
-                child: IconButton(
-                    onPressed: () {
-                      context.read<AddSchedulePageProvider>().initWithSchedule(schedule);
-                      context.pushNamed('addSchedulePage');
-                    },
-                    padding: const EdgeInsets.all(0),
-                    icon: SvgPicture.asset(
-                        'assets/icons/schedule_sheet_schedule_edit.svg'))),
-            SizedBox(
-                width: controlWidth,
-                height: controlHeight,
-                child: IconButton(
-                    onPressed: () async {
-                      await schedulesProvider.deleteSchedule(schedule.id);
-                      if (schedulesProvider
-                          .selectedMonthSchedules.isEmpty) {
-                        viewModel.setSheetViewMode(sheetIndex);
-                      }
-                    },
-                    padding: const EdgeInsets.all(0),
-                    icon: SvgPicture.asset(
-                        'assets/icons/schedule_sheet_schedule_close.svg')))
-          ])
+                  SizedBox(
+                      width: controlWidth,
+                      height: controlHeight,
+                      child: IconButton(
+                          onPressed: () {
+                            context
+                                .read<AddSchedulePageProvider>()
+                                .initWithSchedule(schedule);
+                            context.pushNamed('addSchedulePage');
+                          },
+                          padding: const EdgeInsets.all(0),
+                          icon: SvgPicture.asset(
+                              'assets/icons/schedule_sheet_schedule_edit.svg'))),
+                  SizedBox(
+                      width: controlWidth,
+                      height: controlHeight,
+                      child: IconButton(
+                          onPressed: () async {
+                            await schedulesProvider.deleteSchedule(schedule.id);
+                            if (schedulesProvider
+                                .selectedMonthSchedules.isEmpty) {
+                              viewModel.setSheetViewMode(sheetIndex);
+                            }
+                          },
+                          padding: const EdgeInsets.all(0),
+                          icon: SvgPicture.asset(
+                              'assets/icons/schedule_sheet_schedule_close.svg')))
+                ])
         ]));
   }
 
@@ -158,7 +169,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     final schedules =
         context.watch<SchedulesProvider>().sortedSelectedMonthSchedules;
     final schedulesToShow =
-    schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
+        schedules.where((schedule) => viewModel.isScheduleToShow(schedule));
 
     // 최대 몇개까지만 보여줄지.
     const maxShowCount = 7;
@@ -169,7 +180,7 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           ...schedulesToShow
               .take(maxShowCount)
               .map((schedule) =>
-              _createScheduleView(viewModel, context, schedule))
+                  _createScheduleView(viewModel, context, schedule))
               .toList(),
           Container(
               margin: const EdgeInsets.only(top: 4),
@@ -216,10 +227,9 @@ class _ScheduleSheet extends State<ScheduleSheet> {
       ),
       _createHeader(viewModel),
       _createContent(viewModel, context),
-      AdmobBanner(
-        adUnitId: AdmobId.bannerId,
-        adSize: AdmobBannerSize.LARGE_BANNER,
-      ),
+      SizedBox(
+          height: AdSize.largeBanner.height.toDouble(),
+          child: AdWidget(ad: banner)),
     ]);
   }
 }

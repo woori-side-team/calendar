@@ -1,4 +1,3 @@
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:calendar/common/utils/custom_date_utils.dart';
 import 'package:calendar/domain/models/schedule_model.dart';
 import 'package:calendar/presentation/providers/add_schedule_page_provider.dart';
@@ -9,6 +8,7 @@ import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_nav
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +29,18 @@ class ScheduleSearchPage extends StatefulWidget {
 
 class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
   late ScheduleSearchProvider viewModel;
+  late BannerAd banner;
+
+  @override
+  void initState() {
+    super.initState();
+    banner = BannerAd(
+      size: AdSize.mediumRectangle,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
+  }
 
   void _onChanged(String text) async {
     final viewModel = context.read<ScheduleSearchProvider>();
@@ -314,10 +326,9 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
             const SizedBox(height: 28),
             viewModel.textEditingController.text.isEmpty ? Padding(
               padding: EdgeInsets.only(bottom: 112+bottomPadding),
-              child: AdmobBanner(
-                adUnitId: AdmobId.bannerId,
-                adSize: AdmobBannerSize.MEDIUM_RECTANGLE,
-              ),
+              child: SizedBox(
+                  height: AdSize.mediumRectangle.height.toDouble(),
+                  child: AdWidget(ad: banner)),
             ): const SizedBox.shrink(),
           ],
         ),
