@@ -10,6 +10,11 @@ import com.github.woorisideteam.calendar.home_widget.HomeWidgetLaunchIntent
 import com.github.woorisideteam.calendar.home_widget.HomeWidgetProvider
 
 class HomeWidget : HomeWidgetProvider() {
+
+    override fun onEnabled(context: Context?) {
+        super.onEnabled(context)
+    }
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.home_widget).apply {
@@ -17,8 +22,8 @@ class HomeWidget : HomeWidgetProvider() {
                 // Open App on Widget Click
                 val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
                     MainActivity::class.java)
-                setOnClickPendingIntent(R.id.qwe, pendingIntent)
-
+                setOnClickPendingIntent(R.id.textYearMonth, pendingIntent)
+                //setRemoteAdapter(R.id.gridCell)
 //                val counter = widgetData.getInt("_counter", 0)
 //
 //                var counterText = "Your counter value is: $counter"
@@ -34,6 +39,7 @@ class HomeWidget : HomeWidgetProvider() {
 //                    Uri.parse("myAppWidget://updatecounter"))
 //                setOnClickPendingIntent(R.id.bt_update, backgroundIntent)
             }
+            views.setInt(R.id.background, "setImageAlpha", 255)
             appWidgetManager.updateAppWidget(widgetId, views)
         }
     }

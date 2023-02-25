@@ -208,8 +208,8 @@ class _ScheduleSheet extends State<ScheduleSheet> {
           fillColor: CustomTheme.background.secondary,
           filled: true,
         ),
-        onSubmitted: (command) {
-          schedulesViewModel.addSchedule(command);
+        onSubmitted: (command) async {
+          await schedulesViewModel.addSchedule(command);
         },
       ),
     );

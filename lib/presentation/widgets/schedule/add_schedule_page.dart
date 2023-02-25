@@ -450,8 +450,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         label: const Text('저장'),
         icon: const Icon(Icons.save),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
+      body: ListView(
         children: [
           _createAppBar(context),
           _createTextFieldsContainer(context, viewModel),
