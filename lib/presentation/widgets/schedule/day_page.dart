@@ -287,7 +287,7 @@ class DayPage extends StatelessWidget {
                                 context, currentSchedules[index]);
                           }
                           // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
-                          return const SizedBox(height: 50);
+                          return const SizedBox(height: 150);
                         },
                       ),
                     ],

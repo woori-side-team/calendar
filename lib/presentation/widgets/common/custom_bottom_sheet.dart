@@ -22,63 +22,62 @@ class CustomBottomSheet extends StatelessWidget {
         minHeight: 20,
         maxHeight: viewModel.getMaxSheetSize(context),
         backdropEnabled: true,
-          panelBuilder: (ScrollController sc) {
-            final decoration = BoxDecoration(
-                color: CustomTheme.background.primary,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-                boxShadow: const [
-                  BoxShadow(
-                      offset: Offset(0, -6),
-                      blurRadius: 16,
-                      color: Color.fromARGB(128, 174, 174, 178))
-                ]);
+        panelBuilder: (ScrollController sc) {
+          final decoration = BoxDecoration(
+              color: CustomTheme.background.primary,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+              boxShadow: const [
+                BoxShadow(
+                    offset: Offset(0, -6),
+                    blurRadius: 16,
+                    color: Color.fromARGB(128, 174, 174, 178))
+              ]);
 
-            final handle = Padding(
-              padding: const EdgeInsets.only(top: 6, bottom: 6),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Container(
-                  width: 40,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: CustomTheme.gray.gray4,
-                  ),
+          final handle = Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 6),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                width: 40,
+                height: 6,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: CustomTheme.gray.gray4,
                 ),
-              ]),
-            );
-            return Container(
-                decoration: decoration,
-                child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    controller: sc,
-                    child: Column(
-                      children: [
-                        Tooltip(
-                            showDuration: const Duration(seconds: 5),
-                            padding: const EdgeInsets.only(
-                                top: 6, bottom: 10, left: 11, right: 11),
-                            message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수 '
-                                '있고 일정을 추가할 수도 있습니다.',
-                            textStyle: TextStyle(color: CustomTheme.scale.scale1),
-                            decoration: ShapeDecoration(
-                                shape: const ToolTipCustomShape(),
-                                color: CustomTheme.scale.scale10.withOpacity(0.7)),
-                            preferBelow: false,
-                            verticalOffset: -10,
-                            child: handle),
-                        const ScheduleSheet(),
-                      ],
-                    ),));
-          },
-          body: child,
+              ),
+            ]),
+          );
+          return Container(
+              decoration: decoration,
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                controller: sc,
+                child: Column(
+                  children: [
+                    Tooltip(
+                        showDuration: const Duration(seconds: 5),
+                        padding: const EdgeInsets.only(
+                            top: 6, bottom: 10, left: 11, right: 11),
+                        message: '해당 슬라이드를 위로 당기면, 다가오는 일정을 확인할 수 '
+                            '있고 일정을 추가할 수도 있습니다.',
+                        textStyle: TextStyle(color: CustomTheme.scale.scale1),
+                        decoration: ShapeDecoration(
+                            shape: const ToolTipCustomShape(),
+                            color: CustomTheme.scale.scale10.withOpacity(0.7)),
+                        preferBelow: false,
+                        verticalOffset: -10,
+                        child: handle),
+                    const ScheduleSheet(),
+                  ],
+                ),
+              ));
+        },
+        body: child,
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-
       ),
     );
   }
-
 }
 
 class ToolTipCustomShape extends ShapeBorder {
