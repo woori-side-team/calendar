@@ -44,7 +44,7 @@ class MemoGridViewPage extends StatelessWidget {
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.vertical,
                 onPressed: () {
-                  context.pushNamed('memoListViewPage');
+                  context.goNamed('memoListViewPage');
                 }),
             const CustomAppBarSearchButton(type: PageType.memo),
           ]),
@@ -111,7 +111,7 @@ class MemoListViewPage extends StatelessWidget {
             CustomAppBarModeButton(
                 type: CustomAppBarModeType.horizontal,
                 onPressed: () {
-                  context.pushNamed('memoGridViewPage');
+                  context.goNamed('memoGridViewPage');
                 }),
             const CustomAppBarSearchButton(type: PageType.memo),
           ]),

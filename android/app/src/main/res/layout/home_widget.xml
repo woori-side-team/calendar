@@ -118,7 +118,8 @@
         <GridView
             android:id="@+id/gridCell"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:numColumns="7"/>
 
     </LinearLayout>
 

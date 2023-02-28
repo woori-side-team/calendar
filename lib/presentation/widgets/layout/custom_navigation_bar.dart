@@ -36,7 +36,7 @@ class CustomNavigationBar extends StatelessWidget {
               if (onPressSchedule != null) {
                 //onPressSchedule!();
               } else {
-                context.pushNamed('monthPage');
+                context.goNamed('monthPage');
               }
 
               break;
@@ -53,7 +53,7 @@ class CustomNavigationBar extends StatelessWidget {
               if (onPressMemo != null) {
                 onPressMemo!();
               } else {
-                context.pushNamed('memoGridViewPage');
+                context.goNamed('memoGridViewPage');
               }
 
               break;

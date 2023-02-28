@@ -78,6 +78,16 @@ class NotificationUtils {
       return;
     }
 
+    DateTime notiDateTime = schedule.start.subtract(schedule.notificationInterval.toDuration());
+    // 시간 기입 안 한 커맨드로 만들면 무조건 0시 시작에 1일 전 푸쉬 알림이니까
+    // 0시에 푸쉬 알림 가면 괜히 잠깰 것 같다
+    // 그래서 이런 경우엔 12시에 울리는 걸로~
+    if(schedule.type == ScheduleType.allDay && notiDateTime.hour == 0){
+      notiDateTime = notiDateTime.add(const Duration(hours: 12));
+    }
+    if(notiDateTime.isBefore(CustomDateUtils.getNow())){
+      return;
+    }
     var time = tz.TZDateTime.from(
       schedule.start.subtract(schedule.notificationInterval.toDuration()),
       tz.local,
