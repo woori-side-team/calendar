@@ -1,15 +1,26 @@
 import 'package:calendar/presentation/providers/sheet_provider.dart';
 import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import '../../../secert/admob_id.dart';
 import '../schedule/schedule_sheet.dart';
 
 class CustomBottomSheet extends StatelessWidget {
   Widget child;
   int sheetIndex;
+  late final BannerAd banner;
 
-  CustomBottomSheet({super.key, required this.child, required this.sheetIndex});
+  CustomBottomSheet(
+      {super.key, required this.child, required this.sheetIndex}) {
+    banner = BannerAd(
+      size: AdSize.banner,
+      adUnitId: AdmobId.bannerId,
+      listener: const BannerAdListener(),
+      request: const AdRequest(),
+    )..load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +28,15 @@ class CustomBottomSheet extends StatelessWidget {
 
     return Material(
       child: SlidingUpPanel(
+        footer: Container(
+            padding: const EdgeInsets.symmetric(vertical: 25),
+            color: CustomTheme.background.primary,
+            width: MediaQuery.of(context).size.width,
+            height: AdSize.banner.height.toDouble() + 50,
+            child: AdWidget(ad: banner)),
         snapPoint: 0.5,
         controller: viewModel.sheetScrollControllers[sheetIndex],
-        minHeight: 20,
+        minHeight: AdSize.largeBanner.height.toDouble() + 20,
         maxHeight: viewModel.getMaxSheetSize(context),
         backdropEnabled: true,
         panelBuilder: (ScrollController sc) {

@@ -6,10 +6,7 @@ import 'package:calendar/presentation/widgets/common/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
-
-import '../../../secert/admob_id.dart';
 import '../../providers/add_schedule_page_provider.dart';
 import '../common/marker_colors.dart';
 
@@ -26,7 +23,6 @@ class ScheduleSheet extends StatefulWidget {
 
 class _ScheduleSheet extends State<ScheduleSheet> {
   late int sheetIndex;
-  late BannerAd banner;
 
   void _handlePressEdit() {
     final viewModel = context.read<SheetProvider>();
@@ -43,13 +39,6 @@ class _ScheduleSheet extends State<ScheduleSheet> {
     super.initState();
     final viewModel = context.read<SheetProvider>();
     sheetIndex = viewModel.sheetScrollControllers.length - 1;
-
-    banner = BannerAd(
-      size: AdSize.largeBanner,
-      adUnitId: AdmobId.bannerId,
-      listener: const BannerAdListener(),
-      request: const AdRequest(),
-    )..load();
   }
 
   Widget _createHeader(SheetProvider viewModel) {
@@ -227,9 +216,6 @@ class _ScheduleSheet extends State<ScheduleSheet> {
       ),
       _createHeader(viewModel),
       _createContent(viewModel, context),
-      SizedBox(
-          height: AdSize.largeBanner.height.toDouble(),
-          child: AdWidget(ad: banner)),
     ]);
   }
 }

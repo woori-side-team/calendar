@@ -4,7 +4,6 @@ import 'package:calendar/presentation/providers/add_schedule_page_provider.dart'
 import 'package:calendar/presentation/providers/schedule_search_provider.dart';
 import 'package:calendar/presentation/widgets/common/marker_colors.dart';
 import 'package:calendar/presentation/widgets/layout/custom_app_bar.dart';
-import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -67,7 +66,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(12),
           ),
-          hintText: '일정을 입력하세요.',
+          hintText: '검색어를 입력하세요.',
           hintStyle: TextStyle(color: CustomTheme.gray.gray2, fontSize: 18),
           fillColor: CustomTheme.background.secondary,
           filled: true,
@@ -247,9 +246,12 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                   height: 17,
                   child: FittedBox(
                     fit: BoxFit.cover,
-                    child: _createContentText(
-                      schedule: schedule,
-                      color: contentColor,
+                    child: Container(
+                      constraints:const BoxConstraints(minWidth:1),
+                      child: _createContentText(
+                        schedule: schedule,
+                        color: contentColor,
+                      ),
                     ),
                   ),
                 ),
@@ -275,11 +277,13 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    double bottomPadding = MediaQuery.of(context).padding.bottom;
     viewModel = context.watch<ScheduleSearchProvider>();
-    return ScaffoldOverlayBottomNavigationBar(
-      scaffold: Scaffold(
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+      bottomNavigationBar: const CustomNavigationBar(
+          selectedType: CustomNavigationType.schedule),
         body: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const CustomAppBar(rightActions: []),
             _createTextField(viewModel),
@@ -305,6 +309,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
             ),
             Flexible(
               child: ListView.builder(
+                shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   itemCount: viewModel.searched.length + 1,
                   itemBuilder: (context, index) {
@@ -324,17 +329,11 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                   }),
             ),
             const SizedBox(height: 28),
-            viewModel.textEditingController.text.isEmpty ? Padding(
-              padding: EdgeInsets.only(bottom: 112+bottomPadding),
-              child: SizedBox(
-                  height: AdSize.mediumRectangle.height.toDouble(),
-                  child: AdWidget(ad: banner)),
-            ): const SizedBox.shrink(),
+            SizedBox(
+                height: AdSize.mediumRectangle.height.toDouble(),
+                child: AdWidget(ad: banner)),
           ],
         ),
-      ),
-      bottomNavigationBar: const CustomNavigationBar(
-          selectedType: CustomNavigationType.schedule),
-    );
+      );
   }
 }

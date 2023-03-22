@@ -8,6 +8,7 @@ import 'package:calendar/presentation/widgets/layout/custom_navigation_bar.dart'
 import 'package:calendar/presentation/widgets/layout/scaffold_overlay_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -287,7 +288,8 @@ class DayPage extends StatelessWidget {
                                 context, currentSchedules[index]);
                           }
                           // 맨밑 아이템이 바텀시트에 가리지 않게 하기 위함
-                          return const SizedBox(height: 150);
+                          // 80은 bottomNavigationBar의 height
+                          return SizedBox(height: AdSize.banner.height.toDouble() + 150 + 80);
                         },
                       ),
                     ],

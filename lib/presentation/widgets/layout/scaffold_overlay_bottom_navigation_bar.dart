@@ -12,11 +12,15 @@ import '../common/custom_bottom_sheet.dart';
 /// Scaffold 대신 이것을 쓸 것을 권장.
 class ScaffoldOverlayBottomNavigationBar extends StatefulWidget {
   const ScaffoldOverlayBottomNavigationBar(
-      {Key? key, required this.scaffold, required this.bottomNavigationBar})
+      {Key? key,
+      required this.scaffold,
+      required this.bottomNavigationBar,
+      this.hasSheet = true})
       : super(key: key);
 
   final Scaffold scaffold;
   final CustomNavigationBar bottomNavigationBar;
+  final bool hasSheet;
 
   @override
   State<ScaffoldOverlayBottomNavigationBar> createState() =>
@@ -41,8 +45,9 @@ class _ScaffoldOverlayBottomNavigationBarState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:
-            CustomBottomSheet(sheetIndex: _sheetIndex, child: widget.scaffold),
+        body: widget.hasSheet
+            ? CustomBottomSheet(sheetIndex: _sheetIndex, child: widget.scaffold)
+            : widget.scaffold,
         bottomNavigationBar:
             widget.bottomNavigationBar.copyWith(sheetIndex: _sheetIndex));
   }
