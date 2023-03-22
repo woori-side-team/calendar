@@ -83,7 +83,6 @@ class HomeWidget : HomeWidgetProvider() {
                 PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
             }
             views.setPendingIntentTemplate(R.id.gridCell, toastPendingIntent)
-
             views.setInt(R.id.background, "setImageAlpha", 255)
             appWidgetManager.updateAppWidget(widgetId, views)
         }
